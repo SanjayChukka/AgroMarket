@@ -1,0 +1,233 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Registration Page */
+.register-page,
+.registration-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 15px;
+}
+
+/* Main Containers */
+.register-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+}
+
+.registration-container {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 30px;
+}
+
+/* Headers */
+.register-header,
+.registration-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Role Selection */
+.role-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.role-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    padding: 25px;
+}
+
+/* Registration Form */
+.registration-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.registration-form h3 {
+    margin-top: 10px;
+}
+
+/* Form Rows */
+.form-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Form Groups */
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+}
+
+/* Buttons */
+.registration-form button {
+    width: 100%;
+    padding: 12px;
+}
+
+/* Footer */
+.registration-footer,
+.login-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+
+    .role-container,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-container,
+    .register-container {
+        padding: 15px;
+    }
+}
+
+
+
+/* Change Password Page */
+
+.password-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 15px;
+}
+
+.password-container {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 30px;
+}
+
+.password-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.password-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.password-form input {
+    width: 100%;
+    padding: 12px;
+}
+
+.password-form button {
+    width: 100%;
+    padding: 12px;
+}
+
+.password-footer {
+    text-align: center;
+}
+
+
+/* Email and Mobile Verification */
+
+.verification-field,
+.otp-field {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.verification-field input,
+.otp-field input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+}
+
+.verify-btn {
+    padding: 12px;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+
+    .verification-field,
+    .otp-field {
+        flex-wrap: wrap;
+    }
+
+    .verification-field input,
+    .otp-field input {
+        width: 100%;
+        flex-basis: 100%;
+    }
+}
