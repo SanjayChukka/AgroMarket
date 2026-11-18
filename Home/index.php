@@ -294,8 +294,8 @@
             <h3 class="foot-head">FOR FARMERS</h3>
             <ul class="footer-links">
                 <li><a href="./auth/farmer_register.php">Register as Farmer</a></li>
-                <li><a href="#">List Your Crops</a></li>
-                <li><a href="#">Manage Listings</a></li>
+                <li><a href="./auth/login.php">List Your Crops</a></li>
+                <li><a href="./auth/login.php">Manage Listings</a></li>
                 <li><a href="./common/market_prices.php">Market Price Updates</a></li>
                 <li><a href="./common/farmer_guidelines.php">Farmer Guidelines</a></li>
             </ul>
@@ -305,10 +305,10 @@
         <div class="footer-section buyers">
             <h3 class="foot-head">FOR BUYERS</h3>
             <ul class="footer-links">
-                <li><a href="#">Browse Crops</a></li>
-                <li><a href="#">Find Farmers</a></li>
-                <li><a href="#">Place Orders</a></li>
-                <li><a href="#">Track Orders</a></li>
+                <li><a href="./auth/login.php">Browse Crops</a></li>
+                <li><a href="./auth/login.php">Find Farmers</a></li>
+                <li><a href="./auth/login.php">Place Orders</a></li>
+                <li><a href="./auth/login.php">Track Orders</a></li>
                 <li><a href="./common/buyer_guidelines.php">Buyer Guidelines</a></li>
             </ul>
         </div>
