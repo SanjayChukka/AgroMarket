@@ -231,3 +231,106 @@ body {
         flex-basis: 100%;
     }
 }
+
+/* ==============================
+   POPUP MESSAGES
+============================== */
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-card {
+    background: #fff;
+    width: 90%;
+    max-width: 380px;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    animation: popupShow 0.25s ease;
+}
+
+.popup-icon {
+    font-size: 45px;
+    font-weight: bold;
+    color: #1ce386;
+    margin-bottom: 12px;
+}
+
+.popup-card h2 {
+    margin-bottom: 10px;
+    color: #1ce386;
+}
+
+.popup-card p {
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.popup-card button {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 6px;
+    background: #6cbe6d;
+    color: #fff;
+    cursor: pointer;
+    font-size: 15px;
+    transition: opacity 0.2s ease;
+}
+
+.popup-card button:hover {
+    opacity: 0.85;
+}
+
+/* Error popup */
+.popup-card.error .popup-icon,
+.popup-card.error h2 {
+    color: #dc3545;
+}
+
+.popup-card.error button {
+    background: #dc3545;
+}
+
+/* Popup animation */
+@keyframes popupShow {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Live duplicate validation */
+
+.form-control.input-error {
+    border: 2px solid #ff0019 !important;
+}
+
+.field-error {
+    display: block;
+    color: #d61e31;
+    font-size: 13px;
+    margin-top: 5px;
+    min-height: 18px;
+}
+
+.form-control.input-valid {
+    border: 2px solid #1ce386;
+}
