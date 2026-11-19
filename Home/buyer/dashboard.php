@@ -1,3 +1,8 @@
+<?php
+    require_once __DIR__ . "/../config/auth_check.php";
+
+    require_login("buyer", "../auth/login.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
