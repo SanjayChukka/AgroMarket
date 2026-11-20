@@ -319,46 +319,43 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                        <input type="text" id="first_name" name="first_name"
+                        value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" required>
+                        <input type="text" id="last_name" name="last_name"
+                        value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                    <?php if (isset($fieldErrors['username'])): ?>
-                        <small style="color:red;">
-                            <?php echo htmlspecialchars($fieldErrors['username']) ?>
-                        </small>
-                    <?php endif; ?>
+                    <input type="text" id="username" name="username"
+                        class="form-control"
+                        value="<?php echo htmlspecialchars($_POST['username'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                        required>
+                    <small id="usernameError" class="field-error"><?php echo htmlspecialchars($fieldErrors['username'] ?? '') ?></small>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                        <?php if (isset($fieldErrors['email'])): ?>
-                            <small style="color:red;">
-                                <?php echo htmlspecialchars($fieldErrors['email']) ?>
-                            </small>
-                        <?php endif; ?>
-                    </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email"
+                        class="form-control"
+                        value="<?php echo htmlspecialchars($_POST['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                        required>
+                    <small id="emailError" class="field-error"><?php echo htmlspecialchars($fieldErrors['email'] ?? '') ?></small>
+                </div>
 
-                    <div class="form-group">
-                        <label for="mobile">Mobile Number</label>
-                        <input type="tel" id="mobile" name="mobile"
-                            pattern="[0-9]{10}" maxlength="10" required>
-                        <?php if (isset($fieldErrors['mobile'])): ?>
-                            <small style="color:red;">
-                                <?php echo htmlspecialchars($fieldErrors['mobile']) ?>
-                            </small>
-                        <?php endif; ?>
-                    </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile Number</label>
+                    <input type="tel" id="mobile" name="mobile"
+                        class="form-control"
+                        maxlength="10"
+                        value="<?php echo htmlspecialchars($_POST['mobile'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                        required>
+                    <small id="mobileError" class="field-error"><?php echo htmlspecialchars($fieldErrors['mobile'] ?? '') ?></small>
                 </div>
 
                 <div class="form-row">
@@ -390,7 +387,8 @@
 
                 <div class="form-group">
                     <label for="business_name">Business / Organization Name (Optional)</label>
-                    <input type="text" id="business_name" name="business_name">
+                    <input type="text" id="business_name" name="business_name"
+                    value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                 </div>
 
                 <div class="form-row">
@@ -407,26 +405,31 @@
 
                     <div class="form-group">
                         <label for="district">District</label>
-                        <input type="text" id="district" name="district" required>
+                        <input type="text" id="district" name="district"
+                        value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="city">Village / Town / City</label>
-                        <input type="text" id="city" name="city">
+                        <input type="text" id="city" name="city"
+                        value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="pincode">PIN Code</label>
                         <input type="text" id="pincode" name="pincode"
-                            maxlength="6" pattern="[0-9]{6}">
+                            maxlength="6" pattern="[0-9]{6}"
+                            value="<?php echo htmlspecialchars($_POST['first_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="address">Business / Residential Address</label>
-                    <textarea id="address" name="address" rows="3" required></textarea>
+                    <textarea id="address" name="address" rows="3" required>
+                        <?php echo htmlspecialchars($_POST['address'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                    </textarea>
                 </div>
 
                 <button type="submit" name="register">
@@ -443,7 +446,196 @@
         </section>
 
     </main>
+    <script>
 
+const duplicateFields = ["username", "email", "mobile"];
+
+const duplicateStatus = {
+    username: false,
+    email: false,
+    mobile: false
+};
+
+const duplicateTimers = {};
+const duplicateRequests = {};
+
+function validateDuplicateFormat(field, value) {
+
+    if (value.trim() === "") return false;
+
+    if (field === "email") {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    if (field === "mobile") {
+        return /^[6-9][0-9]{9}$/.test(value);
+    }
+
+    return value.trim().length >= 3;
+}
+
+function showFieldError(field, message) {
+
+    const input = document.getElementById(field);
+    const error = document.getElementById(field + "Error");
+
+    input.classList.add("input-error");
+    input.classList.remove("input-valid");
+
+    error.textContent = message;
+}
+
+function clearFieldError(field) {
+
+    const input = document.getElementById(field);
+    const error = document.getElementById(field + "Error");
+
+    input.classList.remove("input-error", "input-valid");
+    error.textContent = "";
+    duplicateStatus[field] = false;
+}
+
+async function checkDuplicate(field) {
+
+    const input = document.getElementById(field);
+    const value = input.value.trim();
+
+    if (!validateDuplicateFormat(field, value)) {
+        clearFieldError(field);
+        return false;
+    }
+
+    const requestId = (duplicateRequests[field] || 0) + 1;
+    duplicateRequests[field] = requestId;
+
+    const formData = new FormData();
+    formData.append("field", field);
+    formData.append("value", value);
+
+    try {
+
+        const response = await fetch("check_duplicate.php", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error("Verification failed");
+        }
+
+        const data = await response.json();
+
+        // Ignore outdated responses
+        if (
+            requestId !== duplicateRequests[field] ||
+            input.value.trim() !== value
+        ) {
+            return false;
+        }
+
+        if (data.exists) {
+
+            duplicateStatus[field] = true;
+            showFieldError(field, data.message);
+
+            return true;
+
+        } else {
+
+            clearFieldError(field);
+            input.classList.add("input-valid");
+
+            return false;
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showFieldError(field, "Unable to verify. Please try again.");
+
+        return false;
+    }
+}
+
+// Live checking while typing
+duplicateFields.forEach(function(field) {
+
+    const input = document.getElementById(field);
+
+    input.addEventListener("input", function() {
+
+        clearTimeout(duplicateTimers[field]);
+
+        // Invalidate any previous request
+        duplicateRequests[field] =
+            (duplicateRequests[field] || 0) + 1;
+
+        duplicateStatus[field] = false;
+
+        input.classList.remove("input-error", "input-valid");
+        document.getElementById(field + "Error").textContent = "";
+
+        duplicateTimers[field] = setTimeout(function() {
+            checkDuplicate(field);
+        }, 400);
+    });
+
+    input.addEventListener("blur", function() {
+
+        clearTimeout(duplicateTimers[field]);
+        checkDuplicate(field);
+    });
+});
+
+// Check all three fields before allowing submission
+
+const buyerForm = document.querySelector(".registration-form");
+
+let allowBuyerSubmission = false;
+
+buyerForm.addEventListener("submit", async function(event) {
+
+    // Allow the final submission after duplicate checks
+    if (allowBuyerSubmission) {
+        return;
+    }
+
+    event.preventDefault();
+
+    let hasDuplicate = false;
+
+    for (const field of duplicateFields) {
+
+        clearTimeout(duplicateTimers[field]);
+
+        const duplicate = await checkDuplicate(field);
+
+        if (duplicateStatus[field]) {
+            hasDuplicate = true;
+        }
+    }
+
+    if (hasDuplicate) {
+
+        const firstDuplicate = duplicateFields.find(
+            field => duplicateStatus[field]
+        );
+
+        document.getElementById(firstDuplicate).focus();
+
+        return;
+    }
+
+    // Submit using the actual registration button
+    allowBuyerSubmission = true;
+
+    buyerForm.requestSubmit(
+        buyerForm.querySelector('button[name="register"]')
+    );
+});
+
+    </script>
 </body>
 
 </html>
