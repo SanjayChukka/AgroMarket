@@ -1,33 +1,33 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
-require_login("farmer", "../auth/login.php");
+    require_once __DIR__ . "/../config/auth_check.php";
+    require_login("farmer", "../auth/login.php");
 
-require_once __DIR__ . "/../config/db.php";
+    require_once __DIR__ . "/../config/db.php";
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$farmerId = (int)$_SESSION['user_id'];
+    $farmerId = (int) $_SESSION['user_id'];
 
-require_once __DIR__ . "/../includes/html.php";
+    require_once __DIR__ . "/../includes/html.php";
 
-// ------------------------------------------
-// 1. CSRF token
-// ------------------------------------------
+    // ------------------------------------------
+    // 1. CSRF token
+    // ------------------------------------------
 
-if (empty($_SESSION['order_csrf_token'])) {
+    if (empty($_SESSION['order_csrf_token'])) {
     $_SESSION['order_csrf_token'] = bin2hex(random_bytes(32));
-}
+    }
 
-$csrfToken = $_SESSION['order_csrf_token'];
+    $csrfToken = $_SESSION['order_csrf_token'];
 
-$actionMessage = "";
-$actionType = "";
+    $actionMessage = "";
+    $actionType    = "";
 
-// ------------------------------------------
-// 2. Process Accept / Reject actions
-// ------------------------------------------
+    // ------------------------------------------
+    // 2. Process Accept / Reject actions
+    // ------------------------------------------
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $submittedToken = $_POST['csrf_token'] ?? "";
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         FILTER_VALIDATE_INT
     );
 
-    $action = $_POST['action'] ?? "";
+    $action        = $_POST['action'] ?? "";
     $termsAccepted = $_POST['terms_accepted'] ?? "0";
 
     $transactionStarted = false;
@@ -44,14 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
 
         // Validate CSRF token
-        if (!hash_equals($csrfToken, $submittedToken)) {
+        if (! hash_equals($csrfToken, $submittedToken)) {
             throw new RuntimeException(
                 "Invalid request. Please refresh the page and try again."
             );
         }
 
         // Validate order ID and action
-        if (!$orderId || !in_array($action, ["accept", "reject"], true)) {
+        if (! $orderId || ! in_array($action, ["accept", "reject"], true)) {
             throw new RuntimeException("Invalid order request.");
         }
 
@@ -98,11 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_execute($stmt);
 
         $orderResult = mysqli_stmt_get_result($stmt);
-        $order = mysqli_fetch_assoc($orderResult);
+        $order       = mysqli_fetch_assoc($orderResult);
 
         mysqli_stmt_close($stmt);
 
-        if (!$order) {
+        if (! $order) {
             throw new RuntimeException(
                 "Order not found or you are not authorized to manage it."
             );
@@ -228,8 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ----------------------------------
 
         $orderNumber = $order['order_number'];
-        $cropName = $order['crop_name'];
-        $buyerId = (int)$order['buyer_id'];
+        $cropName    = $order['crop_name'];
+        $buyerId     = (int) $order['buyer_id'];
 
         if ($action === "accept") {
 
@@ -314,61 +314,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Redirect after POST to prevent duplicate submissions
     $_SESSION['order_action_message'] = $actionMessage;
-    $_SESSION['order_action_type'] = $actionType;
+    $_SESSION['order_action_type']    = $actionType;
 
     header("Location: orders.php");
     exit;
-}
+    }
 
-// ------------------------------------------
-// 8. Display message after redirect
-// ------------------------------------------
+    // ------------------------------------------
+    // 8. Display message after redirect
+    // ------------------------------------------
 
-if (isset($_SESSION['order_action_message'])) {
+    if (isset($_SESSION['order_action_message'])) {
 
     $actionMessage = $_SESSION['order_action_message'];
-    $actionType = $_SESSION['order_action_type'] ?? "";
+    $actionType    = $_SESSION['order_action_type'] ?? "";
 
     unset($_SESSION['order_action_message']);
     unset($_SESSION['order_action_type']);
-}
+    }
 
-// ------------------------------------------
-// 9. Fetch farmer profile details
-// ------------------------------------------
+    // ------------------------------------------
+    // 9. Fetch farmer profile details
+    // ------------------------------------------
 
-$profileSql = "SELECT full_name, email, mobile
+    $profileSql = "SELECT full_name, email, mobile
                FROM users
                WHERE user_id = ?
                AND role = 'farmer'
                LIMIT 1";
 
-$stmt = mysqli_prepare($link, $profileSql);
+    $stmt = mysqli_prepare($link, $profileSql);
 
-mysqli_stmt_bind_param($stmt, "i", $farmerId);
+    mysqli_stmt_bind_param($stmt, "i", $farmerId);
 
-mysqli_stmt_execute($stmt);
+    mysqli_stmt_execute($stmt);
 
-$profileResult = mysqli_stmt_get_result($stmt);
-$farmer = mysqli_fetch_assoc($profileResult) ?: [];
+    $profileResult = mysqli_stmt_get_result($stmt);
+    $farmer        = mysqli_fetch_assoc($profileResult) ?: [];
 
-mysqli_stmt_close($stmt);
+    mysqli_stmt_close($stmt);
 
-$farmerName = $farmer['full_name'] ?? "Farmer";
-$farmerEmail = $farmer['email'] ?? "Email not provided";
-$farmerMobile = $farmer['mobile'] ?? "Mobile not provided";
+    // ------------------------------------------
+    // 10. Fetch order summary
+    // ------------------------------------------
 
-$avatarInitial = strtoupper(substr(trim($farmerName), 0, 1));
-
-if ($avatarInitial === "") {
-    $avatarInitial = "F";
-}
-
-// ------------------------------------------
-// 10. Fetch order summary
-// ------------------------------------------
-
-$summarySql = "SELECT
+    $summarySql = "SELECT
                    COUNT(*) AS total_orders,
 
                    COALESCE(
@@ -386,30 +376,30 @@ $summarySql = "SELECT
                FROM orders
                WHERE farmer_id = ?";
 
-$stmt = mysqli_prepare($link, $summarySql);
+    $stmt = mysqli_prepare($link, $summarySql);
 
-mysqli_stmt_bind_param($stmt, "i", $farmerId);
+    mysqli_stmt_bind_param($stmt, "i", $farmerId);
 
-mysqli_stmt_execute($stmt);
+    mysqli_stmt_execute($stmt);
 
-$summaryResult = mysqli_stmt_get_result($stmt);
+    $summaryResult = mysqli_stmt_get_result($stmt);
 
-$orderSummary = mysqli_fetch_assoc($summaryResult) ?: [
-    "total_orders" => 0,
-    "pending_orders" => 0,
+    $orderSummary = mysqli_fetch_assoc($summaryResult) ?: [
+    "total_orders"    => 0,
+    "pending_orders"  => 0,
     "accepted_orders" => 0,
-    "rejected_orders" => 0
-];
+    "rejected_orders" => 0,
+    ];
 
-mysqli_stmt_close($stmt);
+    mysqli_stmt_close($stmt);
 
-// ------------------------------------------
-// 11. Fetch received orders
-// ------------------------------------------
+    // ------------------------------------------
+    // 11. Fetch received orders
+    // ------------------------------------------
 
-$orders = [];
+    $orders = [];
 
-$ordersSql = "SELECT
+    $ordersSql = "SELECT
                   o.order_id,
                   o.order_number,
                   o.quantity,
@@ -434,19 +424,19 @@ $ordersSql = "SELECT
 
               ORDER BY o.placed_at DESC, o.order_id DESC";
 
-$stmt = mysqli_prepare($link, $ordersSql);
+    $stmt = mysqli_prepare($link, $ordersSql);
 
-mysqli_stmt_bind_param($stmt, "i", $farmerId);
+    mysqli_stmt_bind_param($stmt, "i", $farmerId);
 
-mysqli_stmt_execute($stmt);
+    mysqli_stmt_execute($stmt);
 
-$ordersResult = mysqli_stmt_get_result($stmt);
+    $ordersResult = mysqli_stmt_get_result($stmt);
 
-while ($row = mysqli_fetch_assoc($ordersResult)) {
+    while ($row = mysqli_fetch_assoc($ordersResult)) {
     $orders[] = $row;
-}
+    }
 
-mysqli_stmt_close($stmt);
+    mysqli_stmt_close($stmt);
 
 ?>
 
@@ -468,55 +458,11 @@ mysqli_stmt_close($stmt);
 
     <!-- Header -->
 
-    <header class="farmer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <?php
-    $activePage = "";
-    require __DIR__ . "/includes/navigation.php";
+    <?php
+        $activePage   = "orders.php";
+        $headerFarmer = $farmer;
+        require __DIR__ . "/includes/header.php";
     ?>
-
-        <div class="header-right">
-
-            <a href="../auth/logout.php" class="logout-link">
-                Logout
-            </a>
-
-            <div class="profile-menu">
-
-                <button
-                    type="button"
-                    class="profile-avatar"
-                    id="profileToggle"
-                    aria-expanded="false">
-
-                    <?php echo e($avatarInitial); ?>
-
-                </button>
-
-                <div class="profile-popup" id="profilePopup">
-
-                    <div class="popup-avatar">
-                        <?php echo e($avatarInitial); ?>
-                    </div>
-
-                    <h3><?php echo e($farmerName); ?></h3>
-
-                    <p><?php echo e($farmerEmail); ?></p>
-                    <p><?php echo e($farmerMobile); ?></p>
-
-                    <a href="profile.php">View Profile</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
 
     <!-- Main Content -->
 
@@ -531,8 +477,8 @@ mysqli_stmt_close($stmt);
         <?php if ($actionMessage !== ""): ?>
 
             <div class="<?php echo $actionType === 'success'
-                ? 'success-message'
-                : 'error-message'; ?>">
+                            ? 'success-message'
+                            : 'error-message'; ?>">
 
                 <?php echo e($actionMessage); ?>
 
@@ -546,22 +492,22 @@ mysqli_stmt_close($stmt);
 
             <div>
                 <h3>Total Orders</h3>
-                <p><?php echo (int)$orderSummary['total_orders']; ?></p>
+                <p><?php echo (int) $orderSummary['total_orders']; ?></p>
             </div>
 
             <div>
                 <h3>Pending</h3>
-                <p><?php echo (int)$orderSummary['pending_orders']; ?></p>
+                <p><?php echo (int) $orderSummary['pending_orders']; ?></p>
             </div>
 
             <div>
                 <h3>Accepted</h3>
-                <p><?php echo (int)$orderSummary['accepted_orders']; ?></p>
+                <p><?php echo (int) $orderSummary['accepted_orders']; ?></p>
             </div>
 
             <div>
                 <h3>Rejected</h3>
-                <p><?php echo (int)$orderSummary['rejected_orders']; ?></p>
+                <p><?php echo (int) $orderSummary['rejected_orders']; ?></p>
             </div>
 
         </section>
@@ -593,7 +539,7 @@ mysqli_stmt_close($stmt);
 
                     <tbody id="ordersTable">
 
-                        <?php if (!empty($orders)): ?>
+                        <?php if (! empty($orders)): ?>
 
                             <?php foreach ($orders as $order): ?>
 
@@ -617,39 +563,38 @@ mysqli_stmt_close($stmt);
                                     </td>
 
                                     <td>
-                                        ₹<?php echo number_format((float)$order['subtotal'], 2); ?>
+                                        ₹<?php echo number_format((float) $order['subtotal'], 2); ?>
                                     </td>
 
                                     <td>
                                         <?php
-                                        echo !empty($order['placed_at'])
-                                            ? e(date("d-m-Y", strtotime($order['placed_at'])))
-                                            : "Not available";
+                                            echo ! empty($order['placed_at'])
+                                                ? e(date("d-m-Y", strtotime($order['placed_at'])))
+                                                : "Not available";
                                         ?>
                                     </td>
 
                                     <td class="status-cell">
 
                                         <?php
-                                        $statusLabels = [
-                                            "pending" => "Pending",
-                                            "accepted" => "Accepted",
-                                            "rejected" => "Rejected",
-                                            "cancelled" => "Cancelled",
-                                            "completed" => "Completed"
-                                        ];
+                                            $statusLabels = [
+                                                "pending"   => "Pending",
+                                                "accepted"  => "Accepted",
+                                                "rejected"  => "Rejected",
+                                                "cancelled" => "Cancelled",
+                                                "completed" => "Completed",
+                                            ];
 
-                                        echo e(
-                                            $statusLabels[$order['order_status']]
-                                            ?? $order['order_status']
-                                        );
+                                            echo e(
+                                                $statusLabels[$order['order_status']] ?? $order['order_status']
+                                            );
                                         ?>
 
                                     </td>
 
                                     <td class="action-cell">
 
-                                        <a href="order_details.php?id=<?php echo (int)$order['order_id']; ?>">
+                                        <a href="order_details.php?id=<?php echo (int) $order['order_id']; ?>">
                                             View
                                         </a>
 
@@ -657,7 +602,7 @@ mysqli_stmt_close($stmt);
 
                                             <button
                                                 type="button"
-                                                data-order-id="<?php echo (int)$order['order_id']; ?>" data-order-action="accept">
+                                                data-order-id="<?php echo (int) $order['order_id']; ?>" data-order-action="accept">
 
                                                 Accept
 
@@ -665,7 +610,7 @@ mysqli_stmt_close($stmt);
 
                                             <button
                                                 type="button"
-                                                data-order-id="<?php echo (int)$order['order_id']; ?>" data-order-action="reject">
+                                                data-order-id="<?php echo (int) $order['order_id']; ?>" data-order-action="reject">
 
                                                 Reject
 
@@ -794,7 +739,6 @@ mysqli_stmt_close($stmt);
 
     <script src="js/orders.js" defer></script>
 
-<script src="../js/profile-menu.js" defer></script>
 </body>
 
 </html>

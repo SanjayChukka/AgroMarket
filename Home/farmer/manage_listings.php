@@ -37,15 +37,6 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     mysqli_stmt_close($stmt);
 
-    $farmerName   = $farmer['full_name'] ?? ($_SESSION['full_name'] ?? "Farmer");
-    $farmerEmail  = $farmer['email'] ?? "Email not provided";
-    $farmerMobile = $farmer['mobile'] ?? "Mobile not provided";
-
-    $avatarInitial = strtoupper(substr(trim($farmerName), 0, 1));
-
-    if ($avatarInitial === "") {
-    $avatarInitial = "F";
-    }
 
     // ------------------------------------------
     // 3. Process listing actions
@@ -308,49 +299,11 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <!-- Header -->
-    <header class="farmer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <?php
-    $activePage = "";
-    require __DIR__ . "/includes/navigation.php";
+    <?php
+    $activePage = "manage_listings.php";
+    $headerFarmer = $farmer;
+    require __DIR__ . "/includes/header.php";
     ?>
-
-        <div class="header-right">
-
-            <a href="../auth/logout.php" class="logout-link">Logout</a>
-
-            <div class="profile-menu">
-
-                <button type="button" class="profile-avatar"
-                    id="profileToggle" aria-expanded="false">
-
-                    <?php echo e($avatarInitial); ?>
-
-                </button>
-
-                <div class="profile-popup" id="profilePopup">
-
-                    <div class="popup-avatar">
-                        <?php echo e($avatarInitial); ?>
-                    </div>
-
-                    <h3><?php echo e($farmerName); ?></h3>
-                    <p><?php echo e($farmerEmail); ?></p>
-                    <p><?php echo e($farmerMobile); ?></p>
-
-                    <a href="profile.php">View Profile</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
 
     <!-- Main Content -->
     <main class="listings-container">
@@ -645,7 +598,6 @@ require_once __DIR__ . "/../config/auth_check.php";
     <!-- Profile Popup -->
 
 
-<script src="../js/profile-menu.js" defer></script>
 <script src="js/manage_listings.js" defer></script>
 </body>
 

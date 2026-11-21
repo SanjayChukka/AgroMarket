@@ -16,7 +16,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     /* Farmer details */
     $stmt = $link->prepare("
-    SELECT full_name
+    SELECT full_name, email, mobile
     FROM users
     WHERE user_id = ? AND role = 'farmer'
 ");
@@ -103,37 +103,11 @@ require_once __DIR__ . "/../config/auth_check.php";
 
 <body>
 
-    <header class="farmer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <nav class="farmer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="manage_listings.php">Manage Listings</a>
-            <a href="orders.php" class="active">Orders</a>
-        </nav>
-
-        <div class="header-right">
-
-            <div class="profile-menu">
-
-                <span class="profile-avatar">
-                    <?php echo e(strtoupper(substr($farmer['full_name'] ?? 'F', 0, 1))) ?>
-                </span>
-
-                <div class="profile-popup">
-                    <p><?php echo e($farmer['full_name'] ?? 'Farmer') ?></p>
-                    <a href="profile.php">My Profile</a>
-                    <a href="../auth/logout.php">Logout</a>
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
+    <?php
+    $activePage = "orders.php";
+    $headerFarmer = $farmer;
+    require __DIR__ . "/includes/header.php";
+    ?>
 
 
     <main class="order-details-container">

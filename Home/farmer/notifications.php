@@ -16,6 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $unreadCount = unreadNotificationCount($link, $userId);
 $notifications = notificationsForUser($link, $userId);
+$stmt = $link->prepare("SELECT full_name, email, mobile FROM users WHERE user_id = ?");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$farmer = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
 function farmerNotificationIcon($type) {
 
@@ -72,75 +77,11 @@ function farmerNotificationClass($type) {
 <body>
 
     <!-- Header -->
-    <header class="farmer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <nav class="farmer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="manage_listings.php">My Listings</a>
-            <a href="orders.php">Orders</a>
-            <a href="notifications.php" class="active">
-                Notifications
-
-                <?php if ($unreadCount > 0): ?>
-                    <span class="notification-nav-count">
-                        <?php echo $unreadCount; ?>
-                    </span>
-                <?php endif; ?>
-
-            </a>
-        </nav>
-
-        <div class="header-right">
-
-            <a href="../auth/logout.php" class="logout-link">
-                Logout
-            </a>
-
-            <div class="profile-menu">
-
-                <button
-                    type="button"
-                    class="profile-avatar"
-                    id="profileToggle"
-                    aria-label="Open profile details"
-                    aria-expanded="false">
-                    <?php
-                    echo strtoupper(
-                        substr($_SESSION['full_name'] ?? 'F', 0, 1)
-                    );
-                    ?>
-                </button>
-
-                <div class="profile-popup" id="profilePopup">
-
-                    <div class="popup-avatar">
-                        <?php
-                        echo strtoupper(
-                            substr($_SESSION['full_name'] ?? 'F', 0, 1)
-                        );
-                        ?>
-                    </div>
-
-                    <h3>
-                        <?php echo htmlspecialchars(
-                            $_SESSION['full_name'] ?? 'Farmer'
-                        ); ?>
-                    </h3>
-
-                    <a href="profile.php">View Profile</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
+    <?php
+    $activePage = "notifications.php";
+    $headerFarmer = $farmer;
+    require __DIR__ . "/includes/header.php";
+    ?>
 
     <!-- Main Content -->
     <main class="farmer-notifications-container">
@@ -308,6 +249,5 @@ function farmerNotificationClass($type) {
     <!-- Profile Dropdown -->
 
 
-<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>

@@ -442,39 +442,11 @@ require_once __DIR__ . "/../config/auth_check.php";
 
 <body>
 
-    <header class="farmer-header">
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <?php
-    $activePage = "";
-    require __DIR__ . "/includes/navigation.php";
+    <?php
+    $activePage = "profile.php";
+    $headerFarmer = $form;
+    require __DIR__ . "/includes/header.php";
     ?>
-
-        <div class="header-right">
-            <a href="../auth/logout.php" class="logout-link">Logout</a>
-
-            <div class="profile-menu">
-                <button type="button" class="profile-avatar"
-                    id="profileToggle" aria-label="Open profile details"
-                    aria-expanded="false">
-                    <?php echo e($profileInitial) ?>
-                </button>
-
-                <div class="profile-popup" id="profilePopup">
-                    <div class="popup-avatar">
-                        <?php echo e($profileInitial) ?>
-                    </div>
-
-                    <h3><?php echo e($form['full_name']) ?></h3>
-                    <p><?php echo e($form['email']) ?></p>
-                    <p><?php echo e($form['mobile']) ?></p>
-                    <a href="profile.php">View Profile</a>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="profile-container">
 
@@ -642,6 +614,5 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     <script src="js/profile.js" defer></script>
 
-<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>
