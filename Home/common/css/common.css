@@ -1,3 +1,5 @@
+@import url("../../styles/theme.css");
+
 /* General */
 * {
     box-sizing: border-box;
@@ -760,5 +762,83 @@ a {
 @media (max-width: 768px) {
     .grievance-container {
         grid-template-columns: 1fr;
+    }
+}
+
+.navbar {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.navbar .logo a {
+    font: bold 1.45rem Georgia, serif;
+    color: var(--forest);
+}
+
+.nav-links,
+.nav-actions {
+    padding: 0;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.common-hero,
+.about-hero {
+    background: var(--forest);
+    color: #e3ede2;
+}
+
+.common-hero h1,
+.about-hero h1 {
+    margin: 0;
+    color: #fff7df;
+}
+
+.common-hero p,
+.about-hero p {
+    margin: .85rem auto 0;
+    max-width: 62ch;
+}
+
+.common-section,
+.about-section,
+.mission-vision {
+    max-width: 1280px;
+    margin-inline: auto;
+}
+
+.common-cta,
+.about-cta {
+    background: var(--wash);
+}
+
+.common-section h3 {
+    margin-top: 0;
+}
+
+.market-price {
+    color: var(--leaf);
+    font-weight: 700;
+}
+
+.cta-actions {
+    flex-wrap: wrap;
+}
+
+.error-number {
+    color: var(--leaf);
+}
+
+@media (max-width: 540px) {
+
+    .objectives-container,
+    .benefits-container {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+        gap: .6rem 1rem;
     }
 }

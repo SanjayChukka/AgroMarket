@@ -1,12 +1,6 @@
+@import url("../styles/theme.css");
+
 :root {
-    --forest: #153e36;
-    --leaf: #256859;
-    --cream: #f6f5ef;
-    --paper: #fffefa;
-    --ochre: #e6af5b;
-    --ink: #22382f;
-    --soft: #53695f;
-    --line: #d8dfd4;
     font: 16px/1.5 "Segoe UI", Arial, sans-serif;
     color: var(--ink);
     background: var(--cream);
@@ -523,5 +517,26 @@ dd {
 
     .top {
         padding-block: 9px
+    }
+}
+
+a.metric:focus-visible,
+a.metric:hover {
+    box-shadow: 0 4px 16px rgb(21 62 54 / 12%);
+}
+
+button.secondary:hover {
+    background: var(--wash);
+    color: var(--forest);
+}
+
+.pager,
+.filters {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 460px) {
+    .mix {
+        flex-wrap: wrap;
     }
 }

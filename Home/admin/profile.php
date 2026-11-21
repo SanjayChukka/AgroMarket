@@ -10,9 +10,11 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     checkPost();
     if (isset($_POST['photo'])) {
+
         $file = $_FILES['portrait'] ?? [];
         $tmp  = $file['tmp_name'] ?? '';
         $info = is_uploaded_file($tmp) ? @getimagesize($tmp) : false;
+
         if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || ! $info ||
             $file['size'] > 2 * 1024 * 1024 || $info[0] * $info[1] > 8000000 ||
             ! in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {

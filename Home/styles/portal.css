@@ -1,0 +1,278 @@
+body :is(.farmer-header, .buyer-header) {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: .8rem 1.5rem;
+}
+
+.header-left h2 {
+    font-size: 1.5rem;
+}
+
+body :is(.farmer-nav, .buyer-nav) {
+    flex-wrap: wrap;
+    gap: .3rem .55rem;
+}
+
+:is(.farmer-nav, .buyer-nav) a {
+    padding: .45rem .65rem;
+    border-radius: 7px;
+    color: var(--forest);
+}
+
+:is(.farmer-nav, .buyer-nav) a.active {
+    background: var(--wash);
+    font-weight: 650;
+}
+
+body .profile-avatar {
+    padding: 0;
+    background: var(--forest);
+    color: #ffe5af;
+}
+
+body .popup-avatar {
+    background: var(--wash);
+    color: var(--forest);
+}
+
+body .welcome-section {
+    padding: clamp(1.4rem, 3vw, 2.8rem);
+    border: 0;
+    border-radius: 16px;
+    background: var(--forest);
+    color: #e7f0e4;
+}
+
+.welcome-section h1 {
+    color: #fff8e7;
+}
+
+body .welcome-section a {
+    background: #efd094;
+    color: var(--forest);
+    border-color: transparent;
+}
+
+body :is(.action-card, .buyer-crop-card, .crop-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-color: var(--line);
+    border-radius: 14px;
+}
+
+body :is(.action-card, .buyer-crop-card, .crop-card)>a:last-child {
+    margin-top: auto;
+    font-weight: 650;
+}
+
+body :is(.summary-card, .listing-summary > div, .order-summary > div, .buyer-summary > div) {
+    border: 1px solid var(--line);
+    border-top: 3px solid #8ca783;
+    border-radius: 12px;
+}
+
+body :is(.summary-card, .listing-summary, .order-summary, .buyer-summary) p {
+    font-size: 1.35rem;
+    color: var(--forest);
+}
+
+body :is(.buyer-content-section, .order-details-section, .buyer-profile-section, .add-crop-container section, .profile-container section) {
+    padding: clamp(1rem, 2vw, 1.6rem);
+    margin-block: 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.table-wrapper {
+    max-width: 100%;
+}
+
+body .table-wrapper table {
+    background: var(--paper);
+}
+
+body .table-wrapper :is(th, td) {
+    border: 0;
+    border-bottom: 1px solid var(--line);
+}
+
+body .table-wrapper th {
+    background: #e3ebdf;
+    color: var(--forest);
+    font-size: .9rem;
+}
+
+body :is(.farmer-notifications-container, .buyer-notifications-container) {
+    width: min(92%, 1050px);
+    margin: 2rem auto;
+}
+
+.notification-list {
+    display: grid;
+    gap: 12px;
+}
+
+body .notification-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.15rem;
+    background: var(--paper);
+    border-color: var(--line);
+}
+
+body .notification-card.unread {
+    background: #edf5e9;
+    border-left: 4px solid var(--leaf);
+}
+
+.notification-card .notification-content {
+    flex: 1 1 14rem;
+    min-width: 0;
+}
+
+.notification-heading,
+.notification-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block: 1rem;
+}
+
+.notification-summary {
+    color: var(--forest);
+}
+
+body .notification-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+}
+
+body .table-wrapper,
+.order-info-grid>*,
+.buyer-info-grid>* {
+    min-width: 0;
+}
+
+:is(.listing-filters, .order-filters, .buyer-filter-section, .crop-search-section, .farmer-search-section) form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+
+:is(.crop-search-section, .farmer-search-section) form {
+    margin-block: 1.25rem 2rem;
+    padding: 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+:is(.crop-search-section, .farmer-search-section) :is(input, select) {
+    flex: 1 1 10rem;
+}
+
+body .buyer-crop-grid {
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    margin-block: 1rem;
+}
+
+.buyer-crop-card {
+    padding: 1rem;
+    gap: .5rem;
+}
+
+.buyer-crop-card :is(.crop-image, .crop-image-placeholder) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: grid;
+    place-items: center;
+}
+
+img.crop-large-image {
+    object-fit: cover;
+}
+
+body .form-error,
+body .error-message {
+    color: #942d28;
+}
+
+body .success-message {
+    color: var(--leaf);
+}
+
+body>footer {
+    padding: 1.5rem 5%;
+    text-align: center;
+}
+
+@media (hover: hover) {
+    :is(.farmer-nav, .buyer-nav) a:hover {
+        background: var(--wash);
+        text-decoration: underline;
+    }
+
+    .table-wrapper tbody tr:hover {
+        background: #f3f6f0;
+    }
+
+    body .welcome-section a:hover {
+        background: #ffe1a5;
+        color: var(--forest);
+    }
+}
+
+@media (min-width: 1500px) {
+    body main {
+        max-width: 1400px;
+        margin-inline: auto;
+    }
+}
+
+@media (max-width: 760px) {
+    body :is(.farmer-header, .buyer-header) {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    body :is(.farmer-nav, .buyer-nav) {
+        order: 3;
+        flex: 1 0 100%;
+        justify-content: flex-start;
+    }
+
+    .form-actions,
+    .listing-filters,
+    .confirmation-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 760px) {
+    body .header-right {
+        margin-inline-start: auto;
+    }
+}
+
+body .notification-bell {
+    border-radius: 50%;
+    text-decoration: none;
+}
+
+@media (hover: hover) {
+    body .notification-bell:hover {
+        background: var(--wash);
+    }
+}

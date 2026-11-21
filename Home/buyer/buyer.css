@@ -1,3 +1,6 @@
+@import url("../styles/theme.css");
+@import url("../styles/portal.css");
+
 /* Basic Reset */
 
 * {
@@ -538,6 +541,7 @@ footer {
 }
 
 @media (max-width: 900px) {
+
     .buyer-crop-grid,
     .farmer-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -553,6 +557,7 @@ footer {
 }
 
 @media (max-width: 600px) {
+
     .buyer-crop-grid,
     .farmer-grid,
     .buyer-summary,
@@ -876,4 +881,18 @@ footer {
         min-width: 0;
     }
 
+}
+
+@media (max-width: 600px) {
+
+    .buyer-summary,
+    .action-grid,
+    .crop-grid,
+    .farmer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header-right .profile-popup {
+        width: min(65vw, 230px);
+    }
 }

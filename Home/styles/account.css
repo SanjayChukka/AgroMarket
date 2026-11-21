@@ -1,0 +1,44 @@
+body:has(.register-page, .registration-page, .login-page, .auth-container, .password-page) {
+    background: linear-gradient(155deg, #e1ebdd, var(--cream) 56%, #eee6d5);
+    min-height: 100vh;
+}
+
+body :is(.register-container, .registration-container, .login-container, .auth-container, .password-container) {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--leaf);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgb(21 62 54 / 9%);
+}
+
+body :is(.register-header, .registration-header, .login-header, .password-header) .logo {
+    background: var(--forest);
+    color: #ffe1a3;
+    border-radius: 14px 4px;
+    font-weight: bold;
+}
+
+.registration-form h3 {
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.form-group {
+    min-width: 0;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.role-card a {
+    margin-top: auto;
+}
+
+@media (max-width: 460px) {
+
+    .login-options,
+    .radio-options {
+        flex-wrap: wrap;
+    }
+}
