@@ -73,33 +73,10 @@ $notifications = notificationsForUser($link, $userId);
 <body>
 
     <!-- Header -->
-    <header class="buyer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <nav class="buyer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="browse_crops.php">Browse Crops</a>
-            <a href="my_orders.php">My Orders</a>
-            <a href="notifications.php" class="active">
-                Notifications
-                <?php if ($unreadCount > 0): ?>
-                    <span class="notification-nav-count">
-                        <?php echo $unreadCount; ?>
-                    </span>
-                <?php endif; ?>
-            </a>
-        </nav>
-
-        <div class="header-right">
-            <a href="../auth/logout.php" class="logout-link">
-                Logout
-            </a>
-        </div>
-
-    </header>
+    <?php
+    $activePage = "notifications.php";
+    require __DIR__ . "/includes/header.php";
+    ?>
 
     <!-- Main Content -->
     <main class="buyer-notifications-container">

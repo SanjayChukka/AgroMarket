@@ -1,844 +1,785 @@
-@import url("../../styles/theme.css");
+:root {
+    --forest: #153e36;
+    --leaf: #256859;
+    --cream: #f6f5ef;
+    --paper: #fffefa;
+    --ochre: #e6af5b;
+    --ink: #22382f;
+    --soft: #53695f;
+    --line: #d8dfd4;
+    --wash: #eaf1e7;
+    --shadow: 0 4px 16px rgb(21 62 54 / 6%);
+}
 
-/* General */
+html {
+    color-scheme: light;
+}
+
+html body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--cream);
+    overflow-wrap: break-word;
+}
+
+h1,
+h2 {
+    color: var(--forest);
+    font-family: Georgia, Cambria, serif;
+    font-weight: 500;
+    line-height: 1.17;
+    letter-spacing: -.025em;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3.3rem);
+}
+
+h2 {
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+h3 {
+    line-height: 1.3;
+    color: var(--forest);
+}
+
+a {
+    color: var(--leaf);
+    text-underline-offset: .2em;
+}
+
+img {
+    max-width: 100%;
+}
+
+input,
+button,
+select,
+textarea {
+    font: inherit;
+}
+
+input:not([type=checkbox], [type=radio], [type=hidden]),
+select,
+textarea {
+    min-width: 0;
+    max-width: 100%;
+    border: 1px solid #82998c;
+    border-radius: 8px;
+    color: var(--ink);
+    background-color: white;
+    padding: .6em .8em;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    accent-color: var(--leaf);
+}
+
+textarea {
+    resize: vertical;
+}
+
+button,
+.cta-actions a,
+.nav-actions a:last-child,
+.navbar>a:last-child,
+.welcome-section a,
+.role-card a,
+.add-crop-link {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: var(--leaf);
+    color: white;
+    font-weight: 600;
+    padding: .6em 1em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .55;
+    cursor: default;
+}
+
+:focus-visible {
+    outline: 3px solid #ad710e;
+    outline-offset: 3px;
+}
+
+@media (hover: hover) {
+    a:hover {
+        text-decoration: underline;
+    }
+
+    button:enabled:hover,
+    .cta-actions a:hover,
+    .role-card a:hover,
+    .welcome-section a:hover,
+    .add-crop-link:hover,
+    .nav-actions a:last-child:hover,
+    .navbar>a:last-child:hover {
+        background-color: var(--forest);
+        color: white;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+    a,
+    button {
+        transition: background-color .16s, color .16s, border-color .16s;
+    }
+}
+
+:is(.feature-card, .process-card, .crop-card, .listing-card, .role-card, .content-card,
+    .objective-card, .benefit-card, .partner-card, .market-card, .help-card, .role-process-card,
+    .faq-item, .issue-item, .benefit-item, .guideline-item, .grievance-step, .help-step,
+    .privacy-item, .policy-item, .terms-item, .contact-form-container, .contact-detail,
+    .grievance-form-container, .buyer-crop-card, .farmer-card, .summary-card, .action-card,
+    .notification-card, .notification-empty, .order-details-section, .buyer-content-section),
+:is(.order-summary, .buyer-summary, .listing-summary)>div {
+    min-width: 0;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+@media (hover: hover) {
+    body :is(.action-card, .buyer-crop-card, .crop-card, .listing-card, .role-card, .help-card):has(a):hover {
+        border-color: #84a18e;
+        box-shadow: 0 6px 18px rgb(21 62 54 / 11%);
+    }
+}
+
+body footer {
+    background: var(--forest);
+    color: #e8f0e6;
+}
+
+body footer :is(h2, h3, h4) {
+    color: #fff8e7;
+}
+
+body footer a {
+    color: #ebce92;
+}
+
+body :is(.crop-image-placeholder, .crop-image, .listing-image, .farmer-image-placeholder) {
+    background: var(--wash);
+    color: var(--soft);
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.crop-image img,
+.listing-image img,
+img.crop-image,
+.market-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* Basic Reset */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+    width: 100%;
 }
 
 /* Header */
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .navbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 20px 5%;
-}
-
-.nav-links {
-    display: flex;
     gap: 25px;
-    list-style: none;
 }
 
-.nav-actions {
+/* Hero Section */
+.hero {
+    width: 100%;
+    min-height: 440px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 35px;
+}
+
+.hero-content {
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 18px;
+}
+
+.hero h1 {
+    display: flex;
+    flex-direction: column;
+}
+
+.description {
+    max-width: 550px;
+    line-height: 1.6;
+}
+
+/* Hero Buttons */
+.hero-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 15px;
 }
 
-/* Common links */
-a {
-    text-decoration: none;
-}
-
-/* About Hero */
-.about-hero {
-    text-align: center;
-    padding: 60px 20px;
-}
-
-/* Common sections */
-.about-section {
-    padding: 40px 5%;
-}
-
-.section-content {
-    max-width: 1000px;
-    margin: auto;
-}
-
-/* Mission and Vision */
-.mission-vision {
-    display: flex;
-    gap: 25px;
-    padding: 30px 5%;
-}
-
-.content-card {
-    flex: 1;
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-/* Objectives */
-.objectives-container {
+/* Statistics */
+.statistics {
+    width: 100%;
+    max-width: 850px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    margin-top: 25px;
-}
-
-.objective-card {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-/* Benefits */
-.benefits-container {
-    display: flex;
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.benefit-card {
-    flex: 1;
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-/* CTA */
-.about-cta {
     text-align: center;
-    padding: 50px 20px;
 }
 
-.cta-actions {
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Features Section */
+.features {
+    width: 100%;
+    padding: 60px 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+}
+
+/* Features Heading */
+.section-heading {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+/* Feature Cards */
+.features-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    padding: 25px;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* After the WHY CHOOSE US */
+
+/* Common Section Heading */
+.section-heading {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    /* text-align: center; */
+    gap: 12px;
+}
+
+/* Featured Crops */
+.featured-crops {
+    width: 100%;
+    padding: 50px 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.crops-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.crop-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.crop-image {
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* How It Works */
+.how-it-works {
+    width: 100%;
+    padding: 50px 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.process-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.process-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.process-icon {
+    width: 55px;
+    height: 55px;
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 25px;
+    align-items: center;
 }
+
+/* Latest Listings */
+.latest-listings {
+    width: 100%;
+    padding: 50px 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.listings-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.listing-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.listing-image {
+    width: 40%;
+    min-height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.listing-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Join Section */
+.join-section {
+    width: 100%;
+    padding: 60px 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.join-content {
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.join-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Footer Part Styling */
 
 /* Footer */
 .footer {
-    padding: 40px 5% 20px;
-}
-
-.footer-content {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 30px;
+    row-gap: 30px;
+    padding: 40px 5%;
 }
 
-.footer-content div {
+/* Individual Footer Sections */
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Footer Headings */
+.foot-head {
+    margin-bottom: 5px;
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.footer-bottom {
-    text-align: center;
-    margin-top: 30px;
+.footer-links li {
+    display: block;
 }
 
-/* Responsive layout */
+.footer-links a {
+    text-decoration: none;
+}
+
+/* Contact */
+.contact {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact address {
+    line-height: 1.6;
+}
+
+/* Social Media */
+.social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+}
+
+
+/* Responsive Layout */
 @media (max-width: 768px) {
 
-    .navbar {
-        flex-wrap: wrap;
+    .header {
+        flex-direction: column;
         gap: 20px;
     }
 
-    .nav-links {
+    .navbar {
         flex-wrap: wrap;
+        justify-content: center;
     }
 
-    .mission-vision,
-    .benefits-container {
-        flex-direction: column;
-    }
-
-    .objectives-container {
+    .statistics {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .footer-content {
+    .features-container {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 480px) {
 
-    .objectives-container,
-    .footer-content {
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .features-container {
         grid-template-columns: 1fr;
     }
 
-    .cta-actions {
-        flex-direction: column;
+    .navbar {
+        gap: 12px;
     }
 }
 
-/* How its Work */
-
-/* Common Hero */
-.common-hero {
-    text-align: center;
-    padding: 60px 20px;
+/* Responsive */
+@media (max-width: 900px) {
+    .footer {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-/* Common Sections */
-.common-section {
-    padding: 40px 5%;
+@media (max-width: 600px) {
+    .footer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-bottom {
+        grid-column: 1 / -1;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
 }
 
-/* General Process */
-.process-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.process-card {
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-/* Farmer and Buyer Process */
-.role-process-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin: 25px 0;
-}
-
-.role-process-card {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-/* CTA */
-.common-cta {
-    text-align: center;
-    padding: 50px 20px;
-}
-
-.common-cta .cta-actions {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 25px;
+@media (max-width: 400px) {
+    .footer {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
 
+    .crops-container,
     .process-container {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .role-process-container {
-        grid-template-columns: repeat(2, 1fr);
+    .listings-container {
+        grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
 
-    .process-container,
-    .role-process-container {
+    .crops-container,
+    .process-container {
         grid-template-columns: 1fr;
     }
 
-    .common-cta .cta-actions {
+    .listing-card {
+        flex-direction: column;
+    }
+
+    .listing-image {
+        width: 100%;
+    }
+
+    .join-buttons {
         flex-direction: column;
     }
 }
 
-/* FAQ Styling */
-
-/* FAQ */
-.faq-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 25px;
+.header,
+.features,
+.featured-crops,
+.how-it-works,
+.latest-listings,
+.footer {
+    padding-inline: max(5%, calc((100% - 1200px) / 2));
 }
 
-.faq-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.faq-item h3 {
-    margin-top: 0;
-}
-
-.faq-item p {
-    margin-bottom: 0;
-}
-
-/* Help & Support Styling */
-
-/* Help & Support */
-.help-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.help-card {
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-.help-card a {
-    display: inline-block;
-    margin-top: 10px;
-}
-
-.help-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 25px;
-}
-
-.help-step {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.issue-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 25px;
-}
-
-.issue-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-
-    .help-container,
-    .issue-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Contact Page */
-
-/* Contact Page */
-.contact-container {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 40px;
-    align-items: start;
-}
-
-.contact-info,
-.contact-form-container {
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-.contact-detail {
-    margin-top: 25px;
-}
-
-.contact-form-container form {
-    margin-top: 20px;
-}
-
-.contact-form-container .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 18px;
-}
-
-.contact-form-container input,
-.contact-form-container select,
-.contact-form-container textarea {
-    width: 100%;
-    padding: 12px;
-    font-family: inherit;
-}
-
-.contact-form-container button {
-    padding: 12px;
-    cursor: pointer;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .contact-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Terms & Condition Page */
-
-/* Terms and Conditions Page */
-
-.terms-container {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.terms-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.terms-item h2 {
-    margin-top: 0;
-}
-
-.terms-item p,
-.terms-item li {
-    line-height: 1.7;
-}
-
-.terms-item ul {
-    padding-left: 25px;
-}
-
-/* Privacy Policy Page*/
-
-/* Privacy Policy Page */
-
-.privacy-container {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.privacy-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.privacy-item h2 {
-    margin-top: 0;
-}
-
-.privacy-item p,
-.privacy-item li {
-    line-height: 1.7;
-}
-
-.privacy-item ul {
-    padding-left: 25px;
-}
-
-/* 404 Error Page */
-
-/* 404 Error Page */
-
-.error-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-}
-
-.error-container {
-    width: 100%;
-    max-width: 800px;
-    text-align: center;
-}
-
-.error-logo {
-    margin-bottom: 60px;
-}
-
-.error-logo a {
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.error-number {
-    font-size: 150px;
-    font-weight: bold;
-    line-height: 1;
-    margin-bottom: 20px;
-}
-
-.error-content h1 {
-    font-size: 36px;
-    margin-bottom: 15px;
-}
-
-.error-content p {
-    max-width: 550px;
-    margin: 0 auto 30px;
-    line-height: 1.7;
-}
-
-.error-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+.header {
     flex-wrap: wrap;
+    gap: 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
 }
 
-.error-actions a,
-.error-actions button {
-    padding: 12px 25px;
-    border: 1px solid #333;
-    text-decoration: none;
-    font-size: 15px;
-    cursor: pointer;
+.logo-section .logo,
+.login-header .logo {
+    font-weight: 750;
 }
 
-.error-footer {
-    margin-top: 80px;
+.logo-section .logo {
+    background: var(--forest);
+    color: #fff8e7;
+    border-radius: 12px 4px;
+    padding: .6rem;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    .error-number {
-        font-size: 100px;
-    }
-
-    .error-content h1 {
-        font-size: 28px;
-    }
-
-    .error-logo {
-        margin-bottom: 40px;
-    }
-}
-
-/* Partners Page */
-
-/* Partners Page */
-
-.partners-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.partner-card {
-    padding: 25px;
-    border: 1px solid #ccc;
-}
-
-.benefits-container {
-    display: flex;
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.benefit-item {
-    flex: 1;
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-@media (max-width: 768px) {
-    .partners-container {
-        grid-template-columns: 1fr;
-    }
-
-    .benefits-container {
-        flex-direction: column;
-    }
-}
-
-
-/* Market Prices Page */
-
-/* Market Prices Page */
-
-.market-filter {
-    display: flex;
-    gap: 15px;
-    margin: 25px 0;
-    flex-wrap: wrap;
-}
-
-.market-filter input,
-.market-filter select {
-    padding: 12px;
-    border: 1px solid #ccc;
-}
-
-.market-filter input {
-    flex: 2;
-    min-width: 180px;
-}
-
-.market-filter select {
-    flex: 1;
-    min-width: 150px;
-}
-
-.market-products {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.market-card {
-    border: 1px solid #ccc;
-    overflow: hidden;
-}
-
-.market-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-}
-
-.market-card-content {
-    padding: 18px;
-}
-
-.market-category {
-    display: inline-block;
-    margin-bottom: 10px;
-}
-
-.market-card-content h3 {
-    margin: 5px 0;
-}
-
-.market-price {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 12px 0;
-}
-
-.market-card[hidden] {
-    display: none;
-}
-
-#noProducts {
-    margin-top: 20px;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .market-products {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .market-products {
-        grid-template-columns: 1fr;
-    }
-
-    .market-filter {
-        flex-direction: column;
-    }
-}
-
-
-/* Farmer and Buyer Guidelines */
-
-.guideline-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.guideline-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.guideline-item h3 {
-    margin-top: 0;
-}
-
-.guideline-content {
-    margin-top: 20px;
-    line-height: 1.7;
-}
-
-.common-section ul {
-    line-height: 1.8;
-    padding-left: 25px;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .guideline-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .guideline-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-
-/* Cancellation Policy */
-
-.policy-container {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.policy-item {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.policy-item h2 {
-    margin-top: 0;
-}
-
-.policy-item p,
-.policy-item li {
-    line-height: 1.7;
-}
-
-.policy-item ul {
-    padding-left: 25px;
-}
-
-/* Grievance Redressal */
-
-.grievance-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.grievance-item,
-.grievance-step {
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.grievance-item h3,
-.grievance-step h3 {
-    margin-top: 0;
-}
-
-.grievance-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 25px;
-}
-
-.grievance-form-container {
-    max-width: 750px;
-    margin: 25px auto 0;
-}
-
-.grievance-form-container .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 18px;
-}
-
-.grievance-form-container input,
-.grievance-form-container select,
-.grievance-form-container textarea {
-    width: 100%;
-    padding: 12px;
-    font-family: inherit;
-}
-
-.grievance-form-container button {
-    padding: 12px 25px;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .grievance-container {
-        grid-template-columns: 1fr;
-    }
+.logo-section span,
+.availability {
+    font-size: .84rem;
+    font-weight: 600;
 }
 
 .navbar {
-    background: var(--paper);
-    border-bottom: 1px solid var(--line);
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-.navbar .logo a {
-    font: bold 1.45rem Georgia, serif;
+.hero {
+    background: linear-gradient(130deg, #123b32, #23574a);
+    color: #e8f0e6;
+    padding-block: clamp(3rem, 6vw, 6rem);
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--paper);
+    line-height: 1.02;
+}
+
+.hero h1 span {
+    color: #f1cd86;
+}
+
+.hero .availability {
+    color: #f1d9a8;
+    letter-spacing: .05em;
+}
+
+.hero-buttons button:first-child,
+.join-buttons button:first-child {
+    background: #f1cd86;
     color: var(--forest);
 }
 
-.nav-links,
-.nav-actions {
-    padding: 0;
-    flex-wrap: wrap;
-    align-items: center;
+.hero-buttons button:last-child,
+.join-buttons button:last-child {
+    border-color: #adc5af;
 }
 
-.common-hero,
-.about-hero {
-    background: var(--forest);
-    color: #e3ede2;
+.statistics {
+    border-top: 1px solid #719487;
+    padding-top: 1.5rem;
 }
 
-.common-hero h1,
-.about-hero h1 {
-    margin: 0;
-    color: #fff7df;
+.stat-item h2 {
+    color: var(--paper);
 }
 
-.common-hero p,
-.about-hero p {
-    margin: .85rem auto 0;
-    max-width: 62ch;
+.stat-item p {
+    font-size: .9rem;
 }
 
-.common-section,
-.about-section,
-.mission-vision {
-    max-width: 1280px;
-    margin-inline: auto;
+.section-heading {
+    align-self: center;
 }
 
-.common-cta,
-.about-cta {
+.featured-crops,
+.latest-listings {
+    background: #edf1e9;
+}
+
+.crop-card a,
+.listing-details a {
+    margin-top: auto;
+    font-weight: 650;
+}
+
+.feature-icon,
+.process-icon {
     background: var(--wash);
-}
-
-.common-section h3 {
-    margin-top: 0;
-}
-
-.market-price {
     color: var(--leaf);
-    font-weight: 700;
+    border-radius: 50%;
 }
 
-.cta-actions {
-    flex-wrap: wrap;
+.join-section {
+    background: #214f41;
+    color: var(--paper);
 }
 
-.error-number {
-    color: var(--leaf);
+.join-section h2 {
+    color: #f9dfac;
 }
 
-@media (max-width: 540px) {
+@media (hover: hover) {
 
-    .objectives-container,
-    .benefits-container {
+    .hero-buttons button:first-child:hover,
+    .join-buttons button:first-child:hover {
+        background: #ffe5af;
+    }
+}
+
+@media (max-width: 900px) {
+    .crops-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 580px) {
+
+    .crops-container,
+    .listings-container {
         grid-template-columns: 1fr;
     }
 
-    .nav-links {
-        gap: .6rem 1rem;
+    .navbar,
+    .header {
+        justify-content: center;
+    }
+
+    .navbar input {
+        width: 100%;
+    }
+
+    .statistics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .join-buttons,
+    .hero-buttons,
+    .logo-section {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .footer {
+        grid-template-columns: 1fr;
     }
 }

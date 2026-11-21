@@ -362,37 +362,10 @@ $price = (float)$crop['price_per_unit'];
 
 <body>
 
-<header class="buyer-header">
-
-    <div class="header-left">
-        <h2>AgroMarket Connect</h2>
-    </div>
-
-    <?php
-    $activePage = "";
-    $showProfileLink = false;
-    require __DIR__ . "/includes/navigation.php";
+<?php
+    $activePage = "browse_crops.php";
+    require __DIR__ . "/includes/header.php";
     ?>
-
-    <div class="header-right">
-
-        <a href="../auth/logout.php" class="logout-link">Logout</a>
-
-        <div class="profile-menu">
-            <button class="profile-avatar" id="profileToggle">
-                <?= e(strtoupper(substr($buyer['full_name'] ?? 'B', 0, 1))) ?>
-            </button>
-
-            <div class="profile-popup" id="profilePopup">
-                <h3><?= e($buyer['full_name']) ?></h3>
-                <p><?= e($buyer['email']) ?></p>
-                <a href="profile.php">View Profile</a>
-            </div>
-        </div>
-
-    </div>
-
-</header>
 
 <main class="buyer-page-container">
 
@@ -553,6 +526,6 @@ $price = (float)$crop['price_per_unit'];
 
 <script src="js/place_order.js" defer></script>
 
-<script src="../js/profile-menu.js" defer></script>
+
 </body>
 </html>

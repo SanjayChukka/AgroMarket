@@ -143,39 +143,10 @@ require_once __DIR__ . "/../config/auth_check.php";
 
 <body>
 
-<header class="buyer-header">
-
-    <div class="header-left">
-        <h2>AgroMarket Connect</h2>
-    </div>
-
-    <?php
+<?php
     $activePage = "order_tracking.php";
-    $showProfileLink = true;
-    require __DIR__ . "/includes/navigation.php";
+    require __DIR__ . "/includes/header.php";
     ?>
-
-    <div class="header-right">
-
-        <a href="../auth/logout.php" class="logout-link">Logout</a>
-
-        <div class="profile-menu">
-
-            <button class="profile-avatar" id="profileToggle">
-                <?php echo e(strtoupper(substr($buyer['full_name'] ?? 'B', 0, 1))) ?>
-            </button>
-
-            <div class="profile-popup" id="profilePopup">
-                <h3><?php echo e($buyer['full_name'] ?? 'Buyer') ?></h3>
-                <p><?php echo e($buyer['email'] ?? '') ?></p>
-                <a href="profile.php">View Profile</a>
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
 
 <main class="buyer-page-container">
 
@@ -371,6 +342,6 @@ require_once __DIR__ . "/../config/auth_check.php";
     <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
 </footer>
 
-<script src="../js/profile-menu.js" defer></script>
+
 </body>
 </html>

@@ -14,36 +14,10 @@ require_login("buyer", "../auth/login.php");
 
 <body>
 
-    <header class="buyer-header">
-
-        <div class="header-left">
-            <h2>AgroMarket Connect</h2>
-        </div>
-
-        <?php
-    $activePage = "";
-    $showProfileLink = true;
-    require __DIR__ . "/includes/navigation.php";
+    <?php
+    $activePage = "profile.php";
+    require __DIR__ . "/includes/header.php";
     ?>
-
-        <div class="header-right">
-            <a href="../auth/logout.php" class="logout-link">Logout</a>
-
-            <div class="profile-menu">
-                <button type="button" class="profile-avatar"
-                    id="profileToggle">B</button>
-
-                <div class="profile-popup" id="profilePopup">
-                    <div class="popup-avatar">B</div>
-                    <h3>Rahul Kumar</h3>
-                    <p>rahul@example.com</p>
-                    <p>+91 9876543210</p>
-                    <a href="profile.php">View Profile</a>
-                </div>
-            </div>
-        </div>
-
-    </header>
 
     <main class="buyer-profile-container">
 
@@ -203,7 +177,7 @@ require_login("buyer", "../auth/login.php");
 
     <script src="js/profile.js" defer></script>
 
-<script src="../js/profile-menu.js" defer></script>
+
 </body>
 
 </html>
