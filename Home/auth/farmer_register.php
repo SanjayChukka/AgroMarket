@@ -5,7 +5,7 @@
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Pragma: no-cache");
     header("Expires: 0");
-require_once __DIR__ . "/../config/db.php";
+    require_once __DIR__ . "/../config/db.php";
 
     $errors       = $_SESSION['farmer_errors'] ?? [];
     $popupType    = $_SESSION['farmer_popup']['type'] ?? "";
@@ -84,6 +84,8 @@ require_once __DIR__ . "/../config/db.php";
 
     if ($username === "") {
         $errors[] = "Username is required.";
+    } elseif (strlen($username) < 3) {
+        $errors[] = "Username must contain at least 3 characters.";
     }
 
     if ($email === "" || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -96,6 +98,14 @@ require_once __DIR__ . "/../config/db.php";
 
     if ($password === "") {
         $errors[] = "Password is required.";
+    } elseif (
+        strlen($password) < 8 ||
+        ! preg_match('/[A-Z]/', $password) ||
+        ! preg_match('/[a-z]/', $password) ||
+        ! preg_match('/[0-9]/', $password) ||
+        ! preg_match('/[^A-Za-z0-9]/', $password)
+    ) {
+        $errors[] = "Password must contain at least 8 characters, including uppercase, lowercase, number and special character.";
     }
 
     if ($password !== $confirm_password) {
@@ -222,7 +232,7 @@ require_once __DIR__ . "/../config/db.php";
 
         $token = bin2hex(random_bytes(32)); // 64-character secure activation token
 
-        $role = "farmer";
+        $role           = "farmer";
         $account_status = "pending";
 
         $farm_name = ($farm_name === "") ? null : $farm_name;
@@ -300,14 +310,14 @@ require_once __DIR__ . "/../config/db.php";
         // Build the activation URL for the current installation.
         // Example: http://localhost/Home/auth/activate.php?uid=12&token=...
         $scheme = (
-            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
         ) ? "https" : "http";
 
-        $basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+        $basePath       = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
         $activationLink = $scheme . "://" . $_SERVER['HTTP_HOST']
-            . $basePath . "/activate.php?uid=" . urlencode((string)$farmer_id)
-            . "&token=" . urlencode($token);
+        . $basePath . "/activate.php?uid=" . urlencode((string) $farmer_id)
+        . "&token=" . urlencode($token);
 
         $subject = "Activate your AgroMarket Connect farmer account";
 
@@ -415,7 +425,7 @@ require_once __DIR__ . "/../config/db.php";
 
         <form action="" method="POST"
               class="registration-form"
-              onsubmit="return validate()"
+
               novalidate>
 
             <h3>Personal Information</h3>
@@ -429,9 +439,7 @@ require_once __DIR__ . "/../config/db.php";
                            id="first_name"
                            name="first_name"
                            class="form-control"
-                           value="<?php echo cleanOutput($_POST['first_name'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['first_name'] ?? ''); ?>">
                 </div>
 
                 <div class="form-group">
@@ -441,9 +449,7 @@ require_once __DIR__ . "/../config/db.php";
                            id="last_name"
                            name="last_name"
                            class="form-control"
-                           value="<?php echo cleanOutput($_POST['last_name'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['last_name'] ?? ''); ?>">
                 </div>
 
             </div>
@@ -455,9 +461,7 @@ require_once __DIR__ . "/../config/db.php";
                        id="username"
                        name="username"
                        class="form-control"
-                       value="<?php echo cleanOutput($_POST['username'] ?? ''); ?>"
-                       onfocus="hideError(this)"
-                       onblur="checkError(this)">
+                       value="<?php echo cleanOutput($_POST['username'] ?? ''); ?>">
                        <small id="usernameError" class="field-error"></small>
             </div>
 
@@ -470,9 +474,7 @@ require_once __DIR__ . "/../config/db.php";
                            id="email"
                            name="email"
                            class="form-control"
-                           value="<?php echo cleanOutput($_POST['email'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="validateEmail(this)">
+                           value="<?php echo cleanOutput($_POST['email'] ?? ''); ?>">
                            <small id="emailError" class="field-error"></small>
                 </div>
 
@@ -484,9 +486,7 @@ require_once __DIR__ . "/../config/db.php";
                            name="mobile"
                            class="form-control"
                            maxlength="10"
-                           value="<?php echo cleanOutput($_POST['mobile'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['mobile'] ?? ''); ?>">
                            <small id="mobileError" class="field-error"></small>
                 </div>
 
@@ -500,9 +500,7 @@ require_once __DIR__ . "/../config/db.php";
                     <input type="password"
                            id="password"
                            name="password"
-                           class="form-control"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           class="form-control">
                 </div>
 
                 <div class="form-group">
@@ -511,9 +509,7 @@ require_once __DIR__ . "/../config/db.php";
                     <input type="password"
                            id="confirm_password"
                            name="confirm_password"
-                           class="form-control"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           class="form-control">
                 </div>
 
             </div>
@@ -537,9 +533,7 @@ require_once __DIR__ . "/../config/db.php";
                        id="address_line"
                        name="address_line"
                        class="form-control"
-                       value="<?php echo cleanOutput($_POST['address_line'] ?? ''); ?>"
-                       onfocus="hideError(this)"
-                       onblur="checkError(this)">
+                       value="<?php echo cleanOutput($_POST['address_line'] ?? ''); ?>">
             </div>
 
             <div class="form-row">
@@ -549,9 +543,7 @@ require_once __DIR__ . "/../config/db.php";
 
                     <select id="state"
                             name="state"
-                            class="form-control"
-                            onfocus="hideError(this)"
-                            onblur="checkError(this)">
+                            class="form-control">
 
                         <option value="">Select State</option>
 
@@ -585,9 +577,7 @@ require_once __DIR__ . "/../config/db.php";
                            id="district"
                            name="district"
                            class="form-control"
-                           value="<?php echo cleanOutput($_POST['district'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['district'] ?? ''); ?>">
                 </div>
 
             </div>
@@ -601,9 +591,7 @@ require_once __DIR__ . "/../config/db.php";
                            id="village"
                            name="village"
                            class="form-control"
-                           value="<?php echo cleanOutput($_POST['village'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['village'] ?? ''); ?>">
                 </div>
 
                 <div class="form-group">
@@ -614,9 +602,7 @@ require_once __DIR__ . "/../config/db.php";
                            name="pincode"
                            class="form-control"
                            maxlength="6"
-                           value="<?php echo cleanOutput($_POST['pincode'] ?? ''); ?>"
-                           onfocus="hideError(this)"
-                           onblur="checkError(this)">
+                           value="<?php echo cleanOutput($_POST['pincode'] ?? ''); ?>">
                 </div>
 
             </div>
@@ -666,388 +652,127 @@ require_once __DIR__ . "/../config/db.php";
 </div>
 
 <script>
-
-// -----------------------------------
-// POPUP FUNCTIONS
-// -----------------------------------
-
-
-const popup = document.getElementById("popupCard");
-const popupCard = document.querySelector(".popup-card");
-
-function showPopup(type, message) {
-
-    popup.style.display = "flex";
-
-    if (type === "success") {
-
-        document.getElementById("popupIcon").textContent = "✓";
-        document.getElementById("popupTitle").textContent = "Success!";
-
-        popupCard.classList.remove("error");
-
-    } else {
-
-        document.getElementById("popupIcon").textContent = "✕";
-        document.getElementById("popupTitle").textContent = "Registration Failed";
-
-        popupCard.classList.add("error");
-    }
-
-    document.getElementById("popupText").textContent = message;
+const popup=document.getElementById("popupCard");
+const popupCard=document.querySelector(".popup-card");
+const farmerForm=document.querySelector(".registration-form");
+let currentPopupType="";
+function showPopup(type,message){
+    currentPopupType=type;popup.style.display="flex";
+    document.getElementById("popupIcon").textContent=type==="success"?"✓":"✕";
+    document.getElementById("popupTitle").textContent=type==="success"?"Success!":"Registration Failed";
+    document.getElementById("popupText").textContent=message;
+    popupCard.classList.toggle("error",type!=="success");
 }
-
-function closePopup() {
-    popup.style.display = "none";
-
-    <?php if ($popupType === "success"): ?>
-    window.location.href = "../index.php";
-    <?php endif; ?>
-}
-
-// Display PHP session popup
+function closePopup(){popup.style.display="none";if(currentPopupType==="success")window.location.href="../index.php";}
 <?php if (! empty($popupMessage)): ?>
-
-showPopup(
-    <?php echo json_encode($popupType); ?>,
-    <?php echo json_encode($popupMessage, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>
-);
-
+showPopup(<?php echo json_encode($popupType); ?>,
+<?php echo json_encode($popupMessage, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
 <?php endif; ?>
 
+const duplicateFields=["username","email","mobile"];
+const duplicateStatus={username:false,email:false,mobile:false};
+const verificationFailed={username:false,email:false,mobile:false};
+const duplicateTimers={},duplicateRequests={},touched=new Set();
+const required=["first_name","last_name","username","email","mobile","password","confirm_password","address_line","state","district","village","pincode"];
+const fields=[...required,"farm_name","land_size"];
 
-// -----------------------------------
-// MAIN FORM VALIDATION
-// -----------------------------------
-
-function validate() {
-
-    const requiredFields = [
-        "first_name",
-        "last_name",
-        "username",
-        "email",
-        "mobile",
-        "password",
-        "confirm_password",
-        "address_line",
-        "state",
-        "district",
-        "village",
-        "pincode"
-    ];
-
-    // Check required fields
-    for (let i = 0; i < requiredFields.length; i++) {
-
-        const field = document.getElementById(requiredFields[i]);
-
-        if (field.value.trim() === "") {
-
-            field.focus();
-            field.style.border = "2px solid red";
-
-            return false;
-        }
-    }
-
-    // Email validation
-    const email = document.getElementById("email");
-
-    if (!validateEmail(email)) {
-        email.focus();
-        return false;
-    }
-
-    // Mobile validation
-    const mobile = document.getElementById("mobile");
-
-    const mobilePattern = /^[6-9][0-9]{9}$/;
-
-    if (!mobilePattern.test(mobile.value.trim())) {
-
-        mobile.focus();
-        mobile.style.border = "2px solid red";
-
-        return false;
-    }
-
-    // Pincode validation
-    const pincode = document.getElementById("pincode");
-
-    if (!/^[0-9]{6}$/.test(pincode.value.trim())) {
-
-        pincode.focus();
-        pincode.style.border = "2px solid red";
-
-        return false;
-    }
-
-    // Password validation
-    const password = document.getElementById("password");
-
-    const confirmPassword = document.getElementById("confirm_password");
-
-    if (password.value === "") {
-
-        password.focus();
-        password.style.border = "2px solid red";
-
-        return false;
-    }
-
-    if (confirmPassword.value === "") {
-
-        confirmPassword.focus();
-        confirmPassword.style.border = "2px solid red";
-
-        return false;
-    }
-
-    if (password.value !== confirmPassword.value) {
-
-        confirmPassword.focus();
-        confirmPassword.style.border = "2px solid red";
-
-        showPopup("error", "Passwords do not match. Please enter the same password in both fields.");
-        return false;
-    }
-
-    // Prevent submission if duplicate values were detected
-    for (const field of duplicateFields) {
-
-        if (duplicateStatus[field]) {
-
-            document.getElementById(field).focus();
-
-            return false;
-        }
-    }
-    return true;
+function errorNode(id){
+    const el=document.getElementById(id);if(!el)return null;
+    let node=document.getElementById(id+"Error");
+    if(!node){node=document.createElement("small");node.id=id+"Error";node.className="field-error";el.insertAdjacentElement("afterend",node);}
+    return node;
 }
-
-// -----------------------------------
-// FIELD ERROR HANDLING
-// -----------------------------------
-
-function hideError(element) {
-
-    if (element.value.trim() === "") {
-        element.style.border = "2px solid black";
-    }
-}
-
-function checkError(element) {
-
-    if (element.value.trim() !== "") {
-        element.style.border = "2px solid black";
-    } else {
-        element.style.border = "2px solid red";
-    }
-}
-
-// -----------------------------------
-// EMAIL VALIDATION
-// -----------------------------------
-
-function validateEmail(element) {
-
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (pattern.test(element.value.trim())) {
-
-        element.style.border = "2px solid black";
-
-        return true;
-
-    } else {
-
-        element.style.border = "2px solid red";
-
-        return false;
-    }
-}
-
-
-// =====================================
-// LIVE DUPLICATE VALIDATION
-// =====================================
-
-const duplicateFields = ["username", "email", "mobile"];
-
-const duplicateTimers = {};
-const duplicateRequests = {};
-
-const duplicateStatus = {
-    username: false,
-    email: false,
-    mobile: false
-};
-
-function validateDuplicateFormat(field, value) {
-
-    if (value.trim() === "") {
-        return false;
-    }
-
-    if (field === "email") {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    }
-
-    if (field === "mobile") {
-        return /^[6-9][0-9]{9}$/.test(value);
-    }
-
-    return true;
-}
-
-function showFieldError(field, message) {
-
-    const input = document.getElementById(field);
-    const error = document.getElementById(field + "Error");
-
-    input.classList.add("input-error");
-    input.classList.remove("input-valid");
-
-    error.textContent = message;
-}
-
-function clearFieldError(field) {
-
-    const input = document.getElementById(field);
-    const error = document.getElementById(field + "Error");
-
-    input.classList.remove("input-error");
-    input.classList.remove("input-valid");
-
-    error.textContent = "";
-    duplicateStatus[field] = false;
-}
-
-async function checkDuplicate(field) {
-
-    const input = document.getElementById(field);
-    const value = input.value.trim();
-
-    // Ignore empty or invalid values
-    if (!validateDuplicateFormat(field, value)) {
-        clearFieldError(field);
-        return;
-    }
-
-    // Create a unique request number for this field
-    const requestId = (duplicateRequests[field] || 0) + 1;
-    duplicateRequests[field] = requestId;
-
-    const formData = new FormData();
-
-    formData.append("field", field);
-    formData.append("value", value);
-
-    try {
-
-        const response = await fetch("check_duplicate.php", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error("Server verification failed");
-        }
-
-        const data = await response.json();
-
-        // Ignore outdated responses
-        if (
-            requestId !== duplicateRequests[field] ||
-            input.value.trim() !== value
-        ) {
-            return;
-        }
-
-        if (data.exists) {
-
-            duplicateStatus[field] = true;
-
-            showFieldError(field, data.message);
-
-        } else {
-
-            duplicateStatus[field] = false;
-
-            clearFieldError(field);
-
-            input.classList.add("input-valid");
-        }
-
-    } catch (error) {
-
-        console.error("Duplicate check:", error);
-
-        // Do not claim the value is available if verification failed
-        showFieldError(field, "Unable to verify. Please try again.");
-    }
-}
-
-// Check while typing, with a short delay
-duplicateFields.forEach(function(field) {
-
-    const input = document.getElementById(field);
-
-    input.addEventListener("input", function() {
-
-        clearTimeout(duplicateTimers[field]);
-
-        // Clear previous result while the new value is checked
-        duplicateStatus[field] = false;
-        input.classList.remove("input-error", "input-valid");
-
-        document.getElementById(field + "Error").textContent = "";
-
-        duplicateTimers[field] = setTimeout(function() {
-            checkDuplicate(field);
-        }, 400);
-
+function showError(id,msg){const el=document.getElementById(id),n=errorNode(id);if(!el||!n)return;el.classList.add("input-error");el.classList.remove("input-valid");n.textContent=msg;}
+function clearError(id,valid=false){const el=document.getElementById(id),n=errorNode(id);if(!el||!n)return;el.classList.remove("input-error","input-valid");if(valid&&el.value.trim())el.classList.add("input-valid");n.textContent="";}
+function passRules(p){return [p.length>=8,/[A-Z]/.test(p),/[a-z]/.test(p),/[0-9]/.test(p),/[^A-Za-z0-9]/.test(p)];}
+function updatePassword(){
+    const passwordInput=document.getElementById("password");
+    if(!passwordInput)return false;
+    const p=passwordInput.value;
+    const results=passRules(p);
+    const ids=["farmerLengthRule","farmerUpperRule","farmerLowerRule","farmerNumberRule","farmerSpecialRule"];
+    results.forEach((ok,i)=>{
+        const li=document.getElementById(ids[i]);
+        if(!li)return;
+        const label=li.dataset.label||li.textContent.replace(/^[✓✗]\s*/,"");
+        li.dataset.label=label;
+        li.textContent=(ok?"✓ ":"✗ ")+label;
+        li.classList.toggle("valid",ok);
+        li.classList.toggle("invalid",!ok);
+        // Apply colour directly as a fallback if another stylesheet overrides the classes.
+        li.style.color=ok?"#198754":"#dc3545";
     });
-
-    // Check immediately when leaving the field
-    input.addEventListener("blur", function() {
-
-        clearTimeout(duplicateTimers[field]);
-
-        checkDuplicate(field);
-
+    return results.every(Boolean);
+}
+function validateField(id){
+    const el=document.getElementById(id);if(!el)return true;const v=el.value.trim();let msg="";
+    if(["first_name","last_name","address_line","district","village"].includes(id)&&!v)msg="This field is required.";
+    if(id==="username"&&!v)msg="Username is required.";else if(id==="username"&&v.length<3)msg="Username must contain at least 3 characters.";
+    if(id==="email"&&!v)msg="Email address is required.";else if(id==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))msg="Enter a valid email address.";
+    if(id==="mobile"&&!v)msg="Mobile number is required.";else if(id==="mobile"&&!/^[6-9][0-9]{9}$/.test(v))msg="Enter a valid 10-digit Indian mobile number.";
+    if(id==="password"&&!el.value)msg="Password is required.";else if(id==="password"&&!passRules(el.value).every(Boolean))msg="Password does not meet all the requirements below.";
+    if(id==="confirm_password"&&!el.value)msg="Please confirm your password.";else if(id==="confirm_password"&&el.value!==document.getElementById("password").value)msg="Passwords do not match.";
+    if(id==="state"&&!v)msg="Please select your state.";
+    if(id==="pincode"&&!v)msg="Pincode is required.";else if(id==="pincode"&&!/^[0-9]{6}$/.test(v))msg="Enter a valid 6-digit pincode.";
+    if(id==="land_size"&&v&&(!Number.isFinite(Number(v))||Number(v)<=0))msg="Enter a valid land size greater than zero.";
+    if(msg){showError(id,msg);return false;}clearError(id,!!v);return true;
+}
+function duplicateFormat(id,v){if(id==="username")return v.length>=3;if(id==="email")return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);if(id==="mobile")return /^[6-9][0-9]{9}$/.test(v);return false;}
+async function checkDuplicate(id){
+    const el=document.getElementById(id),value=el.value.trim();if(!duplicateFormat(id,value))return false;
+    const request=duplicateRequests[id]=(duplicateRequests[id]||0)+1,fd=new FormData();fd.append("field",id);fd.append("value",value);
+    try{
+        const response=await fetch("check_duplicate.php",{method:"POST",body:fd});if(!response.ok)throw new Error("Verification failed");
+        const data=await response.json();if(request!==duplicateRequests[id]||el.value.trim()!==value)return null;
+        verificationFailed[id]=false;duplicateStatus[id]=!!data.exists;
+        if(data.exists){showError(id,data.message||"This value is already registered.");return true;}
+        clearError(id,true);return false;
+    }catch(e){if(request===duplicateRequests[id]&&el.value.trim()===value){verificationFailed[id]=true;showError(id,"Unable to verify this value. Please try again.");}return true;}
+}
+fields.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener("blur",()=>{touched.add(id);validateField(id);if(duplicateFields.includes(id)&&duplicateFormat(id,el.value.trim()))checkDuplicate(id);});
+    el.addEventListener("input",()=>{
+        if(touched.has(id))validateField(id);
+        if(id==="password"){updatePassword();if(touched.has("confirm_password"))validateField("confirm_password");}
+        if(duplicateFields.includes(id)){
+            clearTimeout(duplicateTimers[id]);duplicateRequests[id]=(duplicateRequests[id]||0)+1;duplicateStatus[id]=false;verificationFailed[id]=false;
+            if(duplicateFormat(id,el.value.trim()))duplicateTimers[id]=setTimeout(()=>checkDuplicate(id),450);
+        }
     });
-
+    el.addEventListener("change",()=>{touched.add(id);validateField(id);});
 });
 
-window.addEventListener("pageshow", function(event) {
+// Add a password checklist to the farmer form (it was absent in the supplied file).
+const passwordInput=document.getElementById("password");
+if(passwordInput&&!document.getElementById("farmerPasswordRules")){
+    const box=document.createElement("div");box.className="password-feedback";box.id="farmerPasswordRules";
+    box.innerHTML='<ul class="password-requirements"><li id="farmerLengthRule" class="invalid">✗ At least 8 characters</li><li id="farmerUpperRule" class="invalid">✗ One uppercase letter</li><li id="farmerLowerRule" class="invalid">✗ One lowercase letter</li><li id="farmerNumberRule" class="invalid">✗ One number</li><li id="farmerSpecialRule" class="invalid">✗ One special character</li></ul>';
+    passwordInput.insertAdjacentElement("afterend",box);
+}
+updatePassword();
 
-    const navigation = performance.getEntriesByType("navigation")[0];
-
-    if (
-        event.persisted ||
-        (navigation && navigation.type === "back_forward")
-    ) {
-
-        // Reset the form when returning through browser history
-        const form = document.querySelector(".registration-form");
-
-        if (form) {
-            form.reset();
-        }
-
-        // Clear field validation messages
-        document.querySelectorAll(".field-error").forEach(function(error) {
-            error.textContent = "";
-        });
-
-        document.querySelectorAll(".form-control").forEach(function(input) {
-            input.classList.remove("input-error", "input-valid");
-            input.style.border = "";
-        });
+let allowSubmit=false;
+farmerForm.addEventListener("submit",async event=>{
+    if(allowSubmit)return;event.preventDefault();let first=null;
+    fields.forEach(id=>{touched.add(id);if(!validateField(id)&&!first)first=id;});
+    updatePassword();
+    if(first){document.getElementById(first).focus();showPopup("error","Please correct the highlighted fields before submitting.");return;}
+    duplicateFields.forEach(id=>clearTimeout(duplicateTimers[id]));
+    const results=await Promise.all(duplicateFields.map(checkDuplicate));
+    const issue=duplicateFields.find(id=>duplicateStatus[id]||verificationFailed[id]);
+    if(issue||results.some(x=>x!==false)){const id=issue||duplicateFields[0];document.getElementById(id).focus();showPopup("error","Please use a username, email address and mobile number that are not already registered.");return;}
+    allowSubmit=true;farmerForm.requestSubmit(farmerForm.querySelector('button[name="register"]'));
+});
+window.addEventListener("pageshow",event=>{
+    const nav=performance.getEntriesByType("navigation")[0];
+    if(event.persisted||(nav&&nav.type==="back_forward")){
+        farmerForm.reset();touched.clear();
+        duplicateFields.forEach(id=>{duplicateStatus[id]=false;verificationFailed[id]=false;duplicateRequests[id]=(duplicateRequests[id]||0)+1;clearTimeout(duplicateTimers[id]);clearError(id);});
+        fields.filter(id=>!duplicateFields.includes(id)).forEach(clearError);
+        document.querySelectorAll(".field-error").forEach(n=>n.textContent="");
+        popup.style.display="none";allowSubmit=false;updatePassword();
     }
-
 });
 </script>
 

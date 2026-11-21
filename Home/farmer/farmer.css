@@ -1,3 +1,7 @@
+/* ================================= */
+/* GLOBAL RESET */
+/* ================================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -5,35 +9,24 @@
 }
 
 body {
+    width: 100%;
+    min-height: 100vh;
     font-family: Arial, sans-serif;
 }
 
-/* Header */
-.farmer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 5%;
-}
 
-.farmer-header nav ul {
-    display: flex;
-    gap: 25px;
-    list-style: none;
-}
+/* ================================= */
+/* FARMER HEADER */
+/* ================================= */
 
-.farmer-header nav a {
-    text-decoration: none;
-}
-
-
-/* Farmer Header */
 .farmer-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 15px 5%;
     gap: 25px;
+    position: relative;
+    z-index: 100;
 }
 
 .header-left h2 {
@@ -55,11 +48,20 @@ body {
     white-space: nowrap;
 }
 
+.farmer-nav a.active {
+    font-weight: bold;
+}
+
 .header-right {
     display: flex;
     align-items: center;
     gap: 15px;
 }
+
+
+/* ================================= */
+/* PROFILE MENU */
+/* ================================= */
 
 .profile-menu {
     position: relative;
@@ -86,7 +88,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-    z-index: 100;
+    z-index: 1000;
     text-align: center;
 }
 
@@ -112,7 +114,11 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* Profile Picture Section */
+
+/* ================================= */
+/* PROFILE PICTURE */
+/* ================================= */
+
 .profile-picture-section {
     padding: 20px;
     border: 1px solid #ccc;
@@ -141,27 +147,22 @@ body {
     object-fit: cover;
 }
 
-@media (max-width: 768px) {
-    .farmer-header {
-        flex-wrap: wrap;
-    }
 
-    .farmer-nav {
-        order: 3;
-        flex-basis: 100%;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-}
+/* ================================= */
+/* DASHBOARD */
+/* ================================= */
 
-
-/* Dashboard */
 .dashboard-container {
     padding: 30px 5%;
+    min-height: 70vh;
 }
 
 .welcome-section {
     margin-bottom: 35px;
+}
+
+.welcome-section h1 {
+    margin-bottom: 10px;
 }
 
 .dashboard-section {
@@ -172,112 +173,414 @@ body {
     margin-bottom: 20px;
 }
 
-/* Profile picture */
-
-.dashboard-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-}
-
-.dashboard-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
 
 /* Quick Actions */
+
 .action-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
-.action-card,
-.summary-card,
-.recent-listings,
-.recent-orders {
+.action-card {
     border: 1px solid #ccc;
     padding: 20px;
+    border-radius: 6px;
 }
 
 .action-card p {
     margin: 15px 0;
+    line-height: 1.5;
 }
 
 .action-card a {
     display: inline-block;
 }
 
+
 /* Listing Summary */
+
 .summary-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
-.summary-card p {
-    margin-top: 15px;
+.summary-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 6px;
 }
 
+.summary-card p {
+    margin-top: 15px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
 /* Recent Sections */
+
+.recent-listings,
+.recent-orders {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 6px;
+}
+
 .recent-listings p,
 .recent-orders p {
     margin-bottom: 15px;
 }
 
-/* Footer */
+.recent-listing-item,
+.recent-order-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.recent-listing-item:last-of-type,
+.recent-order-item:last-of-type {
+    border-bottom: none;
+}
+
+.recent-listing-item h3,
+.recent-order-item h3 {
+    margin-bottom: 12px;
+}
+
+
+/* ================================= */
+/* NOTIFICATION BELL AND DROPDOWN */
+/* ================================= */
+
+.notification-menu {
+    position: relative;
+}
+
+.notification-bell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 22px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 50px;
+    background: #e53935;
+    color: white;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Dropdown */
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.notification-menu.show .notification-dropdown {
+    display: block;
+}
+
+.notification-dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-dropdown-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.notification-dropdown-header span {
+    font-size: 12px;
+    color: #666;
+}
+
+.notification-preview-item {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-preview-item:hover {
+    background: #f5f7f5;
+}
+
+.notification-preview-item.unread {
+    background: #eef7ee;
+}
+
+.notification-preview-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.notification-preview-item p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.notification-preview-item small {
+    color: #777;
+    font-size: 11px;
+}
+
+.no-notifications {
+    padding: 18px 15px;
+    text-align: center;
+    color: #777;
+}
+
+.view-all-notifications {
+    display: block;
+    padding: 13px;
+    text-align: center;
+    color: #247a3c;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-all-notifications:hover {
+    background: #f5f7f5;
+}
+
+
+/* ================================= */
+/* NOTIFICATIONS PAGE */
+/* ================================= */
+
+.notifications-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.notifications-page-header h2 {
+    margin-bottom: 8px;
+}
+
+.notifications-page-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* Individual Notification */
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.notification-item.unread {
+    background: #f1f8f1;
+    border-left: 4px solid #287a3d;
+}
+
+.notification-item.read {
+    opacity: 0.85;
+}
+
+
+/* Notification Icon */
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e4f1e5;
+    color: #287a3d;
+    font-size: 19px;
+}
+
+
+/* Notification Content */
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.notification-title-row h3 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.unread-label {
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #287a3d;
+    color: white;
+    font-size: 11px;
+}
+
+.notification-content>p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.notification-content small {
+    color: #777;
+}
+
+
+/* Notification Actions */
+
+.notification-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 12px;
+}
+
+.notification-actions form {
+    margin: 0;
+}
+
+.notification-order-link {
+    color: #287a3d;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.notification-order-link:hover {
+    text-decoration: underline;
+}
+
+.mark-read-btn,
+.mark-all-read-btn {
+    border: none;
+    border-radius: 5px;
+    padding: 9px 14px;
+    background: #287a3d;
+    color: white;
+    cursor: pointer;
+}
+
+.mark-read-btn {
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+.mark-read-btn:hover,
+.mark-all-read-btn:hover {
+    background: #1e6130;
+}
+
+
+/* Empty Notification State */
+
+.empty-notifications {
+    padding: 45px 20px;
+    text-align: center;
+    color: #777;
+}
+
+.empty-notifications i {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 38px;
+}
+
+.empty-notifications h3 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+
+/* ================================= */
+/* FOOTER */
+/* ================================= */
+
 .farmer-footer {
     padding: 20px 5%;
     text-align: center;
 }
 
-/* Responsive Layout */
-@media (max-width: 768px) {
-    .farmer-header {
-        flex-direction: column;
-        gap: 20px;
-    }
 
-    .farmer-header nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+/* ================================= */
+/* PROFILE AND ADD CROP FORMS */
+/* Keep these sections if they are already
+   present in your existing CSS. */
+/* ================================= */
 
-    .action-container,
-    .summary-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-
-    .action-container,
-    .summary-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Profile Dashboard */
 .profile-container {
     width: 85%;
     margin: 30px auto;
 }
 
-.profile-container form {
+.profile-container form,
+.add-crop-container form {
     display: flex;
     flex-direction: column;
     gap: 25px;
 }
 
-.profile-container section {
+.profile-container section,
+.add-crop-container section {
     padding: 20px;
     border: 1px solid #ccc;
     display: flex;
@@ -287,13 +590,16 @@ body {
 
 .profile-container input,
 .profile-container select,
-.profile-container textarea {
+.profile-container textarea,
+.add-crop-container input,
+.add-crop-container select,
+.add-crop-container textarea {
     padding: 10px;
     width: 100%;
-    box-sizing: border-box;
 }
 
-.profile-container textarea {
+.profile-container textarea,
+.add-crop-container textarea {
     min-height: 100px;
 }
 
@@ -303,37 +609,9 @@ body {
     cursor: pointer;
 }
 
-/* Add Crop Page */
-
 .add-crop-container {
     width: 85%;
     margin: 30px auto;
-}
-
-.add-crop-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.add-crop-container section {
-    padding: 20px;
-    border: 1px solid #ccc;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.add-crop-container input,
-.add-crop-container select,
-.add-crop-container textarea {
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.add-crop-container textarea {
-    min-height: 100px;
 }
 
 .form-actions {
@@ -347,7 +625,9 @@ body {
 }
 
 
-/* Manage Listings */
+/* ================================= */
+/* MANAGE LISTINGS */
+/* ================================= */
 
 .listings-container {
     width: 90%;
@@ -399,43 +679,33 @@ body {
     overflow-x: auto;
 }
 
-.listings-table-section table {
+.listings-table-section table,
+.orders-table-section table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
 .listings-table-section th,
-.listings-table-section td {
+.listings-table-section td,
+.orders-table-section th,
+.orders-table-section td {
     padding: 15px;
     border: 1px solid #ccc;
     text-align: left;
     white-space: nowrap;
 }
 
-.listings-table-section button {
+.listings-table-section button,
+.orders-table-section button {
     padding: 7px 10px;
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .listing-summary {
-        grid-template-columns: repeat(2, 1fr);
-    }
 
-    .listings-heading,
-    .listing-filters {
-        flex-wrap: wrap;
-    }
-}
-
-@media (max-width: 480px) {
-    .listing-summary {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Farmer Orders Page */
+/* ================================= */
+/* FARMER ORDERS */
+/* ================================= */
 
 .orders-container {
     width: 90%;
@@ -475,43 +745,10 @@ body {
     margin-top: 30px;
 }
 
-.orders-table-section table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
 
-.orders-table-section th,
-.orders-table-section td {
-    padding: 15px;
-    border: 1px solid #ccc;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.orders-table-section button {
-    padding: 7px 10px;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .order-summary {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .order-filters {
-        flex-wrap: wrap;
-    }
-}
-
-@media (max-width: 480px) {
-    .order-summary {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-/* Order Details Page */
+/* ================================= */
+/* ORDER DETAILS */
+/* ================================= */
 
 .order-details-container {
     width: 85%;
@@ -558,7 +795,6 @@ body {
 .order-info-section textarea {
     width: 100%;
     padding: 10px;
-    box-sizing: border-box;
 }
 
 .order-info-section textarea {
@@ -577,19 +813,10 @@ body {
     cursor: pointer;
 }
 
-@media (max-width: 600px) {
-    .order-info-grid {
-        grid-template-columns: 1fr;
-    }
 
-    .details-heading {
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-}
-
-
-/* Order Confirmation Popup */
+/* ================================= */
+/* ORDER CONFIRMATION POPUP */
+/* ================================= */
 
 .confirmation-overlay {
     display: none;
@@ -657,4 +884,126 @@ body {
     margin-left: 8px;
     font-size: 14px;
     color: #555;
+}
+
+
+/* ================================= */
+/* RESPONSIVE DESIGN */
+/* ================================= */
+
+@media (max-width: 1024px) {
+
+    .action-container,
+    .summary-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .listing-summary,
+    .order-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .farmer-header {
+        flex-wrap: wrap;
+    }
+
+    .farmer-nav {
+        order: 3;
+        flex-basis: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .farmer-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .farmer-nav {
+        order: 0;
+        flex-basis: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .header-right {
+        justify-content: center;
+    }
+
+    .listings-heading,
+    .order-filters {
+        flex-wrap: wrap;
+    }
+
+    .details-heading {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .order-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .notifications-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .notification-item {
+        padding: 13px;
+    }
+
+    .notification-dropdown {
+        position: fixed;
+        top: 75px;
+        right: 10px;
+        width: calc(100% - 20px);
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .action-container,
+    .summary-container,
+    .listing-summary,
+    .order-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-container {
+        padding: 20px 4%;
+    }
+
+    .listings-container,
+    .orders-container,
+    .order-details-container,
+    .profile-container,
+    .add-crop-container {
+        width: 92%;
+    }
+
+    .notification-item {
+        gap: 10px;
+    }
+
+    .notification-icon {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+        font-size: 16px;
+    }
+
+    .notification-content {
+        min-width: 0;
+    }
+
+    .notification-actions {
+        gap: 10px;
+    }
+
 }

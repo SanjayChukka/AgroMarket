@@ -1,15 +1,116 @@
+
 <?php
+    session_start();
+
     require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/db.php";
 
     require_login("buyer", "../auth/login.php");
+
+    $buyerId = (int) $_SESSION['user_id'];
+
+    // Escape output before displaying it in HTML.
+    function e($value)
+    {
+    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
+    }
+
+    // Fetch buyer details.
+    $userQuery = "SELECT full_name, email, mobile
+              FROM users
+              WHERE user_id = ?";
+
+    $userStmt = mysqli_prepare($link, $userQuery);
+    mysqli_stmt_bind_param($userStmt, "i", $buyerId);
+    mysqli_stmt_execute($userStmt);
+
+    $user = mysqli_fetch_assoc(mysqli_stmt_get_result($userStmt));
+
+    $fullName = $user['full_name'] ?? "Buyer";
+    $email    = $user['email'] ?? "";
+    $mobile   = $user['mobile'] ?? "";
+    $initial  = strtoupper(substr($fullName, 0, 1));
+
+    // Fetch order statistics.
+    $statsQuery = "
+    SELECT
+        COUNT(*) AS total_orders,
+        SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) AS pending_orders,
+        SUM(CASE WHEN order_status = 'accepted' THEN 1 ELSE 0 END) AS accepted_orders,
+        SUM(CASE WHEN order_status = 'completed' THEN 1 ELSE 0 END) AS completed_orders
+    FROM orders
+    WHERE buyer_id = ?
+";
+
+    $statsStmt = mysqli_prepare($link, $statsQuery);
+    mysqli_stmt_bind_param($statsStmt, "i", $buyerId);
+    mysqli_stmt_execute($statsStmt);
+
+    $stats = mysqli_fetch_assoc(mysqli_stmt_get_result($statsStmt));
+
+    $totalOrders     = (int) ($stats['total_orders'] ?? 0);
+    $pendingOrders   = (int) ($stats['pending_orders'] ?? 0);
+    $acceptedOrders  = (int) ($stats['accepted_orders'] ?? 0);
+    $completedOrders = (int) ($stats['completed_orders'] ?? 0);
+
+    // Fetch the buyer's five most recent orders.
+    $ordersQuery = "
+    SELECT
+        o.order_id,
+        o.order_number,
+        o.quantity,
+        o.quantity_unit,
+        o.subtotal,
+        o.order_status,
+        cl.crop_name,
+        u.full_name AS farmer_name
+    FROM orders o
+    LEFT JOIN crop_listings cl
+        ON o.listing_id = cl.listing_id
+    LEFT JOIN users u
+        ON o.farmer_id = u.user_id
+    WHERE o.buyer_id = ?
+    ORDER BY o.placed_at DESC, o.order_id DESC
+    LIMIT 5
+";
+
+    $ordersStmt = mysqli_prepare($link, $ordersQuery);
+    mysqli_stmt_bind_param($ordersStmt, "i", $buyerId);
+    mysqli_stmt_execute($ordersStmt);
+
+    $recentOrders = mysqli_stmt_get_result($ordersStmt);
+
+    // Fetch three recently added available crops.
+    $cropsQuery = "
+    SELECT
+        cl.listing_id,
+        cl.crop_name,
+        cl.price_per_unit,
+        cl.quantity_unit,
+        cc.category_name
+    FROM crop_listings cl
+    LEFT JOIN crop_categories cc
+        ON cl.category_id = cc.category_id
+    WHERE cl.listing_status = 'available'
+      AND (cl.available_from IS NULL OR cl.available_from <= CURDATE())
+      AND (cl.available_until IS NULL OR cl.available_until >= CURDATE())
+    ORDER BY cl.created_at DESC, cl.listing_id DESC
+    LIMIT 3
+";
+
+    $cropsResult = mysqli_query($link, $cropsQuery);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Buyer Dashboard | AgroMarket Connect</title>
+
     <link rel="stylesheet" href="buyer.css">
 </head>
 
@@ -31,32 +132,54 @@
         </nav>
 
         <div class="header-right">
+
             <a href="../auth/logout.php" class="logout-link">Logout</a>
 
             <div class="profile-menu">
-                <button type="button" class="profile-avatar"
-                    id="profileToggle">B</button>
+
+                <button type="button"
+                    class="profile-avatar"
+                    id="profileToggle"
+                    aria-label="Open profile details"
+                    aria-expanded="false">
+                    <?php echo e($initial) ?>
+                </button>
 
                 <div class="profile-popup" id="profilePopup">
-                    <div class="popup-avatar">B</div>
-                    <h3>Rahul Kumar</h3>
-                    <p>rahul@example.com</p>
-                    <p>+91 9876543210</p>
+
+                    <div class="popup-avatar">
+                        <?php echo e($initial) ?>
+                    </div>
+
+                    <h3><?php echo e($fullName) ?></h3>
+
+                    <p><?php echo e($email) ?></p>
+                    <p><?php echo e($mobile) ?></p>
+
                     <a href="profile.php">View Profile</a>
+
                 </div>
+
             </div>
+
         </div>
 
     </header>
 
     <main class="buyer-dashboard">
 
+        <!-- Welcome Section -->
+
         <section class="welcome-section">
-            <h1>Welcome, Rahul Kumar!</h1>
+
+            <h1>Welcome, <?php echo e($fullName) ?>!</h1>
+
             <p>Discover fresh crops directly from farmers.</p>
 
             <a href="browse_crops.php">Browse Available Crops</a>
+
         </section>
+
 
         <!-- Dashboard Statistics -->
 
@@ -64,25 +187,26 @@
 
             <div>
                 <h3>Total Orders</h3>
-                <p>12</p>
+                <p><?php echo $totalOrders ?></p>
             </div>
 
             <div>
                 <h3>Pending Orders</h3>
-                <p>03</p>
+                <p><?php echo $pendingOrders ?></p>
+            </div>
+
+            <div>
+                <h3>Accepted Orders</h3>
+                <p><?php echo $acceptedOrders ?></p>
             </div>
 
             <div>
                 <h3>Completed Orders</h3>
-                <p>08</p>
-            </div>
-
-            <div>
-                <h3>Saved Farmers</h3>
-                <p>05</p>
+                <p><?php echo $completedOrders ?></p>
             </div>
 
         </section>
+
 
         <!-- Quick Actions -->
 
@@ -120,6 +244,7 @@
 
         </section>
 
+
         <!-- Recent Orders -->
 
         <section class="recent-orders">
@@ -127,7 +252,9 @@
             <h2>Recent Orders</h2>
 
             <div class="table-wrapper">
+
                 <table>
+
                     <thead>
                         <tr>
                             <th>Order ID</th>
@@ -141,31 +268,67 @@
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>ORD001</td>
-                            <td>Tomato</td>
-                            <td>Suresh Reddy</td>
-                            <td>100 KG</td>
-                            <td>₹2,500</td>
-                            <td>Accepted</td>
-                            <td><a href="order_tracking.php?id=1">Track</a></td>
-                        </tr>
 
-                        <tr>
-                            <td>ORD002</td>
-                            <td>Rice</td>
-                            <td>Ramesh Kumar</td>
-                            <td>200 KG</td>
-                            <td>₹9,000</td>
-                            <td>Pending</td>
-                            <td><a href="order_tracking.php?id=2">Track</a></td>
-                        </tr>
+                        <?php if (mysqli_num_rows($recentOrders) > 0): ?>
+
+                            <?php while ($order = mysqli_fetch_assoc($recentOrders)): ?>
+
+                                <tr>
+
+                                    <td>
+                                        <?php echo e($order['order_number'] ?: "ORD-" . $order['order_id']) ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo e($order['crop_name'] ?? "Crop unavailable") ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo e($order['farmer_name'] ?? "Farmer unavailable") ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo e($order['quantity']) ?>
+                                        <?php echo e($order['quantity_unit']) ?>
+                                    </td>
+
+                                    <td>
+                                        ₹<?php echo number_format((float) $order['subtotal'], 2) ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo e(ucfirst($order['order_status'])) ?>
+                                    </td>
+
+                                    <td>
+                                        <a href="order_tracking.php?id=<?php echo (int) $order['order_id'] ?>">
+                                            Track
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                            <?php endwhile; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+                                <td colspan="7">
+                                    You haven't placed any orders yet.
+                                    <a href="browse_crops.php">Browse crops</a>
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
 
                     </tbody>
+
                 </table>
+
             </div>
 
         </section>
+
 
         <!-- Featured Crops -->
 
@@ -175,26 +338,38 @@
 
             <div class="crop-grid">
 
-                <div class="crop-card">
-                    <h3>Tomato</h3>
-                    <p>Category: Vegetables</p>
-                    <p>Price: ₹25 / KG</p>
-                    <a href="browse_crops.php">View Crops</a>
-                </div>
+                <?php if ($cropsResult && mysqli_num_rows($cropsResult) > 0): ?>
 
-                <div class="crop-card">
-                    <h3>Rice</h3>
-                    <p>Category: Grains</p>
-                    <p>Price: ₹45 / KG</p>
-                    <a href="browse_crops.php">View Crops</a>
-                </div>
+                    <?php while ($crop = mysqli_fetch_assoc($cropsResult)): ?>
 
-                <div class="crop-card">
-                    <h3>Onion</h3>
-                    <p>Category: Vegetables</p>
-                    <p>Price: ₹30 / KG</p>
-                    <a href="browse_crops.php">View Crops</a>
-                </div>
+                        <div class="crop-card">
+
+                            <h3><?php echo e($crop['crop_name']) ?></h3>
+
+                            <p>
+                                Category:
+                                <?php echo e($crop['category_name'] ?? "Uncategorized") ?>
+                            </p>
+
+                            <p>
+                                Price:
+                                ₹<?php echo number_format((float) $crop['price_per_unit'], 2) ?>
+                                / <?php echo e($crop['quantity_unit']) ?>
+                            </p>
+
+                            <a href="browse_crops.php">
+                                View Crops
+                            </a>
+
+                        </div>
+
+                    <?php endwhile; ?>
+
+                <?php else: ?>
+
+                    <p>No available crops at the moment.</p>
+
+                <?php endif; ?>
 
             </div>
 
@@ -202,23 +377,40 @@
 
     </main>
 
+
     <footer>
         <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
     </footer>
 
+
     <script>
+
         const profileToggle = document.getElementById("profileToggle");
         const profilePopup = document.getElementById("profilePopup");
 
         profileToggle.addEventListener("click", function() {
+
             profilePopup.classList.toggle("show");
+
+            profileToggle.setAttribute(
+                "aria-expanded",
+                profilePopup.classList.contains("show")
+            );
+
         });
 
         document.addEventListener("click", function(event) {
+
             if (!event.target.closest(".profile-menu")) {
+
                 profilePopup.classList.remove("show");
+
+                profileToggle.setAttribute("aria-expanded", "false");
+
             }
+
         });
+
     </script>
 
 </body>

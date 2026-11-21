@@ -13,7 +13,7 @@ if (!$uid || !preg_match('/^[a-f0-9]{64}$/i', $token)) {
 
 $sql = "SELECT user_id, account_status
         FROM users
-        WHERE user_id = ? AND token = ? AND role ('farmer','buyer')
+        WHERE user_id = ? AND token = ? AND role IN ('farmer','buyer')
         LIMIT 1";
 
 $stmt = mysqli_prepare($link, $sql);
