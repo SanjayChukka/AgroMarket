@@ -11,28 +11,10 @@
 <body>
 
     <!-- Header -->
-    <header>
-        <nav class="navbar">
-
-            <div class="logo">
-                <a href="../index.php">AgroMarket Connect</a>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="../index.php">Home</a></li>
-                <li><a href="about.php">About Us</a></li>
-                <li><a href="how_it_works.php">How It Works</a></li>
-                <li><a href="faq.php">FAQ</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="../auth/login.php">Login</a>
-                <a href="../auth/register.php">Register</a>
-            </div>
-
-        </nav>
-    </header>
+    <?php
+    $showMarketPrices = false;
+    $registrationRole = null;
+    require __DIR__ . "/includes/header.php"; ?>
 
     <main>
 

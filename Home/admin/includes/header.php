@@ -1,11 +1,8 @@
 <?php
 require_once __DIR__ . "/../../config/auth_check.php";
 
-require_login("admin", "../../auth/login.php");
+require_login("admin", "../auth/login.php");
 
-$pageTitle = $pageTitle ?? "Admin Dashboard";
-?>
-<?php
 $pageTitle = $pageTitle ?? "Admin Dashboard";
 ?>
 <!DOCTYPE html>

@@ -1,20 +1,12 @@
-
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-    }
-
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
 
     $farmerId = (int) $_SESSION['user_id'];
 
-    function e($value)
-    {
-    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
-    }
+    require_once __DIR__ . "/../includes/html.php";
 
     // -----------------------------------------
     // 1. Fetch farmer account details
@@ -505,12 +497,10 @@
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="farmer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="manage_listings.php">My Listings</a>
-            <a href="orders.php">Orders</a>
-        </nav>
+        <?php
+    $activePage = "";
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="header-right">
 
@@ -771,36 +761,9 @@
     </footer>
 
     <!-- Profile Popup -->
-    <script>
 
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
 
-        profileToggle.addEventListener("click", function() {
-
-            profilePopup.classList.toggle("show");
-
-            profileToggle.setAttribute(
-                "aria-expanded",
-                profilePopup.classList.contains("show")
-            );
-
-        });
-
-        document.addEventListener("click", function(event) {
-
-            if (!event.target.closest(".profile-menu")) {
-
-                profilePopup.classList.remove("show");
-
-                profileToggle.setAttribute("aria-expanded", "false");
-
-            }
-
-        });
-
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 
 </html>

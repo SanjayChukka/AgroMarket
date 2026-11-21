@@ -1,16 +1,10 @@
-
 <?php
-    session_start();
-
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
     require_login("buyer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
 
-    function e($value)
-    {
-    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
-    }
+    require_once __DIR__ . "/../includes/html.php";
 
     // Get listing ID from URL
     $listingId = filter_input(INPUT_GET, 'listing_id', FILTER_VALIDATE_INT);
@@ -136,13 +130,11 @@
         <h2>AgroMarket Connect</h2>
     </div>
 
-    <nav class="buyer-nav">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="browse_crops.php">Browse Crops</a>
-        <a href="find_farmers.php">Find Farmers</a>
-        <a href="my_orders.php">My Orders</a>
-        <a href="order_tracking.php">Track Orders</a>
-    </nav>
+    <?php
+    $activePage = "";
+    $showProfileLink = false;
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
     <div class="header-right">
         <a href="../auth/logout.php" class="logout-link">Logout</a>
@@ -306,7 +298,6 @@
     <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
 </footer>
 
-<script src="buyer.js"></script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>

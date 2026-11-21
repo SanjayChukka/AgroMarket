@@ -11,28 +11,10 @@
 <body>
 
     <!-- Header -->
-    <header>
-        <nav class="navbar">
-
-            <div class="logo">
-                <a href="../index.php">AgroMarket Connect</a>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="../index.php">Home</a></li>
-                <li><a href="about.php">About Us</a></li>
-                <li><a href="how_it_works.php">How It Works</a></li>
-                <li><a href="faq.php">FAQ</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="../auth/login.php">Login</a>
-                <a href="../auth/register.php">Register</a>
-            </div>
-
-        </nav>
-    </header>
+    <?php
+    $showMarketPrices = false;
+    $registrationRole = null;
+    require __DIR__ . "/includes/header.php"; ?>
 
     <main>
 
@@ -176,42 +158,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-
-        <div class="footer-content">
-
-            <div>
-                <h3>AgroMarket Connect</h3>
-                <p>Connecting Farmers and Buyers.</p>
-            </div>
-
-            <div>
-                <h3>Quick Links</h3>
-                <a href="../index.php">Home</a>
-                <a href="about.php">About Us</a>
-                <a href="how_it_works.php">How It Works</a>
-            </div>
-
-            <div>
-                <h3>Support</h3>
-                <a href="faq.php">FAQ</a>
-                <a href="help.php">Help & Support</a>
-                <a href="contact.php">Contact Us</a>
-            </div>
-
-            <div>
-                <h3>Legal</h3>
-                <a href="terms.php">Terms & Conditions</a>
-                <a href="privacy.php">Privacy Policy</a>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
-        </div>
-
-    </footer>
+    <?php require __DIR__ . "/includes/footer.php"; ?>
 
 </body>
 

@@ -1,10 +1,4 @@
-
 <?php
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 require_once __DIR__ . "/../config/auth_check.php";
 require_login("farmer", "../auth/login.php");
 
@@ -14,9 +8,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $farmerId = (int)$_SESSION['user_id'];
 
-function e($value) {
-    return htmlspecialchars((string)($value ?? ""), ENT_QUOTES, "UTF-8");
-}
+require_once __DIR__ . "/../includes/html.php";
 
 // ------------------------------------------
 // 1. CSRF token
@@ -482,14 +474,10 @@ mysqli_stmt_close($stmt);
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="farmer-nav">
-
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="manage_listings.php">My Listings</a>
-            <a href="orders.php">Orders</a>
-
-        </nav>
+        <?php
+    $activePage = "";
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="header-right">
 
@@ -669,7 +657,7 @@ mysqli_stmt_close($stmt);
 
                                             <button
                                                 type="button"
-                                                onclick="openConfirmation(<?php echo (int)$order['order_id']; ?>, 'accept')">
+                                                data-order-id="<?php echo (int)$order['order_id']; ?>" data-order-action="accept">
 
                                                 Accept
 
@@ -677,7 +665,7 @@ mysqli_stmt_close($stmt);
 
                                             <button
                                                 type="button"
-                                                onclick="openConfirmation(<?php echo (int)$order['order_id']; ?>, 'reject')">
+                                                data-order-id="<?php echo (int)$order['order_id']; ?>" data-order-action="reject">
 
                                                 Reject
 
@@ -726,7 +714,7 @@ mysqli_stmt_close($stmt);
             <button
                 type="button"
                 class="popup-close"
-                onclick="closeConfirmation()">
+                data-close-confirmation>
 
                 ×
 
@@ -780,7 +768,7 @@ mysqli_stmt_close($stmt);
 
                     <button
                         type="button"
-                        onclick="closeConfirmation()">
+                        data-close-confirmation>
 
                         Cancel
 
@@ -804,154 +792,9 @@ mysqli_stmt_close($stmt);
         <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
     </footer>
 
-    <script>
+    <script src="js/orders.js" defer></script>
 
-        // --------------------------------
-        // Profile Popup
-        // --------------------------------
-
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
-
-        profileToggle.addEventListener("click", function() {
-
-            profilePopup.classList.toggle("show");
-
-            profileToggle.setAttribute(
-                "aria-expanded",
-                profilePopup.classList.contains("show")
-            );
-
-        });
-
-        document.addEventListener("click", function(event) {
-
-            if (!event.target.closest(".profile-menu")) {
-
-                profilePopup.classList.remove("show");
-
-                profileToggle.setAttribute("aria-expanded", "false");
-
-            }
-
-        });
-
-
-        // --------------------------------
-        // Order Confirmation
-        // --------------------------------
-
-        let selectedAction = null;
-
-        const confirmationOverlay =
-            document.getElementById("confirmationOverlay");
-
-        const confirmationTitle =
-            document.getElementById("confirmationTitle");
-
-        const confirmationMessage =
-            document.getElementById("confirmationMessage");
-
-        const termsArea =
-            document.getElementById("termsArea");
-
-        const termsCheckbox =
-            document.getElementById("termsCheckbox");
-
-        const confirmButton =
-            document.getElementById("confirmAction");
-
-
-        function openConfirmation(orderId, action) {
-
-            selectedAction = action;
-
-            document.getElementById("selectedOrderId").value = orderId;
-
-            document.getElementById("selectedAction").value = action;
-
-            document.getElementById("termsAccepted").value = "0";
-
-            termsCheckbox.checked = false;
-
-            if (action === "accept") {
-
-                confirmationTitle.textContent = "Accept Order?";
-
-                confirmationMessage.textContent =
-                    "Are you sure you want to accept this order? Please review the order details before confirming.";
-
-                termsArea.style.display = "block";
-
-                confirmButton.textContent = "Accept Order";
-
-            } else {
-
-                confirmationTitle.textContent = "Reject Order?";
-
-                confirmationMessage.textContent =
-                    "Are you sure you want to reject this buyer's order?";
-
-                termsArea.style.display = "none";
-
-                confirmButton.textContent = "Reject Order";
-
-            }
-
-            confirmationOverlay.style.display = "flex";
-
-        }
-
-
-        function closeConfirmation() {
-
-            confirmationOverlay.style.display = "none";
-
-            selectedAction = null;
-
-        }
-
-
-        // --------------------------------
-        // Submit Decision to PHP
-        // --------------------------------
-
-        confirmButton.addEventListener("click", function() {
-
-            if (selectedAction === "accept") {
-
-                if (!termsCheckbox.checked) {
-
-                    alert("Please accept the terms and conditions first.");
-
-                    return;
-
-                }
-
-                document.getElementById("termsAccepted").value = "1";
-
-            } else {
-
-                document.getElementById("termsAccepted").value = "0";
-
-            }
-
-            document.getElementById("orderActionForm").submit();
-
-        });
-
-
-        // Close popup when clicking outside
-        confirmationOverlay.addEventListener("click", function(event) {
-
-            if (event.target === confirmationOverlay) {
-                closeConfirmation();
-            }
-
-        });
-
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 
 </html>

@@ -14,7 +14,7 @@
         <h2>Forgot Password?</h2>
         <p>Enter your registered email or mobile number to reset your password.</p>
 
-        <form action="verify_reset_otp.php" method="POST">
+        <form action="verify_reset_opt.php" method="POST">
 
             <div class="form-group">
                 <label>Choose Authentication Method</label>

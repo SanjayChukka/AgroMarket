@@ -1,19 +1,12 @@
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-    }
-
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
 
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    function e($value)
-    {
-    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
-    }
+    require_once __DIR__ . "/../includes/html.php";
 
     $farmerId = (int) $_SESSION['user_id'];
 
@@ -454,12 +447,10 @@
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="farmer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="manage_listings.php">My Listings</a>
-            <a href="orders.php">Orders</a>
-        </nav>
+        <?php
+    $activePage = "";
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="header-right">
             <a href="../auth/logout.php" class="logout-link">Logout</a>
@@ -649,63 +640,8 @@
         <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
     </footer>
 
-    <script>
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
+    <script src="js/profile.js" defer></script>
 
-        profileToggle.addEventListener("click", function() {
-            profilePopup.classList.toggle("show");
-
-            profileToggle.setAttribute(
-                "aria-expanded",
-                profilePopup.classList.contains("show")
-            );
-        });
-
-        document.addEventListener("click", function(event) {
-            if (!event.target.closest(".profile-menu")) {
-                profilePopup.classList.remove("show");
-                profileToggle.setAttribute("aria-expanded", "false");
-            }
-        });
-
-        // Preview the selected profile picture
-        const profilePicture = document.getElementById("profilePicture");
-        const profilePreview = document.getElementById("profilePreview");
-        const profileInitialElement = document.getElementById("profileInitial");
-
-        profilePicture.addEventListener("change", function() {
-            const file = this.files[0];
-
-            if (!file) {
-                return;
-            }
-
-            const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-
-            if (!allowedTypes.includes(file.type)) {
-                alert("Please select a JPG, PNG or WEBP image.");
-                this.value = "";
-                return;
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                alert("Profile picture must be smaller than 5 MB.");
-                this.value = "";
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-                profilePreview.src = event.target.result;
-                profilePreview.hidden = false;
-                profileInitialElement.hidden = true;
-            };
-
-            reader.readAsDataURL(file);
-        });
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>

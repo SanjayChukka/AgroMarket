@@ -1,99 +1,21 @@
-
 <?php
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
 
     require_login("buyer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
 
-    $user_id = (int) $_SESSION['user_id'];
+require_once __DIR__ . "/../includes/notifications.php";
 
-    $message = "";
-
-    // Mark a notification as read
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    if (isset($_POST['mark_read'])) {
-
-        $notification_id = (int) $_POST['notification_id'];
-
-        $sql = "UPDATE notifications
-                SET is_read = 1
-                WHERE notification_id = ?
-                AND user_id = ?";
-
-        $stmt = mysqli_prepare($link, $sql);
-
-        if ($stmt) {
-            mysqli_stmt_bind_param(
-                $stmt,
-                "ii",
-                $notification_id,
-                $user_id
-            );
-
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-        }
-
-    }
-
-    if (isset($_POST['mark_all_read'])) {
-
-        $sql = "UPDATE notifications
-                SET is_read = 1
-                WHERE user_id = ? AND is_read = 0";
-
-        $stmt = mysqli_prepare($link, $sql);
-
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "i", $user_id);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-        }
-    }
-
+$userId = (int) $_SESSION['user_id'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    markNotificationsRead($link, $userId, $_POST);
     header("Location: notifications.php");
     exit;
-    }
+}
 
-    // Get unread notification count
-    $countSql = "SELECT COUNT(*) AS unread_count
-             FROM notifications
-             WHERE user_id = ? AND is_read = 0";
-
-    $countStmt = mysqli_prepare($link, $countSql);
-    mysqli_stmt_bind_param($countStmt, "i", $user_id);
-    mysqli_stmt_execute($countStmt);
-
-    $countResult = mysqli_stmt_get_result($countStmt);
-    $countData   = mysqli_fetch_assoc($countResult);
-
-    $unreadCount = (int) $countData['unread_count'];
-
-    mysqli_stmt_close($countStmt);
-
-    // Fetch all buyer notifications
-    $sql = "SELECT notification_id, title, message,
-               notification_type, related_order_id,
-               is_read, created_at
-        FROM notifications
-        WHERE user_id = ?
-        ORDER BY created_at DESC";
-
-    $stmt = mysqli_prepare($link, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
-
-    $notifications = [];
-
-    while ($row = mysqli_fetch_assoc($result)) {
-    $notifications[] = $row;
-    }
-
-    mysqli_stmt_close($stmt);
+$unreadCount = unreadNotificationCount($link, $userId);
+$notifications = notificationsForUser($link, $userId);
 
     function buyerNotificationIcon($type)
     {

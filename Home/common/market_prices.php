@@ -11,28 +11,10 @@
 <body>
 
     <!-- Header -->
-    <header>
-        <nav class="navbar">
-
-            <div class="logo">
-                <a href="../index.php">AgroMarket Connect</a>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="../index.php">Home</a></li>
-                <li><a href="about.php">About Us</a></li>
-                <li><a href="how_it_works.php">How It Works</a></li>
-                <li><a href="market_prices.php">Market Prices</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="../auth/login.php">Login</a>
-                <a href="../auth/register.php">Register</a>
-            </div>
-
-        </nav>
-    </header>
+    <?php
+    $showMarketPrices = true;
+    $registrationRole = null;
+    require __DIR__ . "/includes/header.php"; ?>
 
     <main>
 
@@ -273,54 +255,7 @@
     </footer>
 
     <!-- Basic Search and Filter -->
-    <script>
-        const searchInput = document.getElementById("cropSearch");
-        const categoryFilter = document.getElementById("categoryFilter");
-        const locationFilter = document.getElementById("locationFilter");
-
-        const cards = document.querySelectorAll(".market-card");
-        const noProducts = document.getElementById("noProducts");
-
-        function filterProducts() {
-
-            const searchValue = searchInput.value.toLowerCase().trim();
-            const categoryValue = categoryFilter.value;
-            const locationValue = locationFilter.value;
-
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-
-                const cropName = card.querySelector("h3").textContent.toLowerCase();
-
-                const matchesSearch = cropName.includes(searchValue);
-
-                const matchesCategory =
-                    categoryValue === "all" ||
-                    card.dataset.category === categoryValue;
-
-                const matchesLocation =
-                    locationValue === "all" ||
-                    card.dataset.location === locationValue;
-
-                const shouldDisplay =
-                    matchesSearch && matchesCategory && matchesLocation;
-
-                card.hidden = !shouldDisplay;
-
-                if (shouldDisplay) {
-                    visibleCount++;
-                }
-
-            });
-
-            noProducts.hidden = visibleCount !== 0;
-        }
-
-        searchInput.addEventListener("input", filterProducts);
-        categoryFilter.addEventListener("change", filterProducts);
-        locationFilter.addEventListener("change", filterProducts);
-    </script>
+    <script src="js/market_prices.js" defer></script>
 
 </body>
 

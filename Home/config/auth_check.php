@@ -1,4 +1,3 @@
-
 <?php
 
 // Start session only if one is not already active

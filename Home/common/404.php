@@ -38,7 +38,7 @@
                         Go to Homepage
                     </a>
 
-                    <button type="button" onclick="history.back()">
+                    <button type="button" id="goBack">
                         Go Back
                     </button>
 
@@ -55,6 +55,7 @@
 
     </main>
 
+<script src="js/404.js" defer></script>
 </body>
 
 </html>

@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . "/../config/auth_check.php";
+require_login("buyer", "../auth/login.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,14 +20,11 @@
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="buyer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="browse_crops.php">Browse Crops</a>
-            <a href="find_farmers.php">Find Farmers</a>
-            <a href="my_orders.php">My Orders</a>
-            <a href="order_tracking.php">Track Orders</a>
-            <a href="profile.php">My Profile</a>
-        </nav>
+        <?php
+    $activePage = "";
+    $showProfileLink = true;
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="header-right">
             <a href="../auth/logout.php" class="logout-link">Logout</a>
@@ -200,35 +201,9 @@
         <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
     </footer>
 
-    <script>
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
+    <script src="js/profile.js" defer></script>
 
-        profileToggle.addEventListener("click", function() {
-            profilePopup.classList.toggle("show");
-        });
-
-        document.addEventListener("click", function(event) {
-            if (!event.target.closest(".profile-menu")) {
-                profilePopup.classList.remove("show");
-            }
-        });
-
-        // Profile picture preview
-        const profilePicture = document.getElementById("profilePicture");
-        const profilePreview = document.querySelector(".buyer-profile-preview");
-
-        profilePicture.addEventListener("change", function() {
-            const file = this.files[0];
-
-            if (file) {
-                profilePreview.style.backgroundImage =
-                    `url('${URL.createObjectURL(file)}')`;
-                profilePreview.textContent = "";
-            }
-        });
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 
 </html>

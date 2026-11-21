@@ -1,7 +1,4 @@
-
 <?php
-session_start();
-
 require_once __DIR__ . "/../config/auth_check.php";
 require_login("buyer", "../auth/login.php");
 
@@ -9,9 +6,7 @@ require_once __DIR__ . "/../config/db.php";
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-function e($value) {
-    return htmlspecialchars((string)($value ?? ""), ENT_QUOTES, "UTF-8");
-}
+require_once __DIR__ . "/../includes/html.php";
 
 $buyerId = (int)$_SESSION['user_id'];
 
@@ -373,13 +368,11 @@ $price = (float)$crop['price_per_unit'];
         <h2>AgroMarket Connect</h2>
     </div>
 
-    <nav class="buyer-nav">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="browse_crops.php">Browse Crops</a>
-        <a href="find_farmers.php">Find Farmers</a>
-        <a href="my_orders.php">My Orders</a>
-        <a href="order_tracking.php">Track Orders</a>
-    </nav>
+    <?php
+    $activePage = "";
+    $showProfileLink = false;
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
     <div class="header-right">
 
@@ -458,7 +451,7 @@ $price = (float)$crop['price_per_unit'];
 
                 <input
                     type="number"
-                    id="quantity"
+                    id="quantity" data-unit-price="<?= e($price) ?>"
                     name="quantity"
                     min="<?= $minimumQuantity > 0 ? e($minimumQuantity) : '0.001' ?>"
                     max="<?= e($crop['quantity_available']) ?>"
@@ -558,29 +551,8 @@ $price = (float)$crop['price_per_unit'];
     <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
 </footer>
 
-<script src="buyer.js"></script>
+<script src="js/place_order.js" defer></script>
 
-<script>
-const quantityInput = document.getElementById("quantity");
-const totalAmount = document.getElementById("totalAmount");
-
-const pricePerUnit = <?= json_encode($price) ?>;
-
-function calculateTotal() {
-    const quantity = Number(quantityInput.value) || 0;
-    const amount = quantity * pricePerUnit;
-
-    totalAmount.value = "₹" + amount.toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-if (quantityInput) {
-    quantityInput.addEventListener("input", calculateTotal);
-    calculateTotal();
-}
-</script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>

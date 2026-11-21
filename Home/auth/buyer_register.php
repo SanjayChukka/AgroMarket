@@ -1,6 +1,6 @@
-
 <?php
     session_start();
+    require_once __DIR__ . "/includes/registration.php";
 
     // Prevent the browser from showing an outdated registration form.
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -55,19 +55,6 @@
     );
     }
 
-    // Save entered values, excluding passwords.
-    function saveBuyerValues()
-    {
-    $oldValues = $_POST;
-
-    unset(
-        $oldValues['password'],
-        $oldValues['confirm_password'],
-        $oldValues['register']
-    );
-
-    $_SESSION['buyer_old_values'] = $oldValues;
-    }
 
     // Redirect using the Post/Redirect/Get pattern.
     function redirectBuyer()
@@ -76,10 +63,7 @@
     exit;
     }
 
-    // ========================================
     // BUYER REGISTRATION BACKEND
-    // ========================================
-
     if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['register'])
@@ -103,10 +87,7 @@
 
     $errors = [];
 
-    // ------------------------------------
     // SERVER-SIDE VALIDATION
-    // ------------------------------------
-
     if ($first_name === "") {
         $errors['first_name'] = "First name is required.";
     }
@@ -182,24 +163,18 @@
         $errors['pincode'] = "Enter a valid 6-digit PIN code.";
     }
 
-    // ------------------------------------
     // HANDLE VALIDATION ERRORS
-    // ------------------------------------
-
     if (! empty($errors)) {
         $_SESSION['buyer_field_errors']  = $errors;
         $_SESSION['buyer_popup_type']    = "error";
         $_SESSION['buyer_popup_message'] =
             "Please correct the highlighted fields and try again.";
 
-        saveBuyerValues();
+        saveRegistrationValues('buyer_old_values');
         redirectBuyer();
     }
 
-    // ------------------------------------
     // CHECK DUPLICATE USER DETAILS
-    // ------------------------------------
-
     $duplicateChecks = [
         "username" => [
             $username,
@@ -242,15 +217,12 @@
                 $_SESSION['buyer_popup_type']    = "error";
                 $_SESSION['buyer_popup_message'] = $errorMessage;
 
-                saveBuyerValues();
+                saveRegistrationValues('buyer_old_values');
                 redirectBuyer();
             }
         }
 
-        // --------------------------------
         // PREPARE ACCOUNT DETAILS
-        // --------------------------------
-
         $full_name = $first_name . " " . $last_name;
 
         $password_hash = password_hash(
@@ -275,10 +247,7 @@
             ? null
             : $pincode;
 
-        // --------------------------------
         // DATABASE TRANSACTION
-        // --------------------------------
-
         $transactionStarted = false;
 
         try {
@@ -367,10 +336,7 @@
             throw $e;
         }
 
-        // --------------------------------
         // GENERATE ACTIVATION LINK
-        // --------------------------------
-
         $scheme = (
             (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
             (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
@@ -393,10 +359,7 @@
         "&token=" .
         urlencode($token);
 
-        // --------------------------------
         // SEND ACTIVATION EMAIL
-        // --------------------------------
-
         $subject = "Activate your AgroMarket Connect buyer account";
 
         $emailMessage =
@@ -456,7 +419,7 @@
                 "Registration failed. Please try again.";
         }
 
-        saveBuyerValues();
+        saveRegistrationValues('buyer_old_values');
     }
 
     redirectBuyer();
@@ -494,7 +457,7 @@
         <form
             action=""
             method="POST"
-            class="registration-form"
+            class="registration-form" data-role="buyer"
             novalidate
         >
 
@@ -835,219 +798,8 @@
 
 <!-- Registration Popup -->
 
-<div id="popupCard" class="popup-overlay">
-
-    <div class="popup-card">
-
-        <div id="popupIcon" class="popup-icon"></div>
-
-        <h2 id="popupTitle"></h2>
-
-        <p id="popupText"></p>
-
-        <button type="button" onclick="closePopup()">
-            OK
-        </button>
-
-    </div>
-
-</div>
-
-
-<script>
-const popup = document.getElementById("popupCard");
-const popupCard = document.querySelector(".popup-card");
-const buyerForm = document.querySelector(".registration-form");
-let currentPopupType = "";
-
-function showPopup(type, message) {
-    currentPopupType = type;
-    popup.style.display = "flex";
-    document.getElementById("popupIcon").textContent = type === "success" ? "✓" : "✕";
-    document.getElementById("popupTitle").textContent = type === "success" ? "Success!" : "Registration Failed";
-    document.getElementById("popupText").textContent = message;
-    document.getElementById("popupText").style.whiteSpace = "pre-line";
-    popupCard.classList.toggle("error", type !== "success");
-}
-function closePopup() {
-    popup.style.display = "none";
-    if (currentPopupType === "success") window.location.href = "../index.php";
-}
-<?php if ($popupMessage !== ""): ?>
-showPopup(<?php echo json_encode($popupType); ?>,
-<?php echo json_encode($popupMessage, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
-<?php endif; ?>
-
-const duplicateFields = ["username", "email", "mobile"];
-const duplicateStatus = {username:false, email:false, mobile:false};
-const verificationFailed = {username:false, email:false, mobile:false};
-const duplicateTimers = {}, duplicateRequests = {};
-const touched = new Set();
-const fields = ["first_name","last_name","username","email","mobile","password",
-"confirm_password","buyer_type","business_name","state","district","city","pincode","address"];
-
-function errorNode(id) {
-    const el = document.getElementById(id);
-    if (!el) return null;
-    let node = document.getElementById(id+"Error");
-    if (!node) {
-        node = document.createElement("small");
-        node.id = id+"Error"; node.className = "field-error";
-        el.insertAdjacentElement("afterend", node);
-    }
-    return node;
-}
-function showError(id,msg) {
-    const el=document.getElementById(id), node=errorNode(id);
-    if (!el || !node) return;
-    el.classList.add("input-error"); el.classList.remove("input-valid");
-    node.textContent=msg;
-}
-function clearError(id,valid=false) {
-    const el=document.getElementById(id), node=errorNode(id);
-    if (!el || !node) return;
-    el.classList.remove("input-error","input-valid");
-    if(valid && el.value.trim()) el.classList.add("input-valid");
-    node.textContent="";
-}
-function rules(p) {
-    return [p.length>=8,/[A-Z]/.test(p),/[a-z]/.test(p),/[0-9]/.test(p),/[^A-Za-z0-9]/.test(p)];
-}
-function updatePassword() {
-    const passwordInput = document.getElementById("password");
-    if (!passwordInput) return false;
-
-    const p = passwordInput.value;
-    const passed = rules(p);
-    const ids = ["lengthRule", "upperRule", "lowerRule", "numberRule", "specialRule"];
-
-    ids.forEach((id, i) => {
-        const li = document.getElementById(id);
-        if (!li) return;
-
-        const label = li.dataset.label || li.textContent.replace(/^[✓✗]\s*/, "");
-        li.dataset.label = label;
-        li.textContent = (passed[i] ? "✓ " : "✗ ") + label;
-        li.classList.toggle("valid", passed[i]);
-        li.classList.toggle("invalid", !passed[i]);
-        // Apply the colour directly as a fallback if another stylesheet overrides the classes.
-        li.style.color = passed[i] ? "#198754" : "#dc3545";
-    });
-
-    const bar = document.getElementById("strengthBar");
-    const txt = document.getElementById("strengthText");
-    if (bar && txt) {
-        const count = passed.filter(Boolean).length;
-        const levels = [
-            ["Very weak", "20%", "#dc3545"],
-            ["Weak", "40%", "#fd7e14"],
-            ["Medium", "60%", "#ffc107"],
-            ["Strong", "80%", "#0d6efd"],
-            ["Very strong", "100%", "#198754"]
-        ];
-        if (!p) {
-            bar.style.width = "0";
-            txt.textContent = "Password strength: Not entered";
-        } else {
-            bar.style.width = levels[count - 1][1];
-            bar.style.background = levels[count - 1][2];
-            txt.textContent = "Password strength: " + levels[count - 1][0];
-        }
-    }
-    return passed.every(Boolean);
-}
-function validateField(id) {
-    const el=document.getElementById(id); if(!el) return true;
-    const v=el.value.trim(); let msg="";
-    if(["first_name","last_name","district","address"].includes(id)&&!v) msg="This field is required.";
-    if(id==="username"&&!v) msg="Username is required.";
-    else if(id==="username"&&v.length<3) msg="Username must contain at least 3 characters.";
-    if(id==="email"&&!v) msg="Email address is required.";
-    else if(id==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg="Enter a valid email address.";
-    if(id==="mobile"&&!v) msg="Mobile number is required.";
-    else if(id==="mobile"&&!/^[6-9][0-9]{9}$/.test(v)) msg="Enter a valid 10-digit Indian mobile number.";
-    if(id==="password"&&!el.value) msg="Password is required.";
-    else if(id==="password"&&!rules(el.value).every(Boolean)) msg="Password does not meet all the requirements below.";
-    if(id==="confirm_password"&&!el.value) msg="Please confirm your password.";
-    else if(id==="confirm_password"&&el.value!==document.getElementById("password").value) msg="Passwords do not match.";
-    if(["buyer_type","state"].includes(id)&&!v) msg="Please select an option.";
-    if(id==="pincode"&&v&&!/^[0-9]{6}$/.test(v)) msg="Enter a valid 6-digit PIN code.";
-    if(msg){showError(id,msg);return false;}
-    clearError(id,!!v); return true;
-}
-function duplicateFormat(id,v) {
-    if(id==="username") return v.length>=3;
-    if(id==="email") return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-    if(id==="mobile") return /^[6-9][0-9]{9}$/.test(v);
-    return false;
-}
-async function checkDuplicate(id) {
-    const el=document.getElementById(id), value=el.value.trim();
-    if(!duplicateFormat(id,value)) return false;
-    const request=duplicateRequests[id]=(duplicateRequests[id]||0)+1;
-    const fd=new FormData(); fd.append("field",id); fd.append("value",value);
-    try {
-        const response=await fetch("check_duplicate.php",{method:"POST",body:fd});
-        if(!response.ok) throw new Error("Verification failed");
-        const data=await response.json();
-        if(request!==duplicateRequests[id]||el.value.trim()!==value) return null;
-        verificationFailed[id]=false; duplicateStatus[id]=!!data.exists;
-        if(data.exists){showError(id,data.message||"This value is already registered.");return true;}
-        clearError(id,true); return false;
-    } catch(e) {
-        if(request===duplicateRequests[id]&&el.value.trim()===value){
-            verificationFailed[id]=true; showError(id,"Unable to verify this value. Please try again.");
-        }
-        return true;
-    }
-}
-fields.forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    el.addEventListener("blur",()=>{
-        touched.add(id); validateField(id);
-        if(duplicateFields.includes(id)&&duplicateFormat(id,el.value.trim())) checkDuplicate(id);
-    });
-    el.addEventListener("input",()=>{
-        if(touched.has(id)) validateField(id);
-        if(id==="password"){updatePassword();if(touched.has("confirm_password"))validateField("confirm_password");}
-        if(duplicateFields.includes(id)){
-            clearTimeout(duplicateTimers[id]); duplicateRequests[id]=(duplicateRequests[id]||0)+1;
-            duplicateStatus[id]=false; verificationFailed[id]=false;
-            if(duplicateFormat(id,el.value.trim())) duplicateTimers[id]=setTimeout(()=>checkDuplicate(id),450);
-        }
-    });
-    el.addEventListener("change",()=>{touched.add(id);validateField(id);});
-});
-updatePassword();
-
-let allowSubmit=false;
-buyerForm.addEventListener("submit",async event=>{
-    if(allowSubmit)return;
-    event.preventDefault();
-    let first=null;
-    fields.forEach(id=>{touched.add(id);if(!validateField(id)&&!first)first=id;});
-    updatePassword();
-    if(first){document.getElementById(first).focus();showPopup("error","Please correct the highlighted fields before submitting.");return;}
-    duplicateFields.forEach(id=>clearTimeout(duplicateTimers[id]));
-    const results=await Promise.all(duplicateFields.map(checkDuplicate));
-    const issue=duplicateFields.find(id=>duplicateStatus[id]||verificationFailed[id]);
-    if(issue||results.some(x=>x!==false)){
-        const id=issue||duplicateFields[0];document.getElementById(id).focus();
-        showPopup("error","Please use a username, email address and mobile number that are not already registered.");return;
-    }
-    allowSubmit=true;buyerForm.requestSubmit(buyerForm.querySelector('button[name="register"]'));
-});
-window.addEventListener("pageshow",event=>{
-    const nav=performance.getEntriesByType("navigation")[0];
-    if(event.persisted||(nav&&nav.type==="back_forward")){
-        buyerForm.reset();touched.clear();
-        duplicateFields.forEach(id=>{duplicateStatus[id]=false;verificationFailed[id]=false;duplicateRequests[id]=(duplicateRequests[id]||0)+1;clearTimeout(duplicateTimers[id]);clearError(id);});
-        fields.filter(id=>!duplicateFields.includes(id)).forEach(id=>clearError(id));
-        document.querySelectorAll(".field-error").forEach(n=>n.textContent="");
-        popup.style.display="none";allowSubmit=false;updatePassword();
-    }
-});
-</script>
+<?php require __DIR__ . "/includes/registration_popup.php"; ?>
+<script src="js/registration.js" defer></script>
 
 </body>
 </html>

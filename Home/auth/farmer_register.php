@@ -1,7 +1,6 @@
-
-
 <?php
     session_start();
+    require_once __DIR__ . "/includes/registration.php";
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -29,19 +28,6 @@
     return htmlspecialchars($value ?? "", ENT_QUOTES, "UTF-8");
     }
 
-    // Save submitted values, excluding passwords
-    function saveFarmerValues()
-    {
-    $oldValues = $_POST;
-
-    unset(
-        $oldValues['password'],
-        $oldValues['confirm_password'],
-        $oldValues['register']
-    );
-
-    $_SESSION['farmer_old_values'] = $oldValues;
-    }
 
     // Redirect to prevent form resubmission
     function redirectFarmer()
@@ -70,10 +56,7 @@
     $pincode      = trim($_POST['pincode'] ?? "");
     $land_size    = trim($_POST['land_size'] ?? "");
 
-    // --------------------------------
     // SERVER-SIDE VALIDATION
-    // --------------------------------
-
     if ($first_name === "") {
         $errors[] = "First name is required.";
     }
@@ -151,15 +134,13 @@
 
         $_SESSION['farmer_errors'] = $errors;
 
-        saveFarmerValues();
+        saveRegistrationValues('farmer_old_values');
 
         redirectFarmer();
     }
 
-    // --------------------------------
     // CHECK DUPLICATES IN REQUIRED ORDER
     // Username -> Email -> Mobile
-    // --------------------------------
     $transactionStarted = false;
     try {
 
@@ -213,16 +194,13 @@
                     "message" => $check['message'],
                 ];
 
-                saveFarmerValues();
+                saveRegistrationValues('farmer_old_values');
 
                 redirectFarmer();
             }
         }
 
-        // --------------------------------
         //  REGISTRATION DATA
-        // --------------------------------
-
         $full_name = $first_name . " " . $last_name;
 
         $password_hash = password_hash(
@@ -380,7 +358,7 @@
             "message" => $errorMessage,
         ];
 
-        saveFarmerValues();
+        saveRegistrationValues('farmer_old_values');
 
         redirectFarmer();
     }
@@ -424,7 +402,7 @@
         <?php endif; ?>
 
         <form action="" method="POST"
-              class="registration-form"
+              class="registration-form" data-role="farmer"
 
               novalidate>
 
@@ -501,6 +479,15 @@
                            id="password"
                            name="password"
                            class="form-control">
+                    <div class="password-feedback" id="farmerPasswordRules">
+                        <ul class="password-requirements">
+                            <li id="farmerLengthRule" class="invalid">✗ At least 8 characters</li>
+                            <li id="farmerUpperRule" class="invalid">✗ One uppercase letter</li>
+                            <li id="farmerLowerRule" class="invalid">✗ One lowercase letter</li>
+                            <li id="farmerNumberRule" class="invalid">✗ One number</li>
+                            <li id="farmerSpecialRule" class="invalid">✗ One special character</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -635,146 +622,8 @@
 </main>
 
 <!-- Reusable popup card -->
-<div id="popupCard" class="popup-overlay">
-
-    <div class="popup-card">
-
-        <div id="popupIcon" class="popup-icon"></div>
-
-        <h2 id="popupTitle"></h2>
-
-        <p id="popupText"></p>
-
-        <button type="button" onclick="closePopup()">OK</button>
-
-    </div>
-
-</div>
-
-<script>
-const popup=document.getElementById("popupCard");
-const popupCard=document.querySelector(".popup-card");
-const farmerForm=document.querySelector(".registration-form");
-let currentPopupType="";
-function showPopup(type,message){
-    currentPopupType=type;popup.style.display="flex";
-    document.getElementById("popupIcon").textContent=type==="success"?"✓":"✕";
-    document.getElementById("popupTitle").textContent=type==="success"?"Success!":"Registration Failed";
-    document.getElementById("popupText").textContent=message;
-    popupCard.classList.toggle("error",type!=="success");
-}
-function closePopup(){popup.style.display="none";if(currentPopupType==="success")window.location.href="../index.php";}
-<?php if (! empty($popupMessage)): ?>
-showPopup(<?php echo json_encode($popupType); ?>,
-<?php echo json_encode($popupMessage, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
-<?php endif; ?>
-
-const duplicateFields=["username","email","mobile"];
-const duplicateStatus={username:false,email:false,mobile:false};
-const verificationFailed={username:false,email:false,mobile:false};
-const duplicateTimers={},duplicateRequests={},touched=new Set();
-const required=["first_name","last_name","username","email","mobile","password","confirm_password","address_line","state","district","village","pincode"];
-const fields=[...required,"farm_name","land_size"];
-
-function errorNode(id){
-    const el=document.getElementById(id);if(!el)return null;
-    let node=document.getElementById(id+"Error");
-    if(!node){node=document.createElement("small");node.id=id+"Error";node.className="field-error";el.insertAdjacentElement("afterend",node);}
-    return node;
-}
-function showError(id,msg){const el=document.getElementById(id),n=errorNode(id);if(!el||!n)return;el.classList.add("input-error");el.classList.remove("input-valid");n.textContent=msg;}
-function clearError(id,valid=false){const el=document.getElementById(id),n=errorNode(id);if(!el||!n)return;el.classList.remove("input-error","input-valid");if(valid&&el.value.trim())el.classList.add("input-valid");n.textContent="";}
-function passRules(p){return [p.length>=8,/[A-Z]/.test(p),/[a-z]/.test(p),/[0-9]/.test(p),/[^A-Za-z0-9]/.test(p)];}
-function updatePassword(){
-    const passwordInput=document.getElementById("password");
-    if(!passwordInput)return false;
-    const p=passwordInput.value;
-    const results=passRules(p);
-    const ids=["farmerLengthRule","farmerUpperRule","farmerLowerRule","farmerNumberRule","farmerSpecialRule"];
-    results.forEach((ok,i)=>{
-        const li=document.getElementById(ids[i]);
-        if(!li)return;
-        const label=li.dataset.label||li.textContent.replace(/^[✓✗]\s*/,"");
-        li.dataset.label=label;
-        li.textContent=(ok?"✓ ":"✗ ")+label;
-        li.classList.toggle("valid",ok);
-        li.classList.toggle("invalid",!ok);
-        // Apply colour directly as a fallback if another stylesheet overrides the classes.
-        li.style.color=ok?"#198754":"#dc3545";
-    });
-    return results.every(Boolean);
-}
-function validateField(id){
-    const el=document.getElementById(id);if(!el)return true;const v=el.value.trim();let msg="";
-    if(["first_name","last_name","address_line","district","village"].includes(id)&&!v)msg="This field is required.";
-    if(id==="username"&&!v)msg="Username is required.";else if(id==="username"&&v.length<3)msg="Username must contain at least 3 characters.";
-    if(id==="email"&&!v)msg="Email address is required.";else if(id==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))msg="Enter a valid email address.";
-    if(id==="mobile"&&!v)msg="Mobile number is required.";else if(id==="mobile"&&!/^[6-9][0-9]{9}$/.test(v))msg="Enter a valid 10-digit Indian mobile number.";
-    if(id==="password"&&!el.value)msg="Password is required.";else if(id==="password"&&!passRules(el.value).every(Boolean))msg="Password does not meet all the requirements below.";
-    if(id==="confirm_password"&&!el.value)msg="Please confirm your password.";else if(id==="confirm_password"&&el.value!==document.getElementById("password").value)msg="Passwords do not match.";
-    if(id==="state"&&!v)msg="Please select your state.";
-    if(id==="pincode"&&!v)msg="Pincode is required.";else if(id==="pincode"&&!/^[0-9]{6}$/.test(v))msg="Enter a valid 6-digit pincode.";
-    if(id==="land_size"&&v&&(!Number.isFinite(Number(v))||Number(v)<=0))msg="Enter a valid land size greater than zero.";
-    if(msg){showError(id,msg);return false;}clearError(id,!!v);return true;
-}
-function duplicateFormat(id,v){if(id==="username")return v.length>=3;if(id==="email")return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);if(id==="mobile")return /^[6-9][0-9]{9}$/.test(v);return false;}
-async function checkDuplicate(id){
-    const el=document.getElementById(id),value=el.value.trim();if(!duplicateFormat(id,value))return false;
-    const request=duplicateRequests[id]=(duplicateRequests[id]||0)+1,fd=new FormData();fd.append("field",id);fd.append("value",value);
-    try{
-        const response=await fetch("check_duplicate.php",{method:"POST",body:fd});if(!response.ok)throw new Error("Verification failed");
-        const data=await response.json();if(request!==duplicateRequests[id]||el.value.trim()!==value)return null;
-        verificationFailed[id]=false;duplicateStatus[id]=!!data.exists;
-        if(data.exists){showError(id,data.message||"This value is already registered.");return true;}
-        clearError(id,true);return false;
-    }catch(e){if(request===duplicateRequests[id]&&el.value.trim()===value){verificationFailed[id]=true;showError(id,"Unable to verify this value. Please try again.");}return true;}
-}
-fields.forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    el.addEventListener("blur",()=>{touched.add(id);validateField(id);if(duplicateFields.includes(id)&&duplicateFormat(id,el.value.trim()))checkDuplicate(id);});
-    el.addEventListener("input",()=>{
-        if(touched.has(id))validateField(id);
-        if(id==="password"){updatePassword();if(touched.has("confirm_password"))validateField("confirm_password");}
-        if(duplicateFields.includes(id)){
-            clearTimeout(duplicateTimers[id]);duplicateRequests[id]=(duplicateRequests[id]||0)+1;duplicateStatus[id]=false;verificationFailed[id]=false;
-            if(duplicateFormat(id,el.value.trim()))duplicateTimers[id]=setTimeout(()=>checkDuplicate(id),450);
-        }
-    });
-    el.addEventListener("change",()=>{touched.add(id);validateField(id);});
-});
-
-// Add a password checklist to the farmer form (it was absent in the supplied file).
-const passwordInput=document.getElementById("password");
-if(passwordInput&&!document.getElementById("farmerPasswordRules")){
-    const box=document.createElement("div");box.className="password-feedback";box.id="farmerPasswordRules";
-    box.innerHTML='<ul class="password-requirements"><li id="farmerLengthRule" class="invalid">✗ At least 8 characters</li><li id="farmerUpperRule" class="invalid">✗ One uppercase letter</li><li id="farmerLowerRule" class="invalid">✗ One lowercase letter</li><li id="farmerNumberRule" class="invalid">✗ One number</li><li id="farmerSpecialRule" class="invalid">✗ One special character</li></ul>';
-    passwordInput.insertAdjacentElement("afterend",box);
-}
-updatePassword();
-
-let allowSubmit=false;
-farmerForm.addEventListener("submit",async event=>{
-    if(allowSubmit)return;event.preventDefault();let first=null;
-    fields.forEach(id=>{touched.add(id);if(!validateField(id)&&!first)first=id;});
-    updatePassword();
-    if(first){document.getElementById(first).focus();showPopup("error","Please correct the highlighted fields before submitting.");return;}
-    duplicateFields.forEach(id=>clearTimeout(duplicateTimers[id]));
-    const results=await Promise.all(duplicateFields.map(checkDuplicate));
-    const issue=duplicateFields.find(id=>duplicateStatus[id]||verificationFailed[id]);
-    if(issue||results.some(x=>x!==false)){const id=issue||duplicateFields[0];document.getElementById(id).focus();showPopup("error","Please use a username, email address and mobile number that are not already registered.");return;}
-    allowSubmit=true;farmerForm.requestSubmit(farmerForm.querySelector('button[name="register"]'));
-});
-window.addEventListener("pageshow",event=>{
-    const nav=performance.getEntriesByType("navigation")[0];
-    if(event.persisted||(nav&&nav.type==="back_forward")){
-        farmerForm.reset();touched.clear();
-        duplicateFields.forEach(id=>{duplicateStatus[id]=false;verificationFailed[id]=false;duplicateRequests[id]=(duplicateRequests[id]||0)+1;clearTimeout(duplicateTimers[id]);clearError(id);});
-        fields.filter(id=>!duplicateFields.includes(id)).forEach(clearError);
-        document.querySelectorAll(".field-error").forEach(n=>n.textContent="");
-        popup.style.display="none";allowSubmit=false;updatePassword();
-    }
-});
-</script>
+<?php require __DIR__ . "/includes/registration_popup.php"; ?>
+<script src="js/registration.js" defer></script>
 
 </body>
 </html>

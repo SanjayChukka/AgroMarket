@@ -1,17 +1,10 @@
-
 <?php
-    session_start();
-
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
+    require_login("buyer", "../auth/login.php");
     require_once __DIR__ . "/../config/db.php";
 
-    require_login("buyer", "../auth/login.php");
-
     // Helper function to safely display values.
-    function e($value)
-    {
-    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
-    }
+    require_once __DIR__ . "/../includes/html.php";
 
     $buyerId = (int) $_SESSION['user_id'];
 
@@ -219,14 +212,11 @@
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="buyer-nav">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="browse_crops.php">Browse Crops</a>
-            <a href="find_farmers.php">Find Farmers</a>
-            <a href="my_orders.php">My Orders</a>
-            <a href="order_tracking.php">Track Orders</a>
-            <a href="profile.php">My Profile</a>
-        </nav>
+        <?php
+    $activePage = "";
+    $showProfileLink = true;
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="header-right">
 
@@ -442,39 +432,7 @@
         <p>&copy; 2026 AgroMarket Connect. All rights reserved.</p>
     </footer>
 
-
-    <script src="buyer.js"></script>
-
-    <script>
-
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
-
-        profileToggle.addEventListener("click", function() {
-
-            profilePopup.classList.toggle("show");
-
-            profileToggle.setAttribute(
-                "aria-expanded",
-                profilePopup.classList.contains("show")
-            );
-
-        });
-
-        document.addEventListener("click", function(event) {
-
-            if (!event.target.closest(".profile-menu")) {
-
-                profilePopup.classList.remove("show");
-
-                profileToggle.setAttribute("aria-expanded", "false");
-
-            }
-
-        });
-
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 
 </html>

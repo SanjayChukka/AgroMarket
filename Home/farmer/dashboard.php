@@ -1,10 +1,5 @@
-
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-    }
-
-    require_once __DIR__ . "/../config/auth_check.php";
+require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -12,10 +7,7 @@
     $farmerId = (int) $_SESSION['user_id'];
 
     // Safely display database values in HTML
-    function e($value)
-    {
-    return htmlspecialchars((string) ($value ?? ""), ENT_QUOTES, "UTF-8");
-    }
+    require_once __DIR__ . "/../includes/html.php";
 
     // ----------------------------------
     // 1. Farmer Details
@@ -158,49 +150,9 @@
     // ----------------------------------
     // 6. Unread Notification Count
     // ----------------------------------
-    $countSql = "SELECT COUNT(*) AS unread_count
-             FROM notifications
-             WHERE user_id = ?
-             AND is_read = 0";
+    require_once __DIR__ . "/../includes/notifications.php";
+    $unreadCount = unreadNotificationCount($link, $farmerId);
 
-    $stmt = mysqli_prepare($link, $countSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
-
-    $countResult = mysqli_stmt_get_result($stmt);
-    $countData   = mysqli_fetch_assoc($countResult);
-
-    $unreadCount = (int) ($countData['unread_count'] ?? 0);
-
-    mysqli_stmt_close($stmt);
-
-    // ----------------------------------
-    // 7. Latest 5 Notifications
-    // ----------------------------------
-    $recentNotifications = [];
-
-    $notificationSql = "SELECT
-                        notification_id,
-                        title,
-                        message,
-                        is_read,
-                        created_at
-                     FROM notifications
-                     WHERE user_id = ?
-                     ORDER BY created_at DESC, notification_id DESC
-                     LIMIT 5";
-
-    $stmt = mysqli_prepare($link, $notificationSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
-
-    $notificationResult = mysqli_stmt_get_result($stmt);
-
-    while ($row = mysqli_fetch_assoc($notificationResult)) {
-    $recentNotifications[] = $row;
-    }
-
-    mysqli_stmt_close($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -226,12 +178,10 @@
             <h2>AgroMarket Connect</h2>
         </div>
 
-        <nav class="farmer-nav">
-            <a href="dashboard.php" class="active">Dashboard</a>
-            <a href="profile.php">My Profile</a>
-            <a href="manage_listings.php">My Listings</a>
-            <a href="orders.php">Orders</a>
-        </nav>
+        <?php
+    $activePage = "dashboard.php";
+    require __DIR__ . "/includes/navigation.php";
+    ?>
 
         <div class="notification-menu">
             <a href="notifications.php" class="notification-bell" title="Notifications">
@@ -245,6 +195,7 @@
             </a>
         </div>
 
+        <div class="header-right">
             <!-- Profile Menu -->
             <div class="profile-menu">
 
@@ -490,52 +441,8 @@
     </footer>
 
     <!-- Profile and Notification Scripts -->
-    <script>
-        const profileToggle = document.getElementById("profileToggle");
-        const profilePopup = document.getElementById("profilePopup");
 
-        profileToggle.addEventListener("click", function (event) {
-            event.stopPropagation();
 
-            profilePopup.classList.toggle("show");
-
-            profileToggle.setAttribute(
-                "aria-expanded",
-                profilePopup.classList.contains("show")
-            );
-        });
-
-        const notificationToggle = document.getElementById("notificationToggle");
-        const notificationMenu = document.querySelector(".notification-menu");
-
-        notificationToggle.addEventListener("click", function (event) {
-            event.stopPropagation();
-
-            notificationMenu.classList.toggle("show");
-
-            notificationToggle.setAttribute(
-                "aria-expanded",
-                notificationMenu.classList.contains("show")
-            );
-
-            profilePopup.classList.remove("show");
-            profileToggle.setAttribute("aria-expanded", "false");
-        });
-
-        document.addEventListener("click", function (event) {
-
-            if (!event.target.closest(".profile-menu")) {
-                profilePopup.classList.remove("show");
-                profileToggle.setAttribute("aria-expanded", "false");
-            }
-
-            if (!event.target.closest(".notification-menu")) {
-                notificationMenu.classList.remove("show");
-                notificationToggle.setAttribute("aria-expanded", "false");
-            }
-
-        });
-    </script>
-
+<script src="../js/profile-menu.js" defer></script>
 </body>
 </html>

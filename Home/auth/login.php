@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -215,25 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
     </main>
 
-    <script>
-        // Remove activation messages from the URL after displaying them
-        window.addEventListener("DOMContentLoaded", function () {
-
-            const params = new URLSearchParams(window.location.search);
-
-            if (
-                params.has("activated") ||
-                params.has("activation")
-            ) {
-                window.history.replaceState(
-                    {},
-                    document.title,
-                    window.location.pathname
-                );
-            }
-
-        });
-    </script>
+    <script src="js/login.js" defer></script>
 
 </body>
 </html>

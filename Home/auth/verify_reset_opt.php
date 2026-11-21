@@ -24,7 +24,7 @@
             <button type="submit">Verify OTP</button>
 
             <p class="form-note">
-                Didn't receive OTP? <a href="forgot_password.php">Resend OTP</a>
+                Didn't receive OTP? <a href="forget_password.php">Resend OTP</a>
             </p>
 
         </form>
