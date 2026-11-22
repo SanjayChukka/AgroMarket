@@ -9,7 +9,8 @@
  (SELECT COUNT(*) FROM crop_listings WHERE listing_status <> 'removed') listings,
  (SELECT COUNT(*) FROM orders) orders,
  (SELECT COUNT(*) FROM orders WHERE order_status='pending') pending,
- (SELECT COUNT(*) FROM complaints WHERE complaint_status IN ('open','in_progress')) complaints")[0];
+ ((SELECT COUNT(*) FROM complaints WHERE complaint_status IN ('open','in_progress')) +
+ (SELECT COUNT(*) FROM support_requests WHERE status IN ('open','in_progress'))) complaints")[0];
     $today = new DateTimeImmutable(rows('SELECT CURRENT_DATE today')[0]['today']);
     $start = $today->modify('-6 days');
     $daily = [];

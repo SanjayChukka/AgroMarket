@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Password | AgroMarket Connect</title>
     <link rel="stylesheet" href="./style/auth.css">
+    <link rel="stylesheet" href="./style/password-visibility.css">
+    <script src="./js/password-visibility.js" defer></script>
 </head>
 <body>
 

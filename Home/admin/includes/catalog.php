@@ -45,10 +45,14 @@ function catalog(string $type): array
     }
 
     return [
-        'sql'     => "SELECT c.complaint_id id,c.complaint_number,c.priority,u.full_name name,u.role,c.order_id,c.subject,c.description,
-                c.complaint_status AS status,c.created_at recorded FROM complaints c LEFT JOIN users u ON u.user_id=c.raised_by",
+        'sql'     => "SELECT CAST(c.complaint_id AS SIGNED) id,c.complaint_number,c.priority,u.full_name name,u.role,c.order_id,c.subject,c.description,
+                c.complaint_status AS status,c.created_at recorded,u.email,u.mobile,NULL reference_text,NULL reply,NULL file_type,0 revision
+                FROM complaints c LEFT JOIN users u ON u.user_id=c.raised_by
+                UNION ALL
+                SELECT -CAST(request_id AS SIGNED),ticket_number,NULL,contact_name,contact_role,NULL,subject,description,
+                status,created_at,email,mobile,reference_text,reply,file_type,revision FROM support_requests",
         'search'  => ['id', 'complaint_number', 'subject', 'name', 'order_id'],
         'columns' => ['complaint_number' => 'Complaint number', 'priority' => 'Priority', 'name' => 'Raised by', 'role' => 'Role', 'subject' => 'Subject', 'recorded' => 'Opened', 'status' => 'Status'],
-        'extra'   => ['order_id' => 'Order ID', 'description' => 'Description'],
+        'extra'   => ['order_id' => 'Order ID', 'reference_text' => 'Submitted reference', 'email' => 'Contact email', 'mobile' => 'Phone', 'description' => 'Description', 'reply' => 'Support response'],
     ];
 }

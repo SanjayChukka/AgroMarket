@@ -11,6 +11,14 @@
     checkPost();
     $new = $_POST['status'] ?? '';
     if (! in_array($new, $states, true)) {http_response_code(400);exit('Invalid complaint status.');}
+    // Positive IDs belong to existing complaints. New website tickets use negative list IDs.
+    if ($id < 0) {
+        $reply = trim((string) ($_POST['reply'] ?? ''));
+        if (strlen($reply) > 12000) go($path . '?id=' . $id, 'Shorten the response and try again.');
+        $stmt = $link->prepare('UPDATE support_requests SET status=?,reply=?,revision=revision+1 WHERE request_id=? AND revision=?');
+        $stmt->execute([$new, $reply, -$id, (int) ($_POST['revision'] ?? -1)]);
+        go($path . '?id=' . $id, $stmt->affected_rows ? 'Complaint updated.' : 'Another administrator updated this complaint. Review it before saving.');
+    }
     $stmt = $link->prepare('UPDATE complaints SET complaint_status=? WHERE complaint_id=? AND complaint_status=?');
     $stmt->execute([$new, $id, $_POST['previous'] ?? '']);
     go($path . '?id=' . $id, $stmt->affected_rows ? 'Complaint status updated.' : 'No change saved. Review the current status.');
@@ -32,6 +40,11 @@
         if ($section === 'complaints') {
             ?>
 <form class="panel filters" method="post"><?php csrfInput(); ?>
+<?php if ($id < 0): ?>
+<input type="hidden" name="revision" value="<?= (int) $record['revision'] ?>">
+<?php if ($record['file_type']): ?><a href="support_attachment.php?id=<?= -$id ?>">Download supporting document</a><?php endif; ?>
+<label>Support response<textarea name="reply" rows="4"><?= h($record['reply']) ?></textarea></label>
+<?php endif; ?>
 <input type="hidden" name="previous" value="<?php echo h($record['status']) ?>">
 <label>Complaint status<select name="status"><?php foreach ($states as $state): ?>
 <option <?php echo strcasecmp($state,$record['status'])===0?'selected':'' ?>><?php echo h($state) ?></option><?php endforeach; ?></select></label>

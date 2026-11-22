@@ -1,3 +1,7 @@
+<?php
+$isGrievance = true;
+require __DIR__ . '/../includes/support-intake.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grievance Redressal | AgroMarket Connect</title>
     <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/support.css">
 </head>
 
 <body>
@@ -31,6 +36,7 @@
         <section class="common-section">
 
             <h2>Our Commitment</h2>
+                    <img class="support-photo" src="../images/editorial/grower.webp" alt="A grower in the field" loading="lazy">
 
             <p>
                 AgroMarket Connect aims to provide a reliable
@@ -134,52 +140,56 @@
 
             <div class="grievance-form-container">
 
-                <form action="#" method="POST">
+                <form id="support-form" action="#support-form" method="POST" enctype="multipart/form-data">
+                        <?php if ($error): ?><p role="alert"><?= e($error) ?></p><?php endif; ?>
+                        <?php if ($notice): ?><p role="status"><?= e($notice) ?></p><?php endif; ?>
+                        <?php if ($owner): ?><p><a href="../<?= e($portalRole) ?>/complaints.php">My Complaints</a></p><?php endif; ?>
+                        <input type="hidden" name="support_token" value="<?= e($_SESSION['support_token']) ?>">
 
                     <div class="form-group">
                         <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name"
+                        <input type="text" id="name" name="name" value="<?= e(supportField('name')) ?>" required
                             placeholder="Enter your full name">
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email"
+                        <input type="email" id="email" name="email" value="<?= e(supportField('email')) ?>" required
                             placeholder="Enter your email address">
                     </div>
 
                     <div class="form-group">
                         <label for="mobile">Mobile Number</label>
-                        <input type="tel" id="mobile" name="mobile"
+                        <input type="tel" id="mobile" name="mobile" value="<?= e(supportField('mobile')) ?>"
                             placeholder="Enter your mobile number">
                     </div>
 
                     <div class="form-group">
                         <label for="user_type">User Type</label>
-                        <select id="user_type" name="user_type">
+                        <select required id="user_type" name="user_type">
                             <option value="">Select user type</option>
-                            <option value="farmer">Farmer</option>
-                            <option value="buyer">Buyer</option>
-                            <option value="other">Other</option>
+                            <option value="farmer" <?= ($owner ? $portalRole : supportField('user_type')) === 'farmer' ? 'selected' : '' ?>>Farmer</option>
+                            <option value="buyer" <?= ($owner ? $portalRole : supportField('user_type')) === 'buyer' ? 'selected' : '' ?>>Buyer</option>
+                            <option value="other" <?= ($owner ? $portalRole : supportField('user_type')) === 'other' ? 'selected' : '' ?>>Other</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="grievance_type">Grievance Category</label>
-                        <select id="grievance_type" name="grievance_type">
+                        <select required id="grievance_type" name="grievance_type">
                             <option value="">Select category</option>
-                            <option value="account">Account Issue</option>
-                            <option value="product">Product Issue</option>
-                            <option value="order">Order Issue</option>
-                            <option value="payment">Payment Issue</option>
-                            <option value="technical">Technical Issue</option>
-                            <option value="other">Other</option>
+                            <option value="account" <?= supportField('grievance_type') === 'account' ? 'selected' : '' ?>>Account Issue</option>
+                            <option value="product" <?= supportField('grievance_type') === 'product' ? 'selected' : '' ?>>Product Issue</option>
+                            <option value="order" <?= supportField('grievance_type') === 'order' ? 'selected' : '' ?>>Order Issue</option>
+                            <option value="payment" <?= supportField('grievance_type') === 'payment' ? 'selected' : '' ?>>Payment Issue</option>
+                            <option value="technical" <?= supportField('grievance_type') === 'technical' ? 'selected' : '' ?>>Technical Issue</option>
+                            <option value="other" <?= supportField('grievance_type') === 'other' ? 'selected' : '' ?>>Other</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="reference">Order / Reference ID (Optional)</label>
-                        <input type="text" id="reference" name="reference"
+                        <input type="text" id="reference" name="reference" value="<?= e(supportField('reference')) ?>"
                             placeholder="Enter order or reference ID">
                     </div>
 
@@ -187,12 +197,12 @@
                         <label for="description">Complaint Description</label>
                         <textarea id="description" name="description"
                             rows="6"
-                            placeholder="Describe your issue in detail"></textarea>
+                            placeholder="Describe your issue in detail" required><?= e(supportField('description')) ?></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="attachment">Supporting Document (Optional)</label>
-                        <input type="file" id="attachment" name="attachment">
+                        <label for="attachment">Supporting Document (PDF, PNG or JPEG, up to 2 MB)</label>
+                        <input type="file" id="attachment" name="attachment" accept=".pdf,.png,.jpg,.jpeg">
                     </div>
 
                     <button type="submit">Submit Grievance</button>

@@ -376,6 +376,8 @@
     <title>Farmer Registration | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./style/register.css">
+    <link rel="stylesheet" href="./style/password-visibility.css">
+    <script src="./js/password-visibility.js" defer></script>
 </head>
 
 <body>
@@ -480,6 +482,8 @@
                            name="password"
                            class="form-control">
                     <div class="password-feedback" id="farmerPasswordRules">
+                        <div class="password-strength" aria-hidden="true"><div class="strength-bar" id="strengthBar"></div></div>
+                        <p id="strengthText" aria-live="polite">Password strength: Not entered</p>
                         <ul class="password-requirements">
                             <li id="farmerLengthRule" class="invalid">✗ At least 8 characters</li>
                             <li id="farmerUpperRule" class="invalid">✗ One uppercase letter</li>

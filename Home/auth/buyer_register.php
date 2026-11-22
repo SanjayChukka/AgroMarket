@@ -436,6 +436,8 @@
     <title>Buyer Registration | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./style/register.css">
+    <link rel="stylesheet" href="./style/password-visibility.css">
+    <script src="./js/password-visibility.js" defer></script>
 </head>
 
 <body>

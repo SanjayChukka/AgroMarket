@@ -7,4 +7,5 @@
             <?php if ($showProfileLink): ?>
             <a href="profile.php"<?php echo $activePage === "profile.php" ? ' class="active" aria-current="page"' : "" ?>>My Profile</a>
         <?php endif; ?>
-        </nav>
+            <a href="complaints.php"<?= $activePage === "complaints.php" ? ' class="active" aria-current="page"' : "" ?>>My Complaints</a>
+</nav>
