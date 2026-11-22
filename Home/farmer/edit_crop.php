@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -93,6 +93,11 @@ require_once __DIR__ . "/../config/auth_check.php";
     }
 
     $images = getListingImages($link, $listingId);
+
+    $originalQuantity = $_POST['original_quantity'] ?? '';
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $originalQuantity = (string) $crop['quantity_available'];
+    }
 
     /* Form values */
     $form = [
@@ -273,7 +278,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             /* Lock and verify the listing again */
             $lockStmt = $link->prepare("
-                SELECT listing_id
+                SELECT listing_id, quantity_available
                 FROM crop_listings
                 WHERE listing_id = ?
                   AND farmer_id = ?
@@ -289,6 +294,10 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             if (! $lockedListing) {
                 throw new Exception("This crop listing is no longer available.");
+            }
+
+            if ((string) $lockedListing['quantity_available'] !== $originalQuantity) {
+                throw new Exception("Stock changed while you were editing. Reopen the listing to review the remaining quantity.");
             }
 
             /* Update crop listing */
@@ -314,7 +323,8 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             $updateStmt = $link->prepare("
                 UPDATE crop_listings
-                SET crop_name = ?,
+                SET listing_status = CASE WHEN listing_status = 'sold_out' THEN 'paused' ELSE listing_status END,
+                    crop_name = ?,
                     category_id = ?,
                     variety = ?,
                     description = ?,
@@ -535,9 +545,9 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <?php
-    $activePage = "manage_listings.php";
-    $headerFarmer = $farmer;
-    require __DIR__ . "/includes/header.php";
+        $activePage   = "manage_listings.php";
+        $headerFarmer = $farmer;
+        require __DIR__ . "/includes/header.php";
     ?>
 
 
@@ -564,6 +574,8 @@ require_once __DIR__ . "/../config/auth_check.php";
                 value="<?php echo e($csrfToken) ?>"
             >
 
+
+            <input type="hidden" name="original_quantity" value="<?php echo e($originalQuantity) ?>">
 
             <!-- Basic Crop Information -->
             <section>

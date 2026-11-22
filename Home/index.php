@@ -1,3 +1,54 @@
+<?php
+session_start();
+require_once __DIR__ . "/includes/html.php";
+
+$query = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
+$page = max(1, min(1000000, (int) filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT)));
+$pageSize = 12;
+$offset = ($page - 1) * $pageSize;
+$listings = [];
+$hasMore = false;
+$catalogError = '';
+
+try {
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    require_once __DIR__ . "/config/db.php";
+    $sql = "SELECT cl.listing_id, cl.crop_name, cl.variety, cl.quantity_available,
+                   cl.quantity_unit, cl.price_per_unit, cl.description,
+                   u.full_name AS farmer_name, cc.category_name,
+                   (SELECT li.image_path FROM listing_images li WHERE li.listing_id = cl.listing_id
+                    ORDER BY li.is_primary DESC, li.sort_order, li.image_id LIMIT 1) AS image_path
+            FROM crop_listings cl JOIN users u ON u.user_id = cl.farmer_id
+            LEFT JOIN crop_categories cc ON cc.category_id = cl.category_id
+            WHERE cl.listing_status = 'available' AND cl.quantity_available > 0
+              AND u.role = 'farmer' AND u.account_status = 'active'
+              AND (cl.available_from IS NULL OR cl.available_from <= CURDATE())
+              AND (cl.available_until IS NULL OR cl.available_until >= CURDATE())";
+    if ($query !== '') {
+        $sql .= " AND (cl.crop_name LIKE ? ESCAPE '!' OR cl.variety LIKE ? ESCAPE '!'
+                   OR u.full_name LIKE ? ESCAPE '!')";
+    }
+    $sql .= " ORDER BY cl.created_at DESC, cl.listing_id DESC LIMIT ? OFFSET ?";
+    $stmt = $link->prepare($sql);
+    $limit = $pageSize + 1;
+    if ($query === '') {
+        $stmt->bind_param("ii", $limit, $offset);
+    } else {
+        $pattern = '%' . strtr($query, ['!' => '!!', '%' => '!%', '_' => '!_']) . '%';
+        $stmt->bind_param("sssii", $pattern, $pattern, $pattern, $limit, $offset);
+    }
+    $stmt->execute();
+    $listings = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+    $hasMore = count($listings) > $pageSize;
+    if ($hasMore) {
+        array_pop($listings);
+    }
+} catch (mysqli_sql_exception $exception) {
+    error_log("Homepage catalog: " . $exception->getMessage());
+    $catalogError = "The crop catalog is temporarily unavailable. Please try again shortly.";
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +71,11 @@
 
         <!-- Nav Bar -->
         <nav class="navbar">
-            <input type="search" placeholder="Search crops, farmers...">
+            <form class="market-search" action="index.php#marketplace" method="get" role="search">
+                <input type="search" name="q" aria-label="Crop or farmer name" maxlength="120"
+                       placeholder="Search crops or farmers" value="<?= e($query) ?>">
+                <button type="submit">Search</button>
+            </form>
             <div class="language">🌐 EN</div>
             <a href="./auth/login.php">Sign In</a>
             <a href="./auth/register.php">Sign Up</a>
@@ -52,8 +107,8 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <button>Start Selling as Farmer</button>
-                    <button>Start Buying</button>
+                    <a href="./auth/farmer_register.php">Start Selling as Farmer</a>
+                    <a href="./auth/buyer_register.php">Start Buying</a>
                 </div>
 
             </div>
@@ -130,51 +185,55 @@
 
         </section>
 
-        <!-- Featured Crops Section -->
-        <section class="featured-crops">
-
+        <section class="featured-crops" id="marketplace">
             <div class="section-heading">
-                <h2>Featured Crops</h2>
-                <p>Explore fresh agricultural products directly from farmers.</p>
+                <h2><?= $query === '' ? 'Available Crops' : 'Search Results' ?></h2>
+                <?php if ($query !== ''): ?>
+                    <p>Listings matching “<?= e($query) ?>” · <a href="index.php#marketplace">Clear search</a></p>
+                <?php endif; ?>
             </div>
-
-            <div class="crops-container">
-
-                <div class="crop-card">
-                    <div class="crop-image">Crop Image</div>
-                    <h3>Rice</h3>
-                    <p>Category: Grains</p>
-                    <p>Price: ₹2,500 / Quintal</p>
-                    <a href="#">View Details</a>
+            <?php if ($catalogError !== ''): ?>
+                <p><?= e($catalogError) ?></p>
+            <?php elseif (!$listings): ?>
+                <p><?= $query === '' ? 'No available crops on this page.' : 'No matches on this page. Try another crop or farmer name.' ?></p>
+            <?php else: ?>
+                <div class="crops-container">
+                <?php foreach ($listings as $listing): ?>
+                    <article class="crop-card">
+                        <div class="crop-image">
+                            <?php if (!empty($listing['image_path'])): ?>
+                                <img src="<?= e($listing['image_path']) ?>" alt="<?= e($listing['crop_name']) ?>" loading="lazy">
+                            <?php else: ?>
+                                No photo available
+                            <?php endif; ?>
+                        </div>
+                        <h3><?= e($listing['crop_name']) ?></h3>
+                        <p><?= e($listing['farmer_name']) ?></p>
+                        <strong>₹<?= number_format((float) $listing['price_per_unit'], 2) ?> / <?= e($listing['quantity_unit']) ?></strong>
+                        <details>
+                            <summary>View details</summary>
+                            <p>Available: <?= e($listing['quantity_available']) ?> <?= e($listing['quantity_unit']) ?></p>
+                            <?php foreach (['variety', 'category_name', 'description'] as $field): ?>
+                                <?php if (!empty($listing[$field])): ?><p><?= e($listing[$field]) ?></p><?php endif; ?>
+                            <?php endforeach; ?>
+                        </details>
+                        <?php if (($_SESSION['user_role'] ?? '') === 'buyer'): ?>
+                            <a href="buyer/place_order.php?listing_id=<?= (int) $listing['listing_id'] ?>">Place order</a>
+                        <?php else: ?>
+                            <a href="auth/login.php?listing_id=<?= (int) $listing['listing_id'] ?>">Sign in as buyer to order</a>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
                 </div>
-
-                <div class="crop-card">
-                    <div class="crop-image">Crop Image</div>
-                    <h3>Wheat</h3>
-                    <p>Category: Grains</p>
-                    <p>Price: ₹2,200 / Quintal</p>
-                    <a href="#">View Details</a>
-                </div>
-
-                <div class="crop-card">
-                    <div class="crop-image">Crop Image</div>
-                    <h3>Tomatoes</h3>
-                    <p>Category: Vegetables</p>
-                    <p>Price: ₹1,800 / Quintal</p>
-                    <a href="#">View Details</a>
-                </div>
-
-                <div class="crop-card">
-                    <div class="crop-image">Crop Image</div>
-                    <h3>Cotton</h3>
-                    <p>Category: Cash Crops</p>
-                    <p>Price: ₹7,000 / Quintal</p>
-                    <a href="#">View Details</a>
-                </div>
-
-            </div>
+            <?php endif; ?>
+            <?php if ($catalogError === '' && ($page > 1 || $hasMore)): ?>
+                <nav class="market-pages" aria-label="Crop result pages">
+                    <?php if ($page > 1): ?><a href="?<?= e(http_build_query(['q' => $query, 'page' => $page - 1])) ?>#marketplace">Previous</a><?php endif; ?>
+                    <span>Page <?= $page ?></span>
+                    <?php if ($hasMore): ?><a href="?<?= e(http_build_query(['q' => $query, 'page' => $page + 1])) ?>#marketplace">Next</a><?php endif; ?>
+                </nav>
+            <?php endif; ?>
         </section>
-
 
         <!-- How It Works Section -->
         <section class="how-it-works">
@@ -214,45 +273,6 @@
         </section>
 
 
-        <!-- Latest Listings Section -->
-        <section class="latest-listings">
-
-            <div class="section-heading">
-                <h2>Latest Farmer Listings</h2>
-                <p>Discover recently listed agricultural products.</p>
-            </div>
-
-            <div class="listings-container">
-
-                <div class="listing-card">
-                    <div class="listing-image">Crop Image</div>
-                    <div class="listing-details">
-                        <h3>Organic Rice</h3>
-                        <p>Farmer: Ramesh Kumar</p>
-                        <p>Location: Telangana</p>
-                        <p>Quantity: 50 Quintals</p>
-                        <p>Price: ₹2,600 / Quintal</p>
-                        <button>View Listing</button>
-                    </div>
-                </div>
-
-                <div class="listing-card">
-                    <div class="listing-image">Crop Image</div>
-                    <div class="listing-details">
-                        <h3>Fresh Tomatoes</h3>
-                        <p>Farmer: Suresh Reddy</p>
-                        <p>Location: Andhra Pradesh</p>
-                        <p>Quantity: 20 Quintals</p>
-                        <p>Price: ₹1,900 / Quintal</p>
-                        <button>View Listing</button>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-
         <!-- Call To Action Section -->
         <section class="join-section">
 
@@ -266,8 +286,8 @@
                 </p>
 
                 <div class="join-buttons">
-                    <button>Join as Farmer</button>
-                    <button>Join as Buyer</button>
+                    <a href="./auth/farmer_register.php">Join as Farmer</a>
+                    <a href="./auth/buyer_register.php">Join as Buyer</a>
                 </div>
             </div>
 

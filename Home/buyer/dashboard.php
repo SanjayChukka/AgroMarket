@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("buyer", "../auth/login.php");
     require_once __DIR__ . "/../config/db.php";
 
@@ -82,9 +82,11 @@ require_once __DIR__ . "/../config/auth_check.php";
         cl.quantity_unit,
         cc.category_name
     FROM crop_listings cl
+    INNER JOIN users farmer ON farmer.user_id = cl.farmer_id
+        AND farmer.role = 'farmer' AND farmer.account_status = 'active'
     LEFT JOIN crop_categories cc
         ON cl.category_id = cc.category_id
-    WHERE cl.listing_status = 'available'
+    WHERE cl.listing_status = 'available' AND cl.quantity_available > 0
       AND (cl.available_from IS NULL OR cl.available_from <= CURDATE())
       AND (cl.available_until IS NULL OR cl.available_until >= CURDATE())
     ORDER BY cl.created_at DESC, cl.listing_id DESC
@@ -110,8 +112,8 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <?php
-    $activePage = "dashboard.php";
-    require __DIR__ . "/includes/header.php";
+        $activePage = "dashboard.php";
+        require __DIR__ . "/includes/header.php";
     ?>
 
     <main class="buyer-dashboard">
@@ -305,8 +307,8 @@ require_once __DIR__ . "/../config/auth_check.php";
                                 / <?php echo e($crop['quantity_unit']) ?>
                             </p>
 
-                            <a href="browse_crops.php">
-                                View Crops
+                            <a href="crop_details.php?listing_id=<?php echo (int) $crop['listing_id'] ?>">
+                                View Details
                             </a>
 
                         </div>

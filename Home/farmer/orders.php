@@ -74,6 +74,10 @@
                         o.order_number,
                         o.buyer_id,
                         o.order_status,
+                        o.listing_id,
+                        o.quantity,
+                        o.quantity_unit,
+                        (cl.quantity_available = o.quantity) AS uses_last_stock,
                         cl.crop_name
 
                      FROM orders AS o
@@ -122,6 +126,27 @@
         // ----------------------------------
 
         if ($action === "accept") {
+
+            // The order and listing are already locked for this transaction.
+            $stockStatus = $order['uses_last_stock'] ? "sold_out" : "available";
+            $quantity    = $order['quantity'];
+            $stockStmt   = $link->prepare("
+                UPDATE crop_listings
+                SET quantity_available = quantity_available - CAST(? AS DECIMAL(18,3)),
+                    listing_status = ?
+                WHERE listing_id = ? AND farmer_id = ?
+                  AND listing_status = 'available' AND quantity_unit = ?
+                  AND quantity_available >= CAST(? AS DECIMAL(18,3))
+            ");
+            $stockStmt->bind_param("ssiiss", $quantity, $stockStatus, $order['listing_id'],
+                $farmerId, $order['quantity_unit'], $quantity);
+            $stockStmt->execute();
+            $stockUpdated = $stockStmt->affected_rows === 1;
+            $stockStmt->close();
+
+            if (! $stockUpdated || $quantity <= 0) {
+                throw new RuntimeException("Cannot accept this order. Check the listing status, remaining quantity and unit.");
+            }
 
             $newStatus = "accepted";
 

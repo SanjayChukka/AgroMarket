@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../config/auth_check.php";
 require_login("buyer", "../auth/login.php");
+require __DIR__ . "/includes/profile-editor.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,12 @@ require_login("buyer", "../auth/login.php");
             <p>View and manage your personal and business information.</p>
         </div>
 
+        <?php if ($success): ?><p role="status">Your profile has been saved.</p><?php endif; ?>
+        <?php foreach ($errors as $message): ?><p class="form-error" role="alert"><?= e($message) ?></p><?php endforeach; ?>
+
+        <form method="post" action="profile.php" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['buyer_profile_token']) ?>">
+
         <!-- Profile Picture -->
 
         <section class="buyer-profile-section">
@@ -33,12 +40,19 @@ require_login("buyer", "../auth/login.php");
             <h2>Profile Picture</h2>
 
             <div class="buyer-profile-picture">
-                <div class="buyer-profile-preview">B</div>
+                <div class="buyer-profile-preview">
+                    <?php if (!empty($buyer['profile_image'])): ?>
+                        <img src="../<?= e($buyer['profile_image']) ?>" alt="Current profile photo"
+                             style="width:100%;height:100%;border-radius:50%;object-fit:cover">
+                    <?php else: ?>
+                        <?= e(strtoupper(substr($buyer['full_name'], 0, 1))) ?>
+                    <?php endif; ?>
+                </div>
 
                 <div>
                     <label for="profilePicture">Upload Profile Picture</label>
                     <input type="file" id="profilePicture"
-                        name="profile_picture" accept="image/*">
+                        name="profile_picture" accept="image/jpeg,image/png">
                 </div>
             </div>
 
@@ -55,24 +69,24 @@ require_login("buyer", "../auth/login.php");
                 <div class="profile-field">
                     <label for="buyerName">Full Name</label>
                     <input type="text" id="buyerName"
-                        name="buyer_name" value="Rahul Kumar">
+                        name="full_name" required value="<?= e($form['full_name']) ?>">
                 </div>
 
                 <div class="profile-field">
                     <label for="buyerEmail">Email Address</label>
                     <input type="email" id="buyerEmail"
-                        name="email" value="rahul@example.com">
+                        name="email" required value="<?= e($form['email']) ?>">
                 </div>
 
                 <div class="profile-field">
                     <label for="buyerMobile">Mobile Number</label>
                     <input type="tel" id="buyerMobile"
-                        name="mobile" value="+91 9876543210">
+                        name="mobile" required value="<?= e($form['mobile']) ?>">
                 </div>
 
                 <div class="profile-field">
                     <label for="buyerDob">Date of Birth</label>
-                    <input type="date" id="buyerDob" name="dob">
+                    <input type="date" id="buyerDob" name="dob" value="<?= e($form['dob']) ?>">
                 </div>
 
             </div>
@@ -90,7 +104,7 @@ require_login("buyer", "../auth/login.php");
                 <div class="profile-field">
                     <label for="businessName">Business Name</label>
                     <input type="text" id="businessName"
-                        name="business_name"
+                        name="business_name" value="<?= e($form['business_name']) ?>"
                         placeholder="Enter your business name">
                 </div>
 
@@ -98,27 +112,23 @@ require_login("buyer", "../auth/login.php");
                     <label for="businessType">Business Type</label>
                     <select id="businessType" name="business_type">
                         <option value="">Select Business Type</option>
-                        <option value="retailer">Retailer</option>
-                        <option value="wholesaler">Wholesaler</option>
-                        <option value="distributor">Distributor</option>
-                        <option value="restaurant">Restaurant / Hotel</option>
-                        <option value="processor">Food Processing Unit</option>
-                        <option value="individual">Individual Buyer</option>
-                        <option value="other">Other</option>
+                        <?php foreach ($businessTypes as $type): ?>
+                            <option value="<?= e($type) ?>" <?= $form['business_type'] === $type ? 'selected' : '' ?>><?= e(ucfirst($type)) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="profile-field">
                     <label for="gstNumber">GST Number</label>
                     <input type="text" id="gstNumber"
-                        name="gst_number"
+                        name="gst_number" value="<?= e($form['gst_number']) ?>"
                         placeholder="Enter GST number (if applicable)">
                 </div>
 
                 <div class="profile-field">
                     <label for="businessAddress">Business Address</label>
                     <input type="text" id="businessAddress"
-                        name="business_address"
+                        name="business_address" value="<?= e($form['business_address']) ?>"
                         placeholder="Enter business address">
                 </div>
 
@@ -135,26 +145,30 @@ require_login("buyer", "../auth/login.php");
             <div class="buyer-profile-grid">
 
                 <div class="profile-field">
+                    <label for="deliveryAddress">Delivery Address</label>
+                    <input id="deliveryAddress" name="delivery_address" value="<?= e($form['delivery_address']) ?>">
+                </div>
+                <div class="profile-field">
                     <label for="village">Village / Town / City</label>
-                    <input type="text" id="village" name="city"
+                    <input type="text" id="village" name="village_city" value="<?= e($form['village_city']) ?>"
                         placeholder="Enter city">
                 </div>
 
                 <div class="profile-field">
                     <label for="district">District</label>
-                    <input type="text" id="district" name="district"
+                    <input type="text" id="district" name="district" value="<?= e($form['district']) ?>"
                         placeholder="Enter district">
                 </div>
 
                 <div class="profile-field">
                     <label for="state">State</label>
-                    <input type="text" id="state" name="state"
+                    <input type="text" id="state" name="state" value="<?= e($form['state']) ?>"
                         placeholder="Enter state">
                 </div>
 
                 <div class="profile-field">
                     <label for="pincode">PIN Code</label>
-                    <input type="text" id="pincode" name="pincode"
+                    <input type="text" id="pincode" name="pincode" value="<?= e($form['pincode']) ?>"
                         maxlength="6" placeholder="Enter PIN code">
                 </div>
 
@@ -165,10 +179,11 @@ require_login("buyer", "../auth/login.php");
         <!-- Actions -->
 
         <div class="buyer-profile-actions">
-            <button type="button">Cancel</button>
-            <button type="button">Save Changes</button>
+            <a href="profile.php">Cancel</a>
+            <button type="submit">Save Changes</button>
         </div>
 
+        </form>
     </main>
 
     <footer>

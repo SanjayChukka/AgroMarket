@@ -1,13 +1,17 @@
-// Profile picture preview
-const profilePicture = document.getElementById("profilePicture");
-const profilePreview = document.querySelector(".buyer-profile-preview");
+const pictureInput = document.getElementById("profilePicture");
+const preview = document.querySelector(".buyer-profile-preview");
+const savedContents = Array.from(preview.childNodes);
+let previewUrl = null;
 
-profilePicture.addEventListener("change", function() {
-    const file = this.files[0];
+pictureInput.addEventListener("change", () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+    preview.style.backgroundImage = "";
+    preview.replaceChildren(...savedContents);
 
-    if (file) {
-        profilePreview.style.backgroundImage =
-            `url('${URL.createObjectURL(file)}')`;
-        profilePreview.textContent = "";
-    }
+    const file = pictureInput.files[0];
+    if (!file) return;
+    previewUrl = URL.createObjectURL(file);
+    preview.replaceChildren();
+    preview.style.backgroundImage = `url("${previewUrl}")`;
 });

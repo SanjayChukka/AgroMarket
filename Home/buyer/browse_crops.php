@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("buyer", "../auth/login.php");
     require_once __DIR__ . "/../config/db.php";
 
@@ -73,12 +73,21 @@ require_once __DIR__ . "/../config/auth_check.php";
     // Build the crop search query.
     $whereConditions = [
     "cl.listing_status = 'available'",
+    "cl.quantity_available > 0",
+    "u.role = 'farmer' AND u.account_status = 'active'",
     "(cl.available_from IS NULL OR cl.available_from <= CURDATE())",
     "(cl.available_until IS NULL OR cl.available_until >= CURDATE())",
     ];
 
     $params = [];
     $types  = "";
+
+    $farmerFilter = filter_input(INPUT_GET, 'farmer_id', FILTER_VALIDATE_INT);
+    if ($farmerFilter > 0) {
+    $whereConditions[]  = "cl.farmer_id = ?";
+    $params[]           = $farmerFilter;
+    $types             .= "i";
+    }
 
     // Search by crop name or variety.
     if ($search !== "") {
@@ -207,8 +216,8 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <?php
-    $activePage = "browse_crops.php";
-    require __DIR__ . "/includes/header.php";
+        $activePage = "browse_crops.php";
+        require __DIR__ . "/includes/header.php";
     ?>
 
 
@@ -224,6 +233,9 @@ require_once __DIR__ . "/../config/auth_check.php";
         <section class="crop-search-section">
 
             <form action="browse_crops.php" method="GET">
+                <?php if ($farmerFilter > 0): ?>
+                    <input type="hidden" name="farmer_id" value="<?php echo (int) $farmerFilter ?>">
+                <?php endif; ?>
 
                 <input
                     type="search"
@@ -238,7 +250,7 @@ require_once __DIR__ . "/../config/auth_check.php";
                     <?php while ($category = mysqli_fetch_assoc($categories)): ?>
 
                         <option
-                            value="<?php echo (int)$category['category_id'] ?>"
+                            value="<?php echo (int) $category['category_id'] ?>"
                             <?php echo $categoryId == $category['category_id'] ? 'selected' : '' ?>>
 
                             <?php echo e($category['category_name']) ?>
@@ -333,7 +345,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                             <p>
                                 Price:
-                                ₹<?php echo number_format((float)$crop['price_per_unit'], 2) ?>
+                                ₹<?php echo number_format((float) $crop['price_per_unit'], 2) ?>
                                 / <?php echo e($crop['quantity_unit']) ?>
                             </p>
 
@@ -359,13 +371,13 @@ require_once __DIR__ . "/../config/auth_check.php";
                             <p>
                                 Location:
                                 <?php echo e(implode(", ", array_filter([
-    $crop['village'],
-    $crop['district'],
-    $crop['state'],
-])) ?: "Not provided") ?>
+                                        $crop['village'],
+                                        $crop['district'],
+                                        $crop['state'],
+                                ])) ?: "Not provided") ?>
                             </p>
 
-                            <a href="crop_details.php?listing_id=<?php echo (int)$crop['listing_id'] ?>">
+                            <a href="crop_details.php?listing_id=<?php echo (int) $crop['listing_id'] ?>">
                                 View Details
                             </a>
 

@@ -10,6 +10,7 @@ header("Expires: 0");
 require_once __DIR__ . "/../config/db.php";
 
 $loginError = "";
+$listingId = filter_input(INPUT_GET, "listing_id", FILTER_VALIDATE_INT);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
@@ -83,7 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
                 } elseif ($user['role'] === 'buyer') {
 
-                    $dashboard = "../buyer/dashboard.php";
+                    $dashboard = $listingId > 0
+                        ? "../buyer/place_order.php?listing_id=" . $listingId
+                        : "../buyer/dashboard.php";
 
                 } else {
 

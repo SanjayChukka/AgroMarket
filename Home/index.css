@@ -83,6 +83,8 @@ textarea {
 }
 
 button,
+.hero-buttons a,
+.join-buttons a,
 .cta-actions a,
 .nav-actions a:last-child,
 .navbar>a:last-child,
@@ -115,6 +117,8 @@ button:disabled {
     }
 
     button:enabled:hover,
+    .hero-buttons a:hover,
+    .join-buttons a:hover,
     .cta-actions a:hover,
     .role-card a:hover,
     .welcome-section a:hover,
@@ -683,14 +687,14 @@ body {
     letter-spacing: .05em;
 }
 
-.hero-buttons button:first-child,
-.join-buttons button:first-child {
+.hero-buttons a:first-child,
+.join-buttons a:first-child {
     background: #f1cd86;
     color: var(--forest);
 }
 
-.hero-buttons button:last-child,
-.join-buttons button:last-child {
+.hero-buttons a:last-child,
+.join-buttons a:last-child {
     border-color: #adc5af;
 }
 
@@ -740,8 +744,8 @@ body {
 
 @media (hover: hover) {
 
-    .hero-buttons button:first-child:hover,
-    .join-buttons button:first-child:hover {
+    .hero-buttons a:first-child:hover,
+    .join-buttons a:first-child:hover {
         background: #ffe5af;
     }
 }
@@ -783,3 +787,8 @@ body {
         grid-template-columns: 1fr;
     }
 }
+.market-search, .market-pages { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.market-pages { justify-content: center; }
+.market-search { max-width: 100%; }
+.market-search input { flex: 1 1 12rem; min-width: 0; }
+.crop-card summary { cursor: pointer; color: var(--leaf); }
