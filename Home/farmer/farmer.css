@@ -1025,3 +1025,9 @@ button[data-order-action="reject"] { color: #882f29; background: #fbefec; border
 @media (hover: hover) {
     button[data-order-action="reject"]:hover { color: white; background: #882f29; }
 }
+
+.table-wrapper td .listing-actions,.listing-actions {
+    display:flex;align-items:center;flex-wrap:wrap;gap:.65rem .9rem;min-width:10rem;
+}
+.listing-actions > form {margin:0;padding:0}
+.listing-actions :is(a,button) {display:inline-flex;align-items:center;min-height:2.4rem;padding:.35rem .65rem}

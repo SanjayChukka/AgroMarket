@@ -156,6 +156,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     <title>Farmer Dashboard | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./farmer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

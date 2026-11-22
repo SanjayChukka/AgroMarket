@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password | AgroMarket Connect</title>
     <link rel="stylesheet" href="./style/auth.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

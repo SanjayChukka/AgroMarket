@@ -87,11 +87,8 @@
     $allowedUnits     = ["kg", "quintal", "ton", "piece"];
     $allowedQualities = ["grade_a", "grade_b", "grade_c"];
 
-    if (isset($_GET['success'])) {
-    $successMessage = "Your crop listing has been submitted successfully.";
-    } else {
-    $successMessage = "";
-    }
+    $successMessage = $_SESSION['crop_created_message'] ?? '';
+    unset($_SESSION['crop_created_message']);
 
     // -----------------------------------------
     // 5. Process crop registration
@@ -428,7 +425,8 @@
                 mysqli_commit($link);
 
                 // Prevent duplicate submission on page refresh
-                header("Location: add_crop.php?success=1");
+                $_SESSION['crop_created_message'] = 'Your crop listing has been submitted successfully.';
+                header("Location: add_crop.php", true, 303);
                 exit;
 
             } catch (Throwable $exception) {
@@ -476,6 +474,7 @@
     <title>List Your Crops | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./farmer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -497,7 +496,7 @@
         <!-- Success Message -->
         <?php if ($successMessage !== ""): ?>
 
-            <div class="success-message">
+            <div class="transaction-success" role="status"><strong>Crop listing added</strong>
                 <?php echo e($successMessage); ?>
             </div>
 

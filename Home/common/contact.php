@@ -11,6 +11,7 @@ require __DIR__ . '/../includes/support-intake.php';
     <title>Contact Us | AgroMarket Connect</title>
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/support.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

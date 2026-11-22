@@ -16,7 +16,8 @@ $activePage = 'complaints.php';
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Complaints | AgroMarket Connect</title>
 <link rel="stylesheet" href="<?= e($portalRole) ?>.css">
-<link rel="stylesheet" href="../common/css/support.css"></head><body>
+<link rel="stylesheet" href="../common/css/support.css"><link rel="icon" href="../favicon.ico" type="image/x-icon">
+</head><body>
 <?php require __DIR__ . '/../' . $portalRole . '/includes/header.php'; ?>
 <main class="support-list">
 <section class="complaint-intro">

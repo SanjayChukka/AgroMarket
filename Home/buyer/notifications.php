@@ -68,6 +68,7 @@ $notifications = notificationsForUser($link, $userId);
     <title>Notifications | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./buyer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

@@ -59,6 +59,7 @@
     <title>AgroMarket Connect</title>
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./styles/home-language.css">
+<link rel="icon" href="./favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -66,7 +67,7 @@
     <!-- Header -->
     <header class="header">
         <div class="logo-section">
-            <div class="logo">AC</div>
+            <img class="brand-mark" src="./images/brand/agromarket-icon.png" width="64" height="64" alt="">
             <h3>AgroMarket Connect</h3>
             <span><?php echo e($t('Marketplace')) ?></span>
         </div>

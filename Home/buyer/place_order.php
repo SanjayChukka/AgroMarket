@@ -283,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Commit all changes
         $link->commit();
+        $_SESSION['placed_order_confirmation'] = $orderNumber;
 
         // Redirect to tracking page
         header(
@@ -358,6 +359,7 @@ $price = (float)$crop['price_per_unit'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Order | AgroMarket Connect</title>
     <link rel="stylesheet" href="buyer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

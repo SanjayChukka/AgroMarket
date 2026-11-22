@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./style/auth.css">
     <link rel="stylesheet" href="./style/password-visibility.css">
     <script src="./js/password-visibility.js" defer></script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 <body>
 

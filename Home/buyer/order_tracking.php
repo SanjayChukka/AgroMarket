@@ -139,6 +139,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Tracking | AgroMarket Connect</title>
     <link rel="stylesheet" href="buyer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -150,6 +151,14 @@ require_once __DIR__ . "/../config/auth_check.php";
 
 <main class="buyer-page-container">
 
+    <?php if ($order && isset($_SESSION['placed_order_confirmation']) &&
+        $_SESSION['placed_order_confirmation'] === $order['order_number']): ?>
+        <div class="transaction-success" role="status">
+            <strong>Order placed successfully</strong>
+            Your order number is <?= e($order['order_number']) ?>.
+        </div>
+        <?php unset($_SESSION['placed_order_confirmation']); ?>
+    <?php endif; ?>
     <h1>Track Your Order</h1>
     <p>Check your order details and status history.</p>
 

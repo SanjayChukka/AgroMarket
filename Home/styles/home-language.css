@@ -11,3 +11,33 @@ html:is(:lang(hi), :lang(te)) .hero h1 {
     letter-spacing: normal;
 }
 html:is(:lang(hi), :lang(te)) :is(h2,h3,button,a) { line-height: 1.45; letter-spacing: normal; }
+
+header.header {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1.25rem;padding:.75rem clamp(1rem,3vw,3rem)}
+.header .navbar {display:grid;grid-template-columns:auto minmax(10rem,21rem) auto auto auto;align-items:center;justify-content:end;gap:.65rem}
+.header .logo-section {justify-content:start;flex-wrap:nowrap}
+.header .navbar > :is(a,form) {margin:0;min-width:0}
+.header .navbar > a {display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;min-height:2.75rem;padding:.4rem .65rem}
+.header .navbar .market-search {display:flex;align-items:stretch;flex-wrap:nowrap;gap:0;height:2.75rem}
+.header .market-search input[type=search] {flex:1 1 0;width:0;min-width:0;height:auto;margin:0}
+.header .market-search button {margin:0;flex:none}
+.header .navbar .language {justify-content:center;gap:.35rem}
+.header .language select {height:2.75rem;margin:0}
+@media(max-width:76rem){
+    header.header {grid-template-columns:minmax(0,1fr);gap:.6rem}
+    .header .navbar {justify-content:start;grid-template-columns:auto minmax(9rem,1fr) auto auto auto}
+}
+@media(max-width:53rem){
+    .header .navbar {display:flex;flex-wrap:wrap;justify-content:flex-start}
+    .header .navbar .market-search {flex:1 1 15rem}
+}
+@media(max-width:36rem){
+    .header .navbar {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+    .header .navbar .market-search {grid-column:1/-1;grid-row:1}
+    .header .navbar .language {flex-wrap:wrap}
+    .header .logo-section {flex-wrap:wrap}
+}
+
+header.header {padding-block:clamp(1rem,1.7vw,1.65rem)}
+.header .brand-mark {display:block;flex:none;width:clamp(2.9rem,4.5vw,4.1rem);height:auto;border-radius:.7rem}
+.header .logo-section h3 {font-size:clamp(1.4rem,1.75vw,1.85rem);line-height:1.16;margin:0}
+@media(max-width:36rem){header.header{padding-block:.9rem}.header .logo-section{gap:.5rem}}

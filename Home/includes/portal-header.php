@@ -37,7 +37,7 @@ $headerInitial = strtoupper(substr(trim($headerName), 0, 1)) ?: strtoupper($head
                 <a href="profile.php">View Profile</a>
             </div>
         </div>
-        <a href="../auth/logout.php" class="logout-link">Logout</a>
+        <?php require __DIR__ . '/signout.php'; ?>
     </div>
 </header>
 <script src="../js/profile-menu.js" defer></script>

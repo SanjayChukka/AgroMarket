@@ -294,6 +294,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     <title>Manage Listings | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="farmer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -496,6 +497,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                                     <td>
 
+                                        <div class="listing-actions">
                                         <a href="edit_crop.php?id=<?php echo (int) $listing['listing_id']; ?>">
                                             Edit
                                         </a>
@@ -563,6 +565,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                                         </form>
 
+                                    </div>
                                     </td>
 
                                 </tr>

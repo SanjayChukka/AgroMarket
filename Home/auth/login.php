@@ -120,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <link rel="stylesheet" href="./style/login.css">
     <link rel="stylesheet" href="./style/password-visibility.css">
     <script src="./js/password-visibility.js" defer></script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>

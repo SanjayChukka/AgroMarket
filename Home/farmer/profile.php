@@ -438,6 +438,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Profile | AgroMarket Connect</title>
     <link rel="stylesheet" href="farmer.css">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 
 <body>
