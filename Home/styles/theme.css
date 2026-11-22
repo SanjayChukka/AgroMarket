@@ -1,14 +1,18 @@
 :root {
-    --forest: #153e36;
-    --leaf: #256859;
-    --cream: #f6f5ef;
-    --paper: #fffefa;
-    --ochre: #e6af5b;
-    --ink: #22382f;
-    --soft: #53695f;
-    --line: #d8dfd4;
-    --wash: #eaf1e7;
-    --shadow: 0 4px 16px rgb(21 62 54 / 6%);
+    --sage: #dce9d2;
+    --sky: #e0e9f1;
+    --peach: #f8dfca;
+    --saffron: #f4d783;
+    --forest: #202b48;
+    --leaf: #994321;
+    --cream: #f8f4ea;
+    --paper: #fffdf7;
+    --ochre: #e5ad39;
+    --ink: #282b32;
+    --soft: #585951;
+    --line: #d9d2c3;
+    --wash: #f0e9d9;
+    --shadow: 0 2px 0 rgb(44 39 30 / 7%);
 }
 
 html {
@@ -183,3 +187,14 @@ img.crop-image,
     height: 100%;
     object-fit: cover;
 }
+/* Shared materials and controls */
+html body { background: var(--cream); color: var(--ink); }
+body :is(input:not([type=checkbox],[type=radio],[type=hidden]), select, textarea) {
+    border-color: #9c998b; border-radius: 5px;
+}
+body :is(.content-card,.market-card,.partner-card,.help-card,.role-card,.order-details-section,.notification-card) {
+    border-radius: 5px;
+}
+body > footer { background: var(--forest); }
+body footer a { color: #ffe6ac; }
+:focus-visible { outline: 3px solid #3164aa; outline-offset: 3px; }

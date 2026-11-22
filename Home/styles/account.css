@@ -1,44 +1,77 @@
-body:has(.register-page, .registration-page, .login-page, .auth-container, .password-page) {
-    background: linear-gradient(155deg, #e1ebdd, var(--cream) 56%, #eee6d5);
+/* The photograph occupies its own column so text and validation feedback stay readable. */
+body:has(.login-page, .registration-page, .register-page, .auth-container) {
+    --account-image: url("../images/editorial/grower.webp");
+    display: grid;
+    grid-template-columns: minmax(15rem, 38%) minmax(0, 1fr);
+    align-items: start;
     min-height: 100vh;
+    margin: 0;
+    background: #fcf8ee;
 }
-
-body :is(.register-container, .registration-container, .login-container, .auth-container, .password-container) {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-top: 4px solid var(--leaf);
-    border-radius: 16px;
-    box-shadow: 0 12px 36px rgb(21 62 54 / 9%);
+body:has(#business_name, .auth-container) { --account-image: url("../images/editorial/market.webp"); }
+body:has(.login-page, .registration-page, .register-page, .auth-container)::before {
+    content: "";
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    background: #58633c var(--account-image) center / cover no-repeat;
+    border-right: 8px solid #d9a547;
 }
-
-body :is(.register-header, .registration-header, .login-header, .password-header) .logo {
-    background: var(--forest);
-    color: #ffe1a3;
-    border-radius: 14px 4px;
-    font-weight: bold;
-}
-
-.registration-form h3 {
-    padding-bottom: .6rem;
-    border-bottom: 1px solid var(--line);
-}
-
-.form-group {
+body > :is(.login-page, .register-page, .registration-page) {
+    grid-column: 2;
+    grid-row: 1;
     min-width: 0;
+    min-height: 100vh;
+    padding: clamp(1.25rem, 4vw, 4rem);
 }
-
-.form-group label {
-    font-weight: 600;
+body :is(.login-container, .register-container, .registration-container, .auth-container) {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
 }
-
-.role-card a {
-    margin-top: auto;
+body :is(.login-container,.register-container,.registration-container) { padding: 0; }
+body > .auth-container {
+    align-self: center;
+    grid-column: 2;
+    grid-row: 1;
+    width: min(84%, 30rem);
+    margin: 3rem auto;
+    padding: 0;
 }
-
-@media (max-width: 460px) {
-
-    .login-options,
-    .radio-options {
-        flex-wrap: wrap;
+body :is(.login-header,.registration-header,.register-header) { align-items: flex-start; text-align: left; }
+body :is(.login-header,.registration-header,.register-header) .logo {
+    width: 3.1rem; height: 3.1rem;
+    border-radius: 50% 50% 12% 50%; background: #503046; color: #ffdf96;
+    font: 700 1.1rem Georgia, serif;
+}
+body :is(.login-header,.registration-header,.register-header,.auth-container) h2 {
+    font: 500 clamp(2rem, 3.2vw, 3.35rem)/1.04 Georgia, serif;
+    color: #42223c; letter-spacing: -.045em; text-align: left;
+}
+body .auth-container > p { text-align: left; }
+body .registration-form h3 { padding-bottom: .6rem; border-bottom: 1px solid #c9bea8; color: #42223c; }
+.form-group { min-width: 0; }
+.form-group label { font-weight: 600; }
+body :is(.login-form,.registration-form,.auth-container form) button[type="submit"] {
+    background: #53324a; color: #fff8ed; border: 0; border-radius: .35rem; min-height: 2.8rem;
+}
+body .role-card { text-align: left; align-items: flex-start; border: 0; border-radius: .35rem; background: #e0e9d3; }
+body .role-card:nth-child(2) { background: #f4dbbc; }
+body .role-card a { margin-top: auto; }
+@media (hover:hover) {
+    body :is(.login-form,.registration-form,.auth-container form) button[type="submit"]:hover { background: #713e54; }
+}
+@media (max-width: 760px) {
+    body:has(.login-page, .registration-page, .register-page, .auth-container) { display: block; }
+    body:has(.login-page, .registration-page, .register-page, .auth-container)::before {
+        display: block; position: static; height: clamp(7rem, 26vw, 13rem);
+        border-right: 0; border-bottom: 4px solid #d9a547; background-position: center 53%;
     }
+    body > :is(.login-page,.register-page,.registration-page) { min-height: auto; padding: 1.75rem 5% 3rem; }
+    body > .auth-container { width: min(90%,30rem); margin: 1.75rem auto 3rem; }
+    .login-options,.radio-options { flex-wrap: wrap; }
 }

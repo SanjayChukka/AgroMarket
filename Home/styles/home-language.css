@@ -1,0 +1,13 @@
+.navbar .language {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+}
+.language label { white-space: nowrap; font-size: .9rem; }
+.navbar .language select { width: auto; min-height: 2.6rem; cursor: pointer; }
+html:is(:lang(hi), :lang(te)) .hero h1 {
+    font-family: "Nirmala UI", system-ui, sans-serif;
+    line-height: 1.32;
+    letter-spacing: normal;
+}
+html:is(:lang(hi), :lang(te)) :is(h2,h3,button,a) { line-height: 1.45; letter-spacing: normal; }

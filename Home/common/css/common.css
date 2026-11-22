@@ -842,3 +842,18 @@ a {
         gap: .6rem 1rem;
     }
 }
+.navbar { border-bottom: 2px solid var(--forest); }
+.common-hero, .about-hero { background: #e5eaf1; color: var(--ink); border-bottom: 1px solid #b4becd; }
+.common-hero h1, .about-hero h1 { color: var(--forest); font-size: clamp(2.5rem,5vw,4.6rem); }
+.about-hero { background: var(--sage); }
+.about-cta, .common-cta { background: var(--saffron); }
+.content-card, .partner-card, .help-card, .role-process-card, .process-card { border-top: 3px solid var(--leaf); }
+.content-card:nth-child(even), .help-card:nth-child(even) { border-top-color: #6a8355; background: var(--sage); }
+.market-card { overflow: hidden; }
+.market-card img { aspect-ratio: 4/3; height: auto; object-fit: cover; }
+.market-category { color: #6e341b; font-weight: 650; }
+.market-price { color: var(--forest); }
+
+.about-hero, .common-hero { background: #efe5db; border-top: 4px solid #795067; }
+.about-hero { background: #e5ebdb; border-color: #587052; }
+.market-card { border-radius: 1rem .25rem .25rem .25rem; }
