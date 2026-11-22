@@ -21,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['home_language'])) {
     exit;
 }
 $homeCopy = [
+    'No prices have been published yet.' => ['hi' => 'अभी तक कोई भाव प्रकाशित नहीं हुआ है।', 'te' => 'ఇంకా ధరలు ప్రచురించబడలేదు.'],
+    'Latest asking prices from farmer listings' => ['hi' => 'किसानों की हाल की सूचियों में माँगे गए भाव', 'te' => 'రైతులు ఇటీవల తమ పంటలకు పేర్కొన్న ధరలు'],
+    'Latest reported market rates' => ['hi' => 'बाज़ार से प्राप्त नवीनतम भाव', 'te' => 'తాజాగా నమోదైన మార్కెట్ ధరలు'],
+    'Unit unspecified' => ['hi' => 'इकाई उपलब्ध नहीं है', 'te' => 'ప్రమాణం పేర్కొనలేదు'],
     'Marketplace' => ['hi' => 'कृषि बाज़ार', 'te' => 'వ్యవసాయ మార్కెట్'],
     'Language' => ['hi' => 'भाषा', 'te' => 'భాష'],
     'Apply' => ['hi' => 'लागू करें', 'te' => 'వర్తింపజేయండి'],

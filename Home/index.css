@@ -223,6 +223,7 @@ body {
     display: flex;
     align-items: center;
     gap: 25px;
+    justify-content: space-around;
 }
 
 /* Hero Section */
@@ -1139,7 +1140,7 @@ body footer a {
 
 /* A printed market-cover composition. */
 .hero {
-    background: #f3eedc;
+    background: #eaddbd;
     border-top: 1px solid #cabfa8;
 }
 
@@ -1169,7 +1170,7 @@ body footer a {
 }
 
 .featured-crops {
-    background: #e7e9da;
+    background: #d5dec5;
 }
 
 .join-section {
@@ -1183,4 +1184,28 @@ body footer a {
         height: auto;
         aspect-ratio: 2 / 1;
     }
+}
+
+.header,
+.header .navbar {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-around;
+}
+
+.header .navbar a.market-prices-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.6rem;
+    padding: .45rem .85rem;
+    border: 1px solid #654a26;
+    border-radius: .4rem;
+    background: #e9c57c;
+    color: #382820;
+    font-weight: 650;
+}
+
+.header .navbar a.market-prices-button:hover {
+    background: #f2d598;
+    text-decoration: underline
 }

@@ -18,8 +18,12 @@ $activePage = 'complaints.php';
 <link rel="stylesheet" href="<?= e($portalRole) ?>.css">
 <link rel="stylesheet" href="../common/css/support.css"></head><body>
 <?php require __DIR__ . '/../' . $portalRole . '/includes/header.php'; ?>
-<main class="support-list"><h1>My Complaints</h1>
-<p><a href="../common/grievance.php#support-form">Submit a complaint</a></p>
+<main class="support-list">
+<section class="complaint-intro">
+<div><h1>My Complaints</h1>
+<p><a href="../common/grievance.php#support-form">Submit a complaint</a></p></div>
+<img src="../images/support/<?= $portalRole === 'farmer' ? 'farmer' : 'buyer' ?>.webp" alt="">
+</section>
 <?php if (!$tickets->num_rows): ?><p>You have no complaints yet.</p><?php endif; ?>
 <?php foreach ($tickets as $ticket): ?>
 <article><h2><?= e($ticket['subject']) ?></h2>

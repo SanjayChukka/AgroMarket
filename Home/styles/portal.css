@@ -350,13 +350,13 @@ body .notification-card.unread { background: var(--sky); border-left-color: #526
 /* Each workspace carries its own navigation ink and dashboard cover. */
 body:has(.farmer-header) {
     --workspace: #263e32;
-    --workspace-tint: #e3ebd7;
+    --workspace-tint: #cddcbf;
     --workspace-accent: #efcb72;
     --workspace-cover: url("../images/editorial/grower.webp");
 }
 body:has(.buyer-header) {
     --workspace: #4a2b46;
-    --workspace-tint: #eee1ec;
+    --workspace-tint: #e4cfe0;
     --workspace-accent: #f0be84;
     --workspace-cover: url("../images/editorial/market.webp");
 }
@@ -409,4 +409,70 @@ body .notification-card.unread { background: var(--workspace-tint); border-left-
     body :is(.dashboard-container,.buyer-dashboard) .welcome-section::after {
         inset: 0 0 auto; height: 7rem; border-left: 0; border-bottom: 3px solid var(--workspace-accent);
     }
+}
+
+/* Recent dashboard activity and buyer crop results share the same card rhythm. */
+.dashboard-container :is(.recent-listings, .recent-orders),
+.buyer-dashboard .crop-grid,
+.buyer-page-container .buyer-crop-grid {
+    --columns: 3;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    align-items: stretch;
+    gap: .75rem;
+    margin: .8rem 0 0;
+}
+.dashboard-container :is(.recent-listings, .recent-orders) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+.dashboard-container :is(.recent-listing-item, .recent-order-item),
+.buyer-dashboard .crop-card,
+.buyer-page-container .buyer-crop-card {
+    min-width: 0;
+    padding: .85rem 1rem;
+    gap: .2rem;
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--workspace);
+    border-radius: .5rem;
+    background: var(--paper);
+    overflow-wrap: anywhere;
+}
+.dashboard-container :is(.recent-listings, .recent-orders) > :is(a, p),
+.buyer-dashboard .crop-grid > p {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin: 0;
+}
+.dashboard-container :is(.recent-listing-item, .recent-order-item) h3,
+.buyer-dashboard .crop-card h3,
+.buyer-page-container .buyer-crop-card h3 {
+    margin: 0 0 .35rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+}
+.dashboard-container :is(.recent-listing-item, .recent-order-item) p,
+.buyer-dashboard .crop-card p,
+.buyer-page-container .buyer-crop-card p {
+    margin: 0;
+    line-height: 1.45;
+}
+.buyer-page-container .buyer-crop-card :is(.crop-image, .crop-image-placeholder) {
+    width: 100%;
+    height: clamp(5.5rem, 10vw, 8rem);
+    margin: 0 0 .35rem;
+    object-fit: cover;
+}
+.buyer-dashboard .crop-card > a,
+.buyer-page-container .buyer-crop-card > a { padding-block: .35rem; }
+@media (max-width: 860px) {
+    .dashboard-container :is(.recent-listings, .recent-orders),
+    .buyer-dashboard .crop-grid,
+    .buyer-page-container .buyer-crop-grid { --columns: 2; }
+}
+@media (max-width: 560px) {
+    .dashboard-container :is(.recent-listings, .recent-orders),
+    .buyer-dashboard .crop-grid,
+    .buyer-page-container .buyer-crop-grid { --columns: 1; }
 }

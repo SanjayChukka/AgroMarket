@@ -18,15 +18,19 @@ function showPopup(type, message) {
     popup.dataset.type = type;
     popup.querySelector(".popup-card").classList.toggle("error", !success);
     popup.querySelector("#popupIcon").textContent = success ? "✓" : "✕";
-    popup.querySelector("#popupTitle").textContent = success ? "Success!" : "Registration Failed";
+    popup.querySelector("#popupTitle").textContent = success ? "Registration complete" : "Registration unsuccessful";
     const text = popup.querySelector("#popupText");
     text.textContent = message;
-    if (!farmer) text.style.whiteSpace = "pre-line";
-    popup.style.display = "flex";
+    popup.querySelector("#closePopup").textContent = success ? "Continue to homepage" : "Return to form";
+    if (!popup.open) popup.showModal();
 }
 
+popup.addEventListener("cancel", event => {
+    event.preventDefault();
+    popup.querySelector("#closePopup").click();
+});
 popup.querySelector("#closePopup").addEventListener("click", () => {
-    popup.style.display = "none";
+    popup.close();
     if (popup.dataset.type === "success") window.location.href = "../index.php";
 });
 if (popup.dataset.message) showPopup(popup.dataset.type, popup.dataset.message);
@@ -221,7 +225,7 @@ window.addEventListener("pageshow", event => {
     requests.clear();
     for (const timer of timers.values()) clearTimeout(timer);
     for (const field of fields) setFeedback(field, "", false);
-    popup.style.display = "none";
+    popup.close();
     updatePasswordFeedback();
 });
 updatePasswordFeedback();

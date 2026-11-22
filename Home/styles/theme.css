@@ -1,16 +1,16 @@
 :root {
-    --sage: #dce9d2;
-    --sky: #e0e9f1;
-    --peach: #f8dfca;
+    --sage: #c5d8b5;
+    --sky: #cbdbe9;
+    --peach: #edcfb2;
     --saffron: #f4d783;
     --forest: #202b48;
     --leaf: #994321;
-    --cream: #f8f4ea;
+    --cream: #ede4cf;
     --paper: #fffdf7;
     --ochre: #e5ad39;
     --ink: #282b32;
     --soft: #585951;
-    --line: #d9d2c3;
+    --line: #bcb29d;
     --wash: #f0e9d9;
     --shadow: 0 2px 0 rgb(44 39 30 / 7%);
 }
@@ -198,3 +198,13 @@ body :is(.content-card,.market-card,.partner-card,.help-card,.role-card,.order-d
 body > footer { background: var(--forest); }
 body footer a { color: #ffe6ac; }
 :focus-visible { outline: 3px solid #3164aa; outline-offset: 3px; }
+
+/* Keep native calendar fields compact in form rows, filter bars and reports. */
+html body input[type="date"] {
+    box-sizing: border-box;
+    width: 12rem;
+    max-width: min(100%, 12rem);
+    min-width: 0;
+    flex: 0 1 auto;
+    justify-self: start;
+}

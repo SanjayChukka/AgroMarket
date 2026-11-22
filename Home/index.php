@@ -73,6 +73,7 @@
 
         <!-- Nav Bar -->
         <nav class="navbar">
+            <a class="market-prices-button" href="./common/market_prices.php"><?= e($t('Market Price Updates')) ?></a>
             <form class="market-search" action="index.php#marketplace" method="get" role="search">
                 <input type="search" name="q" aria-label="<?php echo e($t('Crop or farmer name')) ?>" maxlength="120"
                        placeholder="<?php echo e($t('Search crops or farmers')) ?>" value="<?php echo e($query) ?>">

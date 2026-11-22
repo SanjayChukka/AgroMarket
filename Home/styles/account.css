@@ -6,7 +6,7 @@ body:has(.login-page, .registration-page, .register-page, .auth-container) {
     align-items: start;
     min-height: 100vh;
     margin: 0;
-    background: #fcf8ee;
+    background: #efe4cf;
 }
 body:has(#business_name, .auth-container) { --account-image: url("../images/editorial/market.webp"); }
 body:has(.login-page, .registration-page, .register-page, .auth-container)::before {

@@ -239,85 +239,29 @@ body {
    POPUP MESSAGES
 ============================== */
 
-.popup-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.55);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+.registration-result {
+    --result-color: #31553e;
+    --result-tint: #d3e3c7;
+    position: fixed; inset: 0; margin: auto; height: fit-content;
+    width: min(27rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem);
+    padding: 0; border: 1px solid #ab9f88; border-radius: 1rem;
+    background: #fff8e9; color: #302c2f; box-shadow: 0 22px 70px #27202d55;
 }
-
-.popup-card {
-    background: #fff;
-    width: 90%;
-    max-width: 380px;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-    animation: popupShow 0.25s ease;
+.registration-result::backdrop { background: rgb(32 27 36 / 62%); }
+.registration-result[data-type="error"] { --result-color: #823b2c; --result-tint: #f1d3bb; }
+.registration-result .popup-card { padding: clamp(1.4rem, 4vw, 2rem); border-top: .4rem solid var(--result-color); }
+.registration-result .popup-icon {
+    width: 2.8rem; height: 2.8rem; display: grid; place-items: center;
+    background: var(--result-tint); color: var(--result-color); border-radius: 50%; font: 700 1.35rem system-ui;
 }
-
-.popup-icon {
-    font-size: 45px;
-    font-weight: bold;
-    color: #1ce386;
-    margin-bottom: 12px;
+.registration-result h2 { margin: 1rem 0 .6rem; color: #402e3f; font: 500 2rem/1.1 Georgia,serif; }
+.registration-result p { line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
+.registration-result button {
+    margin-top: 1.4rem; padding: .7rem 1.15rem; border-radius: .4rem; border: 0;
+    background: var(--result-color); color: white; cursor: pointer; font: 600 1rem system-ui;
 }
+.registration-result button:hover { filter: brightness(.88); }
 
-.popup-card h2 {
-    margin-bottom: 10px;
-    color: #1ce386;
-}
-
-.popup-card p {
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 22px;
-}
-
-.popup-card button {
-    padding: 10px 30px;
-    border: none;
-    border-radius: 6px;
-    background: #6cbe6d;
-    color: #fff;
-    cursor: pointer;
-    font-size: 15px;
-    transition: opacity 0.2s ease;
-}
-
-.popup-card button:hover {
-    opacity: 0.85;
-}
-
-/* Error popup */
-.popup-card.error .popup-icon,
-.popup-card.error h2 {
-    color: #dc3545;
-}
-
-.popup-card.error button {
-    background: #dc3545;
-}
-
-/* Popup animation */
-@keyframes popupShow {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 
 /* =================================

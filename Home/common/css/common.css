@@ -736,6 +736,7 @@ a {
 }
 
 .grievance-form-container {
+    padding: 15px;
     max-width: 750px;
     margin: 25px auto 0;
 }
