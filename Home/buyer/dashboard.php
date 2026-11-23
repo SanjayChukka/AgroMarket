@@ -248,7 +248,7 @@
                                     </td>
 
                                     <td>
-                                        <?php echo e(ucfirst($order['order_status'])) ?>
+                                        <?php echo e(ucfirst(str_replace('_', ' ', $order['order_status']))) ?>
                                     </td>
 
                                     <td>

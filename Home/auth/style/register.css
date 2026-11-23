@@ -242,25 +242,71 @@ body {
 .registration-result {
     --result-color: #31553e;
     --result-tint: #d3e3c7;
-    position: fixed; inset: 0; margin: auto; height: fit-content;
-    width: min(27rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem);
-    padding: 0; border: 1px solid #ab9f88; border-radius: 1rem;
-    background: #fff8e9; color: #302c2f; box-shadow: 0 22px 70px #27202d55;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(27rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 1px solid #ab9f88;
+    border-radius: 1rem;
+    background: #fff8e9;
+    color: #302c2f;
+    box-shadow: 0 22px 70px #27202d55;
 }
-.registration-result::backdrop { background: rgb(32 27 36 / 62%); }
-.registration-result[data-type="error"] { --result-color: #823b2c; --result-tint: #f1d3bb; }
-.registration-result .popup-card { padding: clamp(1.4rem, 4vw, 2rem); border-top: .4rem solid var(--result-color); }
+
+.registration-result::backdrop {
+    background: rgb(32 27 36 / 62%);
+}
+
+.registration-result[data-type="error"] {
+    --result-color: #823b2c;
+    --result-tint: #f1d3bb;
+}
+
+.registration-result .popup-card {
+    padding: clamp(1.4rem, 4vw, 2rem);
+    border-top: .4rem solid var(--result-color);
+}
+
 .registration-result .popup-icon {
-    width: 2.8rem; height: 2.8rem; display: grid; place-items: center;
-    background: var(--result-tint); color: var(--result-color); border-radius: 50%; font: 700 1.35rem system-ui;
+    width: 2.8rem;
+    height: 2.8rem;
+    display: grid;
+    place-items: center;
+    background: var(--result-tint);
+    color: var(--result-color);
+    border-radius: 50%;
+    font: 700 1.35rem system-ui;
 }
-.registration-result h2 { margin: 1rem 0 .6rem; color: #402e3f; font: 500 2rem/1.1 Georgia,serif; }
-.registration-result p { line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
+
+.registration-result h2 {
+    margin: 1rem 0 .6rem;
+    color: #402e3f;
+    font: 500 2rem/1.1 Georgia, serif;
+}
+
+.registration-result p {
+    line-height: 1.55;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
 .registration-result button {
-    margin-top: 1.4rem; padding: .7rem 1.15rem; border-radius: .4rem; border: 0;
-    background: var(--result-color); color: white; cursor: pointer; font: 600 1rem system-ui;
+    margin-top: 1.4rem;
+    padding: .7rem 1.15rem;
+    border-radius: .4rem;
+    border: 0;
+    background: var(--result-color);
+    color: white;
+    cursor: pointer;
+    font: 600 1rem system-ui;
 }
-.registration-result button:hover { filter: brightness(.88); }
+
+.registration-result button:hover {
+    filter: brightness(.88);
+}
 
 
 

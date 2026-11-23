@@ -45,7 +45,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     'accepted',
     'rejected',
     'cancelled',
-    'completed',
+    'completed', 'dispatched', 'ready_for_pickup',
     ];
 
     if (! in_array($status, $allowedStatuses, true)) {
@@ -208,6 +208,8 @@ require_once __DIR__ . "/../config/auth_check.php";
                     Cancelled
                 </option>
 
+                <option value="dispatched" <?= $status === 'dispatched' ? 'selected' : '' ?>>Dispatched</option>
+                <option value="ready_for_pickup" <?= $status === 'ready_for_pickup' ? 'selected' : '' ?>>Ready for pickup</option>
                 <option value="completed" <?php echo $status === 'completed' ? 'selected' : '' ?>>
                     Completed
                 </option>
@@ -271,7 +273,7 @@ require_once __DIR__ . "/../config/auth_check.php";
                                 </td>
 
                                 <td>
-                                    <?php echo e(ucfirst($order['order_status'])) ?>
+                                    <?php echo e(ucfirst(str_replace('_', ' ', $order['order_status']))) ?>
                                 </td>
 
                                 <td>

@@ -30,6 +30,7 @@ $csrfToken = $_SESSION['csrf_token'];
 $error = "";
 
 // Preserve submitted values
+$method = $_POST['fulfilment_method'] ?? 'delivery';
 $quantityInput = $_POST['quantity'] ?? "";
 $addressInput = trim($_POST['address'] ?? "");
 $cityInput = trim($_POST['city'] ?? "");
@@ -71,28 +72,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Please enter a valid order quantity.");
         }
 
-        if (
-            $addressInput === "" ||
-            $cityInput === "" ||
-            $stateInput === "" ||
-            $pincodeInput === ""
-        ) {
-            throw new Exception("Please complete all delivery address fields.");
+        if (!in_array($method, ['delivery','pickup'], true)) {
+            throw new Exception("Choose delivery or pickup.");
         }
+        if ($method === 'pickup') {
+            $addressInput = $cityInput = $stateInput = $pincodeInput = '';
+        } else {
+            if (
+                $addressInput === "" ||
+                $cityInput === "" ||
+                $stateInput === "" ||
+                $pincodeInput === ""
+            ) {
+                throw new Exception("Please complete all delivery address fields.");
+            }
 
-        if (!preg_match('/^[0-9]{6}$/', $pincodeInput)) {
-            throw new Exception("Please enter a valid 6-digit pincode.");
-        }
+            if (!preg_match('/^[0-9]{6}$/', $pincodeInput)) {
+                throw new Exception("Please enter a valid 6-digit pincode.");
+            }
 
-        if (strlen($addressInput) > 255) {
-            throw new Exception("Delivery address must not exceed 255 characters.");
-        }
+            if (strlen($addressInput) > 255) {
+                throw new Exception("Delivery address must not exceed 255 characters.");
+            }
 
-        if (
-            strlen($cityInput) > 100 ||
-            strlen($stateInput) > 100
-        ) {
-            throw new Exception("City or state name is too long.");
+            if (
+                strlen($cityInput) > 100 ||
+                strlen($stateInput) > 100
+            ) {
+                throw new Exception("City or state name is too long.");
+            }
+
         }
 
         if (strlen($buyerNoteInput) > 5000) {
@@ -201,15 +210,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 delivery_city,
                 delivery_state,
                 delivery_pincode,
-                buyer_note
+                buyer_note, fulfilment_method
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         $stmt = $link->prepare($insertSql);
 
         $stmt->bind_param(
-            "siiidsddsssss",
+            "siiidsddssssss",
             $orderNumber,
             $buyerId,
             $farmerId,
@@ -222,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cityInput,
             $stateInput,
             $pincodeInput,
-            $buyerNoteInput
+            $buyerNoteInput, $method
         );
 
         $stmt->execute();
@@ -458,13 +467,19 @@ $price = (float)$crop['price_per_unit'];
 
                 <h2>Delivery Information</h2>
 
+                <label for="fulfilment-method">How will you receive the crop?</label>
+                <select name="fulfilment_method" id="fulfilment-method">
+                    <option value="delivery">Delivery to my address</option>
+                    <option value="pickup" <?= $method === 'pickup' ? 'selected' : '' ?>>Collect from farmer</option>
+                </select>
+                <div id="delivery-fields">
                 <label for="address">Delivery Address</label>
                 <textarea
                     id="address"
                     name="address"
                     maxlength="255"
                     placeholder="House number, street and area"
-                    required
+                    data-delivery-required
                 ><?= e($addressInput) ?></textarea>
 
                 <label for="city">City / Village</label>
@@ -474,7 +489,7 @@ $price = (float)$crop['price_per_unit'];
                     name="city"
                     maxlength="100"
                     value="<?= e($cityInput) ?>"
-                    required
+                    data-delivery-required
                 >
 
                 <label for="state">State</label>
@@ -484,7 +499,7 @@ $price = (float)$crop['price_per_unit'];
                     name="state"
                     maxlength="100"
                     value="<?= e($stateInput) ?>"
-                    required
+                    data-delivery-required
                 >
 
                 <label for="pincode">Pincode</label>
@@ -496,9 +511,11 @@ $price = (float)$crop['price_per_unit'];
                     maxlength="6"
                     value="<?= e($pincodeInput) ?>"
                     placeholder="6-digit pincode"
-                    required
+                    data-delivery-required
                 >
 
+                </div>
+                <script src="js/fulfilment-method.js" defer></script>
                 <label for="buyerNote">Additional Instructions</label>
                 <textarea
                     id="buyerNote"

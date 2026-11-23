@@ -1,8 +1,17 @@
+
 <?php
 
-function saveRegistrationValues($sessionKey)
-{
+    /* Save Registration Form Values */
+    function saveRegistrationValues($sessionKey)
+    {
     $values = $_POST;
-    unset($values['password'], $values['confirm_password'], $values['register']);
+
+    /* Remove Passwords and Submit Button */
+    unset(
+        $values['password'],
+        $values['confirm_password'],
+        $values['register']
+    );
+
     $_SESSION[$sessionKey] = $values;
 }

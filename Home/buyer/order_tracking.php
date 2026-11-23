@@ -5,6 +5,8 @@ require_once __DIR__ . "/../config/auth_check.php";
     require_once __DIR__ . "/../config/db.php";
 
     require_once __DIR__ . "/../includes/html.php";
+    require_once __DIR__ . "/../includes/fulfilment.php";
+    processFulfilment($link, "buyer");
 
     $buyerId = (int) $_SESSION['user_id'];
 
@@ -127,6 +129,8 @@ require_once __DIR__ . "/../config/auth_check.php";
     'rejected'  => 'The farmer has rejected your order.',
     'cancelled' => 'This order has been cancelled.',
     'completed' => 'Your order has been completed.',
+    'ready_for_pickup' => 'Your crop is ready to collect. See the pickup location in the timeline.',
+    'dispatched' => 'Your crop is on its way. Confirm receipt after delivery.',
     ];
 
 ?>
@@ -238,7 +242,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                 <div>
                     <label>Current Status</label>
-                    <p><?php echo e(ucfirst($order['order_status'])) ?></p>
+                    <p><?php echo e(ucfirst(str_replace('_', ' ', $order['order_status']))) ?></p>
                 </div>
 
             </div>
@@ -248,6 +252,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         <section class="buyer-content-section">
 
             <h2>Order Progress</h2>
+            <?php showFulfilment($order, "buyer"); ?>
 
             <p>
                 <?php echo e($statusDescriptions[$order['order_status']] ?? 'Status information unavailable.') ?>
@@ -268,7 +273,7 @@ require_once __DIR__ . "/../config/auth_check.php";
                             <div>
 
                                 <h3>
-                                    <?php echo e(ucfirst($event['new_status'])) ?>
+                                    <?php echo e(ucfirst(str_replace('_', ' ', $event['new_status']))) ?>
                                 </h3>
 
                                 <p>
@@ -302,6 +307,8 @@ require_once __DIR__ . "/../config/auth_check.php";
         <section class="buyer-content-section">
 
             <h2>Delivery Information</h2>
+            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><p>Collection from farmer</p>
+            <?php else: ?>
 
             <p>
                 Address:
@@ -321,7 +328,7 @@ require_once __DIR__ . "/../config/auth_check.php";
             <p>
                 Pincode:
                 <?php echo e($order['delivery_pincode']) ?>
-            </p>
+            </p><?php endif; ?>
 
             <?php if (! empty($order['buyer_note'])): ?>
 

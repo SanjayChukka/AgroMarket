@@ -5,6 +5,8 @@ require_once __DIR__ . "/../config/auth_check.php";
     require_once __DIR__ . "/../config/db.php";
 
     require_once __DIR__ . "/../includes/html.php";
+    require_once __DIR__ . "/../includes/fulfilment.php";
+    processFulfilment($link, "farmer");
 
     $farmerId = (int) $_SESSION['user_id'];
     $orderId  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -83,6 +85,8 @@ require_once __DIR__ . "/../config/auth_check.php";
     'rejected'  => 'Rejected',
     'cancelled' => 'Cancelled',
     'completed' => 'Completed',
+    'ready_for_pickup' => 'Ready for pickup',
+    'dispatched' => 'Dispatched',
     ];
 
     $status = $statusLabels[$order['order_status']] ?? ucfirst($order['order_status']);
@@ -127,6 +131,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         </div>
 
 
+        <?php showFulfilment($order, "farmer"); ?>
         <!-- Order Information -->
         <section class="order-details-section">
 
@@ -224,14 +229,15 @@ require_once __DIR__ . "/../config/auth_check.php";
         <!-- Delivery Address -->
         <section class="order-details-section">
 
-            <h3>Delivery Address</h3>
+            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><h3>Collection from farmer</h3>
+            <?php else: ?><h3>Delivery Address</h3>
 
             <p><?php echo e($order['delivery_address']) ?></p>
             <p>
                 <?php echo e($order['delivery_city']) ?>,
                 <?php echo e($order['delivery_state']) ?> -
                 <?php echo e($order['delivery_pincode']) ?>
-            </p>
+            </p><?php endif; ?>
 
         </section>
 

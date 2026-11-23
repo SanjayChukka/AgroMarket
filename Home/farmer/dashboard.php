@@ -339,7 +339,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                             <p>
                                 Status:
-                                <?php echo e(ucfirst($order['order_status'])); ?>
+                                <?php echo e(ucfirst(str_replace('_', ' ', $order['order_status']))); ?>
                             </p>
 
                             <p>

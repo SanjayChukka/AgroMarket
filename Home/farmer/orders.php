@@ -609,6 +609,8 @@
                                                 "rejected"  => "Rejected",
                                                 "cancelled" => "Cancelled",
                                                 "completed" => "Completed",
+                                                "ready_for_pickup" => "Ready for pickup",
+                                                "dispatched" => "Dispatched",
                                             ];
 
                                             echo e(
@@ -644,8 +646,11 @@
 
                                         <?php else: ?>
 
+                                            <?php if ($order['order_status'] === 'accepted'): ?>
+                                                <a href="order_details.php?id=<?= (int) $order['order_id'] ?>">Update fulfilment</a>
+                                            <?php endif; ?>
                                             <span class="action-message">
-                                                Order <?php echo e($order['order_status']); ?>
+                                                Order <?php echo e(str_replace('_',' ',$order['order_status'])); ?>
                                             </span>
 
                                         <?php endif; ?>
