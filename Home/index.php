@@ -3,6 +3,8 @@
     require_once __DIR__ . "/includes/html.php";
     require __DIR__ . "/includes/home-languages.php";
 
+    require __DIR__ . '/includes/review-actions.php';
+
     $query        = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
     $page         = max(1, min(1000000, (int) filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT)));
     $pageSize     = 12;
@@ -74,7 +76,7 @@
 
         <!-- Nav Bar -->
         <nav class="navbar">
-            <a class="market-prices-button" href="./common/market_prices.php"><?php echo e($t('Market Prices')) ?></a>
+            <a class="market-prices-button" href="./common/market_prices.php"><?= e($t('Market Prices')) ?></a>
             <form class="market-search" action="index.php#marketplace" method="get" role="search">
                 <input type="search" name="q" aria-label="<?php echo e($t('Crop or farmer name')) ?>" maxlength="120"
                        placeholder="<?php echo e($t('Search crops or farmers')) ?>" value="<?php echo e($query) ?>">
@@ -174,23 +176,19 @@
                 </div>
 
                 <div class="feature-card">
-                    <h3><?php echo e($t('Live Market Prices')) ?></h3>
+                    <h3><?php echo e($t('Market Prices')) ?></h3>
                     <p>
                         <?php echo e($t('Access transparent market prices and make better trading decisions.')) ?>
                     </p>
+                    <a class="price-card-link" href="./common/market_prices.php"><?= e($t('View market prices')) ?></a>
                 </div>
 
                 <div class="feature-card">
-                <h3><?php echo e($t('Market Prices')) ?></h3>
-
-                <p>
-                    <?php echo e($t('Access transparent market prices and make better trading decisions.')) ?>
-                </p>
-
-                <a class="price-card-link" href="./common/market_prices.php">
-                    <?php echo e($t('View market prices')) ?>
-                </a>
-            </div>
+                    <h3><?php echo e($t('Secure Transactions')) ?></h3>
+                    <p>
+                        <?php echo e($t('Trade confidently with secure transactions and reliable connections.')) ?>
+                    </p>
+                </div>
 
             </div>
 
@@ -247,6 +245,7 @@
         </section>
 
         <!-- How It Works Section -->
+        <div class="community-layout">
         <section class="how-it-works">
 
             <div class="section-heading">
@@ -284,6 +283,8 @@
         </section>
 
 
+        <?php require __DIR__ . '/includes/review-aside.php'; ?>
+        </div>
         <!-- Call To Action Section -->
         <section class="join-section">
 
@@ -325,7 +326,7 @@
                 <li><a href="./auth/farmer_register.php"><?php echo e($t('Register as Farmer')) ?></a></li>
                 <li><a href="./auth/login.php"><?php echo e($t('List Your Crops')) ?></a></li>
                 <li><a href="./auth/login.php"><?php echo e($t('Manage Listings')) ?></a></li>
-                <li><a href="./common/market_prices.php"><?php echo e($t('Market Price Updates')) ?></a></li>
+                <li><a href="./common/market_prices.php"><?php echo e($t('Market Prices')) ?></a></li>
                 <li><a href="./common/farmer_guidelines.php"><?php echo e($t('Farmer Guidelines')) ?></a></li>
             </ul>
         </div>

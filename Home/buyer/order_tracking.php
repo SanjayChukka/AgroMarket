@@ -38,13 +38,13 @@ require_once __DIR__ . "/../config/auth_check.php";
 
         $sql = "
             SELECT
-                o.*,
+                o.*, COALESCE(bc.amount,0) AS buyer_fee, o.subtotal + COALESCE(bc.amount,0) AS buyer_total,
                 cl.crop_name,
                 cl.variety,
                 u.full_name AS farmer_name,
                 u.mobile AS farmer_mobile
 
-            FROM orders o
+            FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id
 
             INNER JOIN crop_listings cl
                 ON cl.listing_id = o.listing_id
@@ -68,13 +68,13 @@ require_once __DIR__ . "/../config/auth_check.php";
 
         $sql = "
             SELECT
-                o.*,
+                o.*, COALESCE(bc.amount,0) AS buyer_fee, o.subtotal + COALESCE(bc.amount,0) AS buyer_total,
                 cl.crop_name,
                 cl.variety,
                 u.full_name AS farmer_name,
                 u.mobile AS farmer_mobile
 
-            FROM orders o
+            FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id
 
             INNER JOIN crop_listings cl
                 ON cl.listing_id = o.listing_id
@@ -122,6 +122,16 @@ require_once __DIR__ . "/../config/auth_check.php";
     }
     }
 
+    $orderCards = [];
+    if (!$order) {
+        $stmt = $link->prepare("SELECT o.order_id, o.order_number, o.order_status, o.placed_at,
+                                      o.quantity, o.quantity_unit, o.subtotal + COALESCE(bc.amount,0) AS buyer_total, cl.crop_name
+                               FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id LEFT JOIN crop_listings cl ON cl.listing_id = o.listing_id
+                               WHERE o.buyer_id = ? ORDER BY o.placed_at DESC, o.order_id DESC");
+        $stmt->execute([$buyerId]);
+        $orderCards = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+    }
     // Status descriptions
     $statusDescriptions = [
     'pending'   => 'Your order is waiting for the farmer to respond.',
@@ -194,7 +204,27 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     </section>
 
+    <?php if (!$order): ?>
+        <section aria-labelledby="your-orders">
+            <h2 id="your-orders">Your orders</h2>
+            <?php if (!$orderCards): ?>
+                <p>You have no orders yet. <a href="browse_crops.php">Browse crops</a></p>
+            <?php else: ?>
+                <div class="tracking-cards">
+                    <?php foreach ($orderCards as $card): ?>
+                        <a class="tracking-card" href="order_tracking.php?id=<?= (int) $card['order_id'] ?>">
+                            <strong><?= e($card['crop_name'] ?? 'Crop order') ?></strong>
+                            <span><?= e($card['order_number']) ?> · <?= e(date('d M Y', strtotime($card['placed_at']))) ?></span>
+                            <span><?= e($card['quantity']) ?> <?= e($card['quantity_unit']) ?> · ₹<?= number_format((float) $card['buyer_total'], 2) ?></span>
+                            <b><?= e(ucfirst(str_replace('_', ' ', $card['order_status']))) ?></b>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
     <?php if ($order): ?>
+        <p><a href="order_tracking.php">← All orders</a></p>
 
         <section class="buyer-content-section">
 
@@ -236,8 +266,10 @@ require_once __DIR__ . "/../config/auth_check.php";
                 </div>
 
                 <div>
-                    <label>Total Amount</label>
-                    <p>₹<?php echo number_format((float) $order['subtotal'], 2) ?></p>
+                    <p>Crop subtotal: ₹<?= number_format($order['subtotal'], 2) ?></p>
+                    <p>Buyer platform fee: ₹<?= number_format($order['buyer_fee'], 2) ?></p>
+                    <label>Total including buyer fee</label>
+                    <p>₹<?php echo number_format((float) $order['buyer_total'], 2) ?></p>
                 </div>
 
                 <div>
@@ -307,7 +339,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         <section class="buyer-content-section">
 
             <h2>Delivery Information</h2>
-            <?php if ($order['fulfilment_method'] === 'pickup'): ?><p>Collection from farmer</p>
+            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><p>Collection from farmer</p>
             <?php else: ?>
 
             <p>

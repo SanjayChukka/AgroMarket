@@ -76,7 +76,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         o.quantity,
         o.quantity_unit,
         o.unit_price,
-        o.subtotal,
+        o.subtotal + COALESCE(bc.amount,0) AS buyer_total,
         o.order_status,
         o.placed_at,
 
@@ -84,7 +84,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
         u.full_name AS farmer_name
 
-    FROM orders o
+    FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id
 
     INNER JOIN crop_listings cl
         ON cl.listing_id = o.listing_id
@@ -265,7 +265,7 @@ require_once __DIR__ . "/../config/auth_check.php";
                                 </td>
 
                                 <td>
-                                    ₹<?php echo number_format((float) $order['subtotal'], 2) ?>
+                                    ₹<?php echo number_format((float) $order['buyer_total'], 2) ?>
                                 </td>
 
                                 <td>

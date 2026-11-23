@@ -429,7 +429,7 @@
                   o.order_number,
                   o.quantity,
                   o.quantity_unit,
-                  o.subtotal,
+                  o.subtotal, cf.amount AS commission_fee,
                   o.order_status,
                   o.placed_at,
 
@@ -437,7 +437,7 @@
 
                   cl.crop_name
 
-              FROM orders AS o
+              FROM orders AS o LEFT JOIN order_commissions cf ON cf.order_id = o.order_id
 
               INNER JOIN crop_listings AS cl
                   ON o.listing_id = cl.listing_id
@@ -590,6 +590,9 @@
 
                                     <td>
                                         ₹<?php echo number_format((float) $order['subtotal'], 2); ?>
+                                        <?php if ($order['commission_fee'] > 0): ?>
+                                            <br><small>Fee on completion: ₹<?= e($order['commission_fee']) ?></small>
+                                        <?php endif; ?>
                                     </td>
 
                                     <td>

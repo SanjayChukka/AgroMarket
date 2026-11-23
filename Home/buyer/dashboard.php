@@ -53,11 +53,11 @@
         o.order_number,
         o.quantity,
         o.quantity_unit,
-        o.subtotal,
+        o.subtotal + COALESCE(bc.amount,0) AS buyer_total,
         o.order_status,
         cl.crop_name,
         u.full_name AS farmer_name
-    FROM orders o
+    FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id
     LEFT JOIN crop_listings cl
         ON o.listing_id = cl.listing_id
     LEFT JOIN users u
@@ -128,7 +128,7 @@
             <p>Discover fresh crops directly from farmers.</p>
 
             <a href="browse_crops.php">Browse Available Crops</a>
-
+            
         </section>
 
 
@@ -244,7 +244,7 @@
                                     </td>
 
                                     <td>
-                                        ₹<?php echo number_format((float) $order['subtotal'], 2) ?>
+                                        ₹<?php echo number_format((float) $order['buyer_total'], 2) ?>
                                     </td>
 
                                     <td>
@@ -325,6 +325,7 @@
             </div>
 
         </section>
+        <a href="../index.php#community-reviews" class="review">Write or update your review</a>
 
     </main>
 

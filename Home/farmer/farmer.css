@@ -1056,3 +1056,13 @@ button[data-order-action="reject"] {
   min-height: 2.4rem;
   padding: 0.35rem 0.65rem;
 }
+
+
+.review {
+    color: white;
+    display: inline-block;
+    padding: 12px 20px;
+    border: 1px solid #333;
+    text-decoration: none;
+    background: var(--workspace);
+}

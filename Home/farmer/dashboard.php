@@ -366,6 +366,7 @@ require_once __DIR__ . "/../config/auth_check.php";
             </div>
 
         </section>
+         <a href="../index.php#community-reviews" class="review">Write or update your review</a>
 
     </main>
 

@@ -10,6 +10,7 @@
     'orders'     => 'Orders',
     'complaints' => 'Complaints',
     'reports'    => 'Reports',
+    'commissions' => 'Platform commissions',
     'profile'    => 'My profile',
     ];
 

@@ -31,13 +31,13 @@ require_once __DIR__ . "/../config/auth_check.php";
     /* Fetch order details - verify ownership */
     $stmt = $link->prepare("
     SELECT
-        o.*,
+        o.*, cf.amount AS commission_fee,
         c.crop_name,
         c.variety,
         u.full_name AS buyer_name,
         u.email AS buyer_email,
         u.mobile AS buyer_mobile
-    FROM orders o
+    FROM orders o LEFT JOIN order_commissions cf ON cf.order_id = o.order_id
     INNER JOIN crop_listings c
         ON o.listing_id = c.listing_id
     INNER JOIN users u
@@ -192,6 +192,10 @@ require_once __DIR__ . "/../config/auth_check.php";
                 <div>
                     <strong>Subtotal</strong>
                     <p>₹<?php echo number_format((float) $order['subtotal'], 2) ?></p>
+                    <?php if ($order['commission_fee'] > 0): ?>
+                        <p>Platform fee on completion: ₹<?= e($order['commission_fee']) ?></p>
+                        <p>Farmer proceeds after fee: ₹<?= number_format($order['subtotal'] - $order['commission_fee'], 2) ?></p>
+                    <?php endif; ?>
                 </div>
 
             </div>
@@ -229,7 +233,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         <!-- Delivery Address -->
         <section class="order-details-section">
 
-            <?php if ($order['fulfilment_method'] === 'pickup'): ?><h3>Collection from farmer</h3>
+            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><h3>Collection from farmer</h3>
             <?php else: ?><h3>Delivery Address</h3>
 
             <p><?php echo e($order['delivery_address']) ?></p>

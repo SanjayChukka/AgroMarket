@@ -8,6 +8,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 require_once __DIR__ . "/../includes/html.php";
 
+$commissionRates = require __DIR__ . '/../config/commission.php';
 $buyerId = (int)$_SESSION['user_id'];
 
 $listingId = filter_input(INPUT_GET, 'listing_id', FILTER_VALIDATE_INT);
@@ -238,6 +239,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $orderId = $link->insert_id;
         $stmt->close();
 
+        foreach (['farmer' => 'order_commissions', 'buyer' => 'buyer_commissions'] as $payer => $table) {
+            $rate = $commissionRates[$payer];
+            $fee = $link->prepare("INSERT INTO $table (order_id, rate_percent, amount)
+                SELECT order_id, ?, ROUND(subtotal * CAST(? AS DECIMAL(5,2)) / 100, 2)
+                FROM orders WHERE order_id = ?");
+            $fee->execute([$rate, $rate, $orderId]);
+            $fee->close();
+        }
+
         // Record initial order history
         $historySql = "
             INSERT INTO order_status_history (
@@ -435,7 +445,7 @@ $price = (float)$crop['price_per_unit'];
 
                 <input
                     type="number"
-                    id="quantity" data-unit-price="<?= e($price) ?>"
+                    id="quantity" data-buyer-rate="<?= e($commissionRates['buyer']) ?>" data-unit-price="<?= e($price) ?>"
                     name="quantity"
                     min="<?= $minimumQuantity > 0 ? e($minimumQuantity) : '0.001' ?>"
                     max="<?= e($crop['quantity_available']) ?>"
@@ -452,7 +462,10 @@ $price = (float)$crop['price_per_unit'];
                         : "No minimum specified" ?>
                 </p>
 
-                <label for="totalAmount">Estimated Total Amount</label>
+                <p>Crop subtotal: <output id="cropSubtotal"></output></p>
+                <p>Buyer platform fee (<?= e((float)$commissionRates['buyer']) ?>%): <output id="buyerFee"></output></p>
+                <label for="totalAmount">Estimated total including buyer fee</label>
+                <small>On completion, pay the crop subtotal to the farmer and the buyer fee to AgroMarket.</small>
 
                 <input
                     type="text"

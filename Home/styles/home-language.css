@@ -3,186 +3,93 @@
     align-items: center;
     gap: .4rem;
 }
-
-.language label {
-    white-space: nowrap;
-    font-size: .9rem;
-}
-
-.navbar .language select {
-    width: auto;
-    min-height: 2.6rem;
-    cursor: pointer;
-}
-
+.language label { white-space: nowrap; font-size: .9rem; }
+.navbar .language select { width: auto; min-height: 2.6rem; cursor: pointer; }
 html:is(:lang(hi), :lang(te)) .hero h1 {
     font-family: "Nirmala UI", system-ui, sans-serif;
     line-height: 1.32;
     letter-spacing: normal;
 }
+html:is(:lang(hi), :lang(te)) :is(h2,h3,button,a) { line-height: 1.45; letter-spacing: normal; }
 
-html:is(:lang(hi), :lang(te)) :is(h2, h3, button, a) {
-    line-height: 1.45;
-    letter-spacing: normal;
+header.header {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1.25rem;padding:.75rem clamp(1rem,3vw,3rem)}
+.header .navbar {display:grid;grid-template-columns:auto minmax(10rem,21rem) auto auto auto;align-items:center;justify-content:end;gap:.65rem}
+.header .logo-section {justify-content:start;flex-wrap:nowrap}
+.header .navbar > :is(a,form) {margin:0;min-width:0}
+.header .navbar > a {display:inline-flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;min-height:2.75rem;padding:.4rem .65rem}
+.header .navbar .market-search {display:flex;align-items:stretch;flex-wrap:nowrap;gap:0;height:2.75rem}
+.header .market-search input[type=search] {flex:1 1 0;width:0;min-width:0;height:auto;margin:0}
+.header .market-search button {margin:0;flex:none}
+.header .navbar .language {justify-content:center;gap:.35rem}
+.header .language select {height:2.75rem;margin:0}
+@media(max-width:76rem){
+    header.header {grid-template-columns:minmax(0,1fr);gap:.6rem}
+    .header .navbar {justify-content:start;grid-template-columns:auto minmax(9rem,1fr) auto auto auto}
+}
+@media(max-width:53rem){
+    .header .navbar {display:flex;flex-wrap:wrap;justify-content:flex-start}
+    .header .navbar .market-search {flex:1 1 15rem}
+}
+@media(max-width:36rem){
+    .header .navbar {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+    .header .navbar .market-search {grid-column:1/-1;grid-row:1}
+    .header .navbar .language {flex-wrap:wrap}
+    .header .logo-section {flex-wrap:wrap}
 }
 
-header.header {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: 1.25rem;
-    padding: .75rem clamp(1rem, 3vw, 3rem)
-}
-
-.header .navbar {
-    display: grid;
-    grid-template-columns: auto minmax(10rem, 21rem) auto auto auto;
-    align-items: center;
-    justify-content: end;
-    gap: .65rem
-}
-
-.header .logo-section {
-    justify-content: start;
-    flex-wrap: nowrap
-}
-
-.header .navbar> :is(a, form) {
-    margin: 0;
-    min-width: 0
-}
-
-.header .navbar>a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 1.2;
-    min-height: 2.75rem;
-    padding: .4rem .65rem
-}
-
-.header .navbar .market-search {
-    display: flex;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    gap: 0;
-    height: 2.75rem
-}
-
-.header .market-search input[type=search] {
-    flex: 1 1 0;
-    width: 0;
-    min-width: 0;
-    height: auto;
-    margin: 0
-}
-
-.header .market-search button {
-    margin: 0;
-    flex: none
-}
-
-.header .navbar .language {
-    justify-content: center;
-    gap: .35rem
-}
-
-.header .language select {
-    height: 2.75rem;
-    margin: 0
-}
-
-@media(max-width:76rem) {
-    header.header {
-        grid-template-columns: minmax(0, 1fr);
-        gap: .6rem
-    }
-
-    .header .navbar {
-        justify-content: start;
-        grid-template-columns: auto minmax(9rem, 1fr) auto auto auto
-    }
-}
-
-@media(max-width:53rem) {
-    .header .navbar {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start
-    }
-
-    .header .navbar .market-search {
-        flex: 1 1 15rem
-    }
-}
-
-@media(max-width:36rem) {
-    .header .navbar {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: .45rem
-    }
-
-    .header .navbar .market-search {
-        grid-column: 1/-1;
-        grid-row: 1
-    }
-
-    .header .navbar .language {
-        flex-wrap: wrap
-    }
-
-    .header .logo-section {
-        flex-wrap: wrap
-    }
-}
-
-header.header {
-    padding-block: clamp(1rem, 1.7vw, 1.65rem)
-}
-
-.header .brand-mark {
-    display: block;
-    flex: none;
-    width: clamp(2.9rem, 4.5vw, 4.1rem);
-    height: auto;
-    border-radius: .7rem
-}
-
-.header .logo-section h3 {
-    font-size: clamp(1.4rem, 1.75vw, 1.85rem);
-    line-height: 1.16;
-    margin: 0
-}
-
-@media(max-width:36rem) {
-    header.header {
-        padding-block: .9rem
-    }
-
-    .header .logo-section {
-        gap: .5rem
-    }
-}
+header.header {padding-block:clamp(1rem,1.7vw,1.65rem)}
+.header .brand-mark {display:block;flex:none;width:clamp(2.9rem,4.5vw,4.1rem);height:auto;border-radius:.7rem}
+.header .logo-section h3 {font-size:clamp(1.4rem,1.75vw,1.85rem);line-height:1.16;margin:0}
+@media(max-width:36rem){header.header{padding-block:.9rem}.header .logo-section{gap:.5rem}}
 
 /* The homepage has its own stylesheet and brand subtitle. */
 .header .logo-section a.agro-home {
+    display: inline-flex; align-items: center; gap: .65rem; color: #202b48;
+    text-decoration: none;
+}
+.header .logo-section a.agro-home .home-brand-name {
+    border: 0; padding: 0; color: #202b48;
+    font: 700 clamp(1.5rem, 1.12rem + 1vw, 2rem)/1.15 Georgia, Cambria, serif;
+}
+.header .logo-section a.agro-home:hover .home-brand-name { text-decoration: underline; text-underline-offset: .15em; }
+
+.feature-card .price-card-link {
     display: inline-flex;
     align-items: center;
-    gap: .65rem;
-    color: #202b48;
+    justify-content: center;
+    align-self: flex-start;
+    min-height: 44px;
+    margin-top: .75rem;
+    padding: .45rem 1rem;
+    border-radius: .6rem;
+    background: #215238;
+    color: #fff;
+    font-weight: 650;
     text-decoration: none;
 }
 
-.header .logo-section a.agro-home .home-brand-name {
-    border: 0;
-    padding: 0;
-    color: #202b48;
-    font: 700 clamp(1.5rem, 1.12rem + 1vw, 2rem)/1.15 Georgia, Cambria, serif;
+.feature-card .price-card-link:hover {
+    background: #163e29;
 }
 
-.header .logo-section a.agro-home:hover .home-brand-name {
-    text-decoration: underline;
-    text-underline-offset: .15em;
+.feature-card .price-card-link:focus-visible {
+    outline: 3px solid #8a5417;
+    outline-offset: 3px;
 }
+
+.community-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+    padding-inline: clamp(1rem, 4vw, 4rem);
+}
+.community-layout .process-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#community-reviews { background: #fffaf0; color: #243827; padding: 1.5rem; border: 1px solid #d4cbb9; border-radius: .75rem; overflow-wrap: anywhere; }
+#community-reviews figure { margin: 1rem 0; padding-bottom: .8rem; border-bottom: 1px solid #d4cbb9; }
+#community-reviews blockquote { margin: 0 0 .4rem; }
+#community-reviews form, #community-reviews label { display: grid; gap: .6rem; margin-top: .6rem; }
+#community-reviews button { justify-self: start; padding: .6rem 1rem; background: #28523a; color: white; }
+#community-reviews summary { cursor: pointer; }
+@media (max-width: 800px) { .community-layout { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .community-layout .process-container { grid-template-columns: 1fr; } }

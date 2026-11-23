@@ -149,25 +149,25 @@ require __DIR__ . '/../includes/support-intake.php';
 
                     <div class="form-group">
                         <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" value="<?= e(supportField('name')) ?>" required
+                        <input type="text" maxlength="120" id="name" name="name" value="<?= e(supportField('name')) ?>" required
                             placeholder="Enter your full name">
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" value="<?= e(supportField('email')) ?>" required
+                        <input type="email" maxlength="254" id="email" name="email" value="<?= e(supportField('email')) ?>" required
                             placeholder="Enter your email address">
                     </div>
 
                     <div class="form-group">
                         <label for="mobile">Mobile Number</label>
-                        <input type="tel" id="mobile" name="mobile" value="<?= e(supportField('mobile')) ?>"
+                        <input type="tel" maxlength="24" id="mobile" name="mobile" value="<?= e(supportField('mobile')) ?>"
                             placeholder="Enter your mobile number">
                     </div>
 
                     <div class="form-group">
                         <label for="user_type">User Type</label>
-                        <select required id="user_type" name="user_type">
+                        <select <?= $owner ? 'disabled' : 'required' ?> id="user_type"  name="user_type">
                             <option value="">Select user type</option>
                             <option value="farmer" <?= ($owner ? $portalRole : supportField('user_type')) === 'farmer' ? 'selected' : '' ?>>Farmer</option>
                             <option value="buyer" <?= ($owner ? $portalRole : supportField('user_type')) === 'buyer' ? 'selected' : '' ?>>Buyer</option>
@@ -190,7 +190,7 @@ require __DIR__ . '/../includes/support-intake.php';
 
                     <div class="form-group">
                         <label for="reference">Order / Reference ID (Optional)</label>
-                        <input type="text" id="reference" name="reference" value="<?= e(supportField('reference')) ?>"
+                        <input type="text" maxlength="100" id="reference" name="reference" value="<?= e(supportField('reference')) ?>"
                             placeholder="Enter order or reference ID">
                     </div>
 
