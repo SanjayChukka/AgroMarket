@@ -166,9 +166,9 @@
 
             <!-- Login Header -->
             <div class="login-header">
-                <div class="logo">AC</div>
+                <?php require __DIR__ . '/../includes/brand-home.php'; ?>
 
-                <h2>AgroMarket Connect</h2>
+                <h2>Sign in</h2>
 
                 <p>Welcome Back! Login to your Account</p>
             </div>

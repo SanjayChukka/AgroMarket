@@ -2,13 +2,13 @@
 require_once __DIR__ . "/html.php";
 require_once __DIR__ . "/notifications.php";
 
-$headerUnread = $unreadCount ?? unreadNotificationCount($link, (int) $_SESSION['user_id']);
+$badgeCount = notificationBadgeCount($link, (int) $_SESSION['user_id']);
 $headerName = $headerUser['full_name'] ?? $_SESSION['full_name'] ?? ucfirst($headerRole);
 $headerInitial = strtoupper(substr(trim($headerName), 0, 1)) ?: strtoupper($headerRole[0]);
 ?>
 <header class="<?= e($headerRole) ?>-header">
     <div class="header-left">
-        <h2>AgroMarket Connect</h2>
+        <?php require __DIR__ . '/brand-home.php'; ?>
     </div>
 
     <?php require $navigationFile; ?>
@@ -16,11 +16,11 @@ $headerInitial = strtoupper(substr(trim($headerName), 0, 1)) ?: strtoupper($head
     <div class="header-right">
         <div class="notification-menu">
             <a href="notifications.php" class="notification-bell"
-               aria-label="Notifications, <?= (int) $headerUnread ?> unread"
+               aria-label="Notifications, <?= (int) $badgeCount ?> new"
                <?= $activePage === "notifications.php" ? 'aria-current="page"' : '' ?>>
                 <span class="bell-icon" aria-hidden="true">🔔</span>
-                <?php if ($headerUnread > 0): ?>
-                    <span class="notification-badge" aria-hidden="true"><?= $headerUnread > 99 ? "99+" : (int) $headerUnread ?></span>
+                <?php if ($badgeCount > 0): ?>
+                    <span class="notification-badge" aria-hidden="true"><?= $badgeCount > 99 ? "99+" : (int) $badgeCount ?></span>
                 <?php endif; ?>
             </a>
         </div>

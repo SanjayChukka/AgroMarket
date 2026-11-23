@@ -3,7 +3,6 @@ $_SESSION['fulfilment_token'] ??= bin2hex(random_bytes(32));
 
 function nextFulfilmentAction(array $order, string $role): ?array
 {
-    if (!isset($order['fulfilment_method'])) return null;
     if ($role === 'farmer' && $order['order_status'] === 'accepted') {
         return $order['fulfilment_method'] === 'pickup'
             ? ['ready_for_pickup', 'Mark ready for pickup', 'The farmer marked the order ready for pickup.']

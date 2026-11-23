@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $unreadCount = unreadNotificationCount($link, $userId);
 $notifications = notificationsForUser($link, $userId);
+acknowledgeNotificationVisit($link, $userId, $notifications);
 $stmt = $link->prepare("SELECT full_name, email, mobile FROM users WHERE user_id = ?");
 $stmt->bind_param("i", $userId);
 $stmt->execute();

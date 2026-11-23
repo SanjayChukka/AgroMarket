@@ -22,6 +22,7 @@
 <body>
 
     <div class="auth-container">
+        <?php require __DIR__ . '/../includes/brand-home.php'; ?>
 
         <h2>Change Password</h2>
 

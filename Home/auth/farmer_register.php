@@ -388,7 +388,7 @@
     <section class="registration-container">
 
         <div class="registration-header">
-            <div class="logo">AC</div>
+            <?php require __DIR__ . '/../includes/brand-home.php'; ?>
             <h2>Farmer Registration</h2>
             <p>Create your farmer account to start selling crops.</p>
         </div>

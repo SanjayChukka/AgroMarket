@@ -13,6 +13,7 @@
 <body>
 
     <div class="auth-container">
+        <?php require __DIR__ . '/../includes/brand-home.php'; ?>
         <h2>Reset Password</h2>
         <p>Create a new password for your account.</p>
 

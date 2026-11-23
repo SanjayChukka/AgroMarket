@@ -67,14 +67,14 @@
     <!-- Header -->
     <header class="header">
         <div class="logo-section">
-            <img class="brand-mark" src="./images/brand/agromarket-icon.png" width="64" height="64" alt="">
-            <h3>AgroMarket Connect</h3>
+            <a class="agro-home" href="./index.php" aria-label="AgroMarket Connect home"><img class="brand-mark" src="./images/brand/agromarket-icon.png" width="64" height="64" alt="">
+            <span class="home-brand-name">AgroMarket Connect</span></a>
             <span><?php echo e($t('Marketplace')) ?></span>
         </div>
 
         <!-- Nav Bar -->
         <nav class="navbar">
-            <a class="market-prices-button" href="./common/market_prices.php"><?= e($t('Market Price Updates')) ?></a>
+            <a class="market-prices-button" href="./common/market_prices.php"><?php echo e($t('Market Prices')) ?></a>
             <form class="market-search" action="index.php#marketplace" method="get" role="search">
                 <input type="search" name="q" aria-label="<?php echo e($t('Crop or farmer name')) ?>" maxlength="120"
                        placeholder="<?php echo e($t('Search crops or farmers')) ?>" value="<?php echo e($query) ?>">
@@ -181,11 +181,16 @@
                 </div>
 
                 <div class="feature-card">
-                    <h3><?php echo e($t('Secure Transactions')) ?></h3>
-                    <p>
-                        <?php echo e($t('Trade confidently with secure transactions and reliable connections.')) ?>
-                    </p>
-                </div>
+                <h3><?php echo e($t('Market Prices')) ?></h3>
+
+                <p>
+                    <?php echo e($t('Access transparent market prices and make better trading decisions.')) ?>
+                </p>
+
+                <a class="price-card-link" href="./common/market_prices.php">
+                    <?php echo e($t('View market prices')) ?>
+                </a>
+            </div>
 
             </div>
 
@@ -224,7 +229,7 @@
                             <?php endforeach; ?>
                         </details>
                         <?php if (($_SESSION['user_role'] ?? '') === 'buyer'): ?>
-                            <a href="buyer/place_order.php?listing_id=<?php echo (int) $listing['listing_id'] ?>"><?php echo e($t('Place order')) ?></a>
+                            <a class="place-order-button" href="buyer/place_order.php?listing_id=<?php echo (int) $listing['listing_id'] ?>"><?php echo e($t('Place order')) ?></a>
                         <?php else: ?>
                             <a href="auth/login.php?listing_id=<?php echo (int) $listing['listing_id'] ?>"><?php echo e($t('Sign in as buyer to order')) ?></a>
                         <?php endif; ?>

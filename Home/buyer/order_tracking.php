@@ -307,7 +307,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         <section class="buyer-content-section">
 
             <h2>Delivery Information</h2>
-            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><p>Collection from farmer</p>
+            <?php if ($order['fulfilment_method'] === 'pickup'): ?><p>Collection from farmer</p>
             <?php else: ?>
 
             <p>

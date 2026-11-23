@@ -70,12 +70,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Vegetables</span>
-                        <h3>Tomato</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Tomato">Tomato</a></h3>
 
                         <p class="market-price">₹25 / kg</p>
 
                         <p>Market: Hyderabad</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>
@@ -90,12 +91,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Vegetables</span>
-                        <h3>Onion</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Onion">Onion</a></h3>
 
                         <p class="market-price">₹30 / kg</p>
 
                         <p>Market: Warangal</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>
@@ -110,12 +112,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Vegetables</span>
-                        <h3>Potato</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Potato">Potato</a></h3>
 
                         <p class="market-price">₹22 / kg</p>
 
                         <p>Market: Karimnagar</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>
@@ -130,12 +133,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Grains</span>
-                        <h3>Rice</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Rice">Rice</a></h3>
 
                         <p class="market-price">₹45 / kg</p>
 
                         <p>Market: Nizamabad</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>
@@ -150,12 +154,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Grains</span>
-                        <h3>Maize</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Maize">Maize</a></h3>
 
                         <p class="market-price">₹28 / kg</p>
 
                         <p>Market: Warangal</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>
@@ -170,12 +175,13 @@
 
                     <div class="market-card-content">
                         <span class="market-category">Fruits</span>
-                        <h3>Mango</h3>
+                        <h3><a class="crop-offer-link" href="crop_offers.php?crop=Mango">Mango</a></h3>
 
                         <p class="market-price">₹60 / kg</p>
 
                         <p>Market: Hyderabad</p>
-                        <p>Updated: Sample Price</p>
+                        <p>Sample market price</p>
+                        <strong>View farmer offers →</strong>
                     </div>
 
                 </div>

@@ -448,7 +448,7 @@
     <section class="registration-container">
 
         <div class="registration-header">
-            <div class="logo">AC</div>
+            <?php require __DIR__ . '/../includes/brand-home.php'; ?>
 
             <h2>Buyer Registration</h2>
 

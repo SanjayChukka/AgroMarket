@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Confirm sign out | AgroMarket Connect</title><link rel="stylesheet" href="../styles/theme.css"><link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head><body>
-    <main class="signout-fallback"><h1>Sign out now?</h1>
+    <main class="signout-fallback"><?php require __DIR__ . '/../includes/brand-home.php'; ?><h1>Sign out now?</h1>
     <p><?= htmlspecialchars($_SESSION['full_name'] ?? ucfirst($role), ENT_QUOTES, 'UTF-8') ?>, confirm to end this session.</p>
     <form method="post"><input type="hidden" name="token" value="<?= signoutToken() ?>">
     <a href="<?= $dashboard ?>">Stay signed in</a> <button type="submit">Sign out</button></form></main></body></html>

@@ -229,7 +229,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         <!-- Delivery Address -->
         <section class="order-details-section">
 
-            <?php if (($order['fulfilment_method'] ?? 'delivery') === 'pickup'): ?><h3>Collection from farmer</h3>
+            <?php if ($order['fulfilment_method'] === 'pickup'): ?><h3>Collection from farmer</h3>
             <?php else: ?><h3>Delivery Address</h3>
 
             <p><?php echo e($order['delivery_address']) ?></p>

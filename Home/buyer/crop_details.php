@@ -206,7 +206,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <?php if ($isAvailable): ?>
 
-                <a href="place_order.php?listing_id=<?php echo (int)$crop['listing_id'] ?>">
+                <a class="place-order-button" href="place_order.php?listing_id=<?php echo (int)$crop['listing_id'] ?>">
                     Place Order
                 </a>
 

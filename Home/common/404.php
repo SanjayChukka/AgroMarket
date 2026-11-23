@@ -17,7 +17,7 @@
 
             <!-- Brand -->
             <div class="error-logo">
-                <a href="../index.php">AgroMarket Connect</a>
+                <?php require __DIR__ . '/../includes/brand-home.php'; ?>
             </div>
 
             <!-- Error Content -->

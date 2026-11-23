@@ -16,7 +16,7 @@
         <section class="register-container">
 
             <div class="register-header">
-                <div class="logo">AC</div>
+                <?php require __DIR__ . '/../includes/brand-home.php'; ?>
                 <h2>Join AgroMarket Connect</h2>
                 <p>Choose your account type to get started.</p>
             </div>

@@ -11,6 +11,7 @@
 <body>
 
     <div class="auth-container">
+        <?php require __DIR__ . '/../includes/brand-home.php'; ?>
         <h2>Verify OTP</h2>
         <p>Enter the OTP sent to your registered email or mobile number.</p>
 

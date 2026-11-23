@@ -41,3 +41,21 @@ function notificationsForUser(mysqli $link, int $userId): array
     $stmt->close();
     return $notifications;
 }
+
+function notificationBadgeCount(mysqli $link, int $userId): int
+{
+    $stmt = $link->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND bell_seen = 0 AND is_read = 0");
+    $stmt->execute([$userId]);
+    return (int) $stmt->get_result()->fetch_row()[0];
+}
+
+function acknowledgeNotificationVisit(mysqli $link, int $userId, array $notifications): void
+{
+    // A notification arriving after the list was loaded still deserves a badge.
+    foreach (array_chunk(array_column($notifications, 'notification_id'), 200) as $ids) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $link->prepare("UPDATE notifications SET bell_seen = 1 WHERE user_id = ? AND bell_seen = 0 AND notification_id IN ($placeholders)");
+        $stmt->execute([$userId, ...$ids]);
+        $stmt->close();
+    }
+}

@@ -1,7 +1,7 @@
 <header>
         <nav class="navbar">
             <div class="logo">
-                <a href="../index.php">AgroMarket Connect</a>
+                <?php require __DIR__ . '/../../includes/brand-home.php'; ?>
             </div>
 
             <ul class="nav-links">

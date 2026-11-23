@@ -43,17 +43,7 @@
         <aside>
 
             <!-- Brand -->
-            <a class="brand" href="../index.php">
-
-                <span class="seed" aria-hidden="true"></span>
-
-                AgroMarket
-
-                <span class="brand-sub">
-                    Connect
-                </span>
-
-            </a>
+            <?php require __DIR__ . '/../../includes/brand-home.php'; ?>
 
             <!-- Navigation Menu -->
             <nav aria-label="Administration">

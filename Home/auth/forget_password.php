@@ -18,6 +18,7 @@
 <body>
 
     <div class="auth-container">
+        <?php require __DIR__ . '/../includes/brand-home.php'; ?>
 
         <!-- Page Heading -->
         <h2>Forgot Password?</h2>

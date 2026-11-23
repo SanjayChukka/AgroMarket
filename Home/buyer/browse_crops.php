@@ -378,9 +378,12 @@
                                 ])) ?: "Not provided") ?>
                             </p>
 
-                            <a href="crop_details.php?listing_id=<?php echo (int) $crop['listing_id'] ?>">
+                            <div class="crop-card-actions">
+                                <a href="crop_details.php?listing_id=<?php echo (int) $crop['listing_id'] ?>">
                                 View Details
                             </a>
+                                <a class="place-order-button" href="place_order.php?listing_id=<?= (int) $crop['listing_id'] ?>">Place Order</a>
+                            </div>
 
                         </div>
 

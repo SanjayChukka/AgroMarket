@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $unreadCount = unreadNotificationCount($link, $userId);
 $notifications = notificationsForUser($link, $userId);
+acknowledgeNotificationVisit($link, $userId, $notifications);
 
     function buyerNotificationIcon($type)
     {

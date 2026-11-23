@@ -238,3 +238,34 @@ body main .transaction-success {
 body main .transaction-success strong {display:block;font-size:clamp(1.25rem,2vw,1.55rem);line-height:1.2;margin-bottom:.25rem}
 body .auth-container form .password-control {max-width:min(100%,30rem)}
 body main form input:not([type]),body main form input[type=search] {max-width:min(100%,30rem)}
+
+body a.agro-home {display:inline-flex;align-items:center;gap:.6rem;color:inherit;font:600 1.15rem/1.2 Georgia,serif;text-decoration:none}
+body a.agro-home:hover {text-decoration:underline;text-underline-offset:.18em}
+.agro-home img {display:block;flex:none;border-radius:.45rem}
+body .logo-section .agro-home .home-brand-name {font:600 clamp(1.4rem,1.75vw,1.85rem)/1.15 Georgia,serif;color:var(--forest);padding:0;border:0}
+body .shell aside a.agro-home {color:#fff8e9}
+body .crop-card-actions {display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem}
+body main a.place-order-button {display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.4rem 1rem;background:#31543c;color:#fff;border:1px solid #26432f;border-radius:.45rem;text-decoration:none;font-weight:650}
+body main a.place-order-button:hover {background:#223f2b}
+.tracking-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,16rem),1fr));gap:1rem;margin:1rem 0}
+body main a.tracking-card {display:grid;gap:.35rem;padding:1rem;border:1px solid var(--line);border-left:4px solid var(--workspace);border-radius:.5rem;background:var(--paper);color:var(--ink);text-decoration:none}
+.tracking-card strong {font-size:1.18rem}
+.tracking-card b {color:var(--workspace)}
+body main a.tracking-card:hover {border-color:var(--workspace)}
+
+/* Header wordmarks on the light pages and the dark role-specific headers. */
+body a.agro-home,
+body .navbar .logo a.agro-home {
+    color: #202b48;
+    font: 700 clamp(1.4rem, 1.12rem + .65vw, 1.75rem)/1.15 Georgia, Cambria, serif;
+    gap: .65rem;
+}
+body :is(.farmer-header, .buyer-header) .header-left a.agro-home,
+body .shell aside a.agro-home { color: #fff9ed; }
+body a.agro-home img { width: 2.65rem; height: 2.65rem; }
+body :is(.farmer-header, .buyer-header, .shell aside) a.agro-home img {
+    outline: 2px solid #e9c989; outline-offset: -1px;
+}
+body :is(.farmer-header,.buyer-header) :is(.farmer-nav,.buyer-nav) a {
+    font-size: 1rem;
+}

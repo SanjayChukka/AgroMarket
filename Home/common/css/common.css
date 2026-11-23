@@ -919,3 +919,9 @@ a {
 .market-card {
     border-radius: 1rem .25rem .25rem .25rem;
 }
+.market-card { position: relative; }
+.market-card .crop-offer-link { color: inherit; text-decoration: none; }
+.crop-offer-link::after { content: ""; position: absolute; inset: 0; }
+.market-card:hover .crop-offer-link,
+.market-card:focus-within .crop-offer-link { text-decoration: underline; }
+.market-card:focus-within { outline: 3px solid #285b3d; outline-offset: 3px; }
