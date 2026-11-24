@@ -1,0 +1,44 @@
+.registration-form .verified-email-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .45rem .65rem;
+    align-items: center;
+}
+
+.verified-email-field>label,
+.verified-email-field #emailError,
+.verified-email-field #code-notice,
+.verified-email-field label[for="registration-code"] {
+    grid-column: 1 / -1;
+}
+
+.verified-email-field #email {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.verified-email-field [data-code-action="send"] {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.registration-email-code {
+    display: contents;
+}
+
+.verified-email-field button {
+    width: auto;
+    margin: 0;
+    padding: .55rem .8rem;
+}
+
+@media (max-width: 420px) {
+    .registration-form .verified-email-field {
+        grid-template-columns: 1fr;
+    }
+
+    .verified-email-field [data-code-action="send"] {
+        grid-row: 3;
+        grid-column: 1;
+    }
+}

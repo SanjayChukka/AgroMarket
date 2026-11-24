@@ -1,3 +1,7 @@
+<?php
+$stage='reset';
+require __DIR__.'/includes/recovery.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,22 +21,23 @@
         <h2>Reset Password</h2>
         <p>Create a new password for your account.</p>
 
-        <form action="#" method="POST">
-
-            <div class="form-group">
+        <form method="post">
+            <input type="hidden" name="code_csrf" value="<?= htmlspecialchars($_SESSION['code_csrf']) ?>">
+            <?php if ($message): ?><p role="alert"><?= htmlspecialchars($message) ?></p><?php endif; ?><div class="form-group">
                 <label for="password">New Password</label>
-                <input type="password" id="password" name="password"
+                <input type="password" autocomplete="new-password" required id="password" name="password"
                        placeholder="Enter new password">
             </div>
 
             <div class="form-group">
                 <label for="confirm_password">Confirm New Password</label>
-                <input type="password" id="confirm_password"
+                <input type="password" autocomplete="new-password" required id="confirm_password"
                        name="confirm_password"
                        placeholder="Confirm new password">
             </div>
 
             <button type="submit">Reset Password</button>
+
 
         </form>
 

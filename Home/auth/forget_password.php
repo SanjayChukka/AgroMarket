@@ -1,3 +1,7 @@
+<?php
+$stage='request';
+require __DIR__.'/includes/recovery.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,64 +25,12 @@
         <?php require __DIR__ . '/../includes/brand-home.php'; ?>
 
         <!-- Page Heading -->
-        <h2>Forgot Password?</h2>
-
-        <p>
-            Enter your registered email or mobile number to reset your password.
-        </p>
-
-        <!-- Forgot Password Form -->
-        <form action="verify_reset_opt.php" method="POST">
-
-            <!-- Authentication Method -->
-            <div class="form-group">
-                <label>Choose Authentication Method</label>
-
-                <div class="radio-options">
-
-                    <!-- Email Option -->
-                    <label>
-                        <input
-                            type="radio"
-                            name="method"
-                            value="email"
-                            checked
-                        >
-                        Email
-                    </label>
-
-                    <!-- Mobile Option -->
-                    <label>
-                        <input
-                            type="radio"
-                            name="method"
-                            value="mobile"
-                        >
-                        Mobile
-                    </label>
-
-                </div>
-            </div>
-
-            <!-- Registered Email or Mobile -->
-            <div class="form-group">
-                <label for="identifier">
-                    Registered Email / Mobile
-                </label>
-
-                <input
-                    type="text"
-                    id="identifier"
-                    name="identifier"
-                    placeholder="Enter your registered email or mobile"
-                >
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit">
-                Send OTP
-            </button>
-
+        <h2>Forgot password?</h2>
+        <form method="post">
+            <input type="hidden" name="code_csrf" value="<?= htmlspecialchars($_SESSION['code_csrf']) ?>">
+            <?php if ($message): ?><p role="alert"><?= htmlspecialchars($message) ?></p><?php endif; ?><div class="form-group"><label for="email">Registered email address</label>
+            <input id="email" type="email" name="email" autocomplete="email" required></div>
+            <button type="submit">Send recovery code</button>
         </form>
 
         <!-- Back to Login -->

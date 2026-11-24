@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once __DIR__ . '/includes/email-code.php';
     require_once __DIR__ . "/includes/registration.php";
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Pragma: no-cache");
@@ -56,6 +57,9 @@
     $pincode      = trim($_POST['pincode'] ?? "");
     $land_size    = trim($_POST['land_size'] ?? "");
 
+    if (!codeCsrf() || !hasEmailProof('registration',$email)) {
+        $errors['email'] = 'Verify this email address before registering.';
+    }
     // SERVER-SIDE VALIDATION
     if ($first_name === "") {
         $errors[] = "First name is required.";
@@ -208,10 +212,10 @@
             PASSWORD_DEFAULT
         );
 
-        $token = bin2hex(random_bytes(32)); // 64-character secure activation token
+        $token = null;
 
         $role           = "farmer";
-        $account_status = "pending";
+        $account_status = "active";
 
         $farm_name = ($farm_name === "") ? null : $farm_name;
 
@@ -222,12 +226,13 @@
         // Start transaction
         mysqli_begin_transaction($link);
         $transactionStarted = true;
+            consumeEmailProof($link,'registration',$email);
 
         // Insert into users
         $user_sql = "INSERT INTO users
             (role, full_name, username, email, mobile,
-             password_hash, account_status, token)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+             password_hash, account_status, token, email_verified_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $user_stmt = mysqli_prepare($link, $user_sql);
 
@@ -276,7 +281,10 @@
         mysqli_stmt_close($farmer_stmt);
 
         // Save both records
-        mysqli_commit($link);
+        $mailKey = "welcome-$farmer_id";
+            queueAgroMail($link,$mailKey,$email,'Welcome to AgroMarket Connect',
+                "Hello $full_name,\n\nYour farmer account is active.\nUser ID: $farmer_id\nUsername: $username\nVerified email: $email\nYou can now sign in.");
+            mysqli_commit($link);
         $transactionStarted = false;
 
         // Clear previously saved form values
@@ -285,52 +293,9 @@
             $_SESSION['farmer_errors']
         );
 
-        // Build the activation URL for the current installation.
-        // Example: http://localhost/Home/auth/activate.php?uid=12&token=...
-        $scheme = (
-            (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
-        ) ? "https" : "http";
-
-        $basePath       = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
-        $activationLink = $scheme . "://" . $_SERVER['HTTP_HOST']
-        . $basePath . "/activate.php?uid=" . urlencode((string) $farmer_id)
-        . "&token=" . urlencode($token);
-
-        $subject = "Activate your AgroMarket Connect farmer account";
-
-        $emailMessage = "Hello " . $full_name . ",\r\n\r\n"
-            . "Thank you for registering with AgroMarket Connect.\r\n\r\n"
-            . "Your User ID: " . $farmer_id . "\r\n\r\n"
-            . "Please activate your account by opening this link:\r\n"
-            . $activationLink . "\r\n\r\n"
-            . "After activation, you can log in using your username or email and password.\r\n\r\n"
-            . "If you did not create this account, you can ignore this email.\r\n\r\n"
-            . "Regards,\r\nAgroMarket Connect";
-
-        $emailHeaders = "MIME-Version: 1.0\r\n"
-            . "Content-Type: text/plain; charset=UTF-8\r\n";
-
-        // Use the configured sender address when PHP has one.
-        $configuredSender = trim((string) ini_get("sendmail_from"));
-        if ($configuredSender !== "" && filter_var($configuredSender, FILTER_VALIDATE_EMAIL)) {
-            $emailHeaders .= "From: AgroMarket Connect <" . $configuredSender . ">\r\n";
-        }
-
-        $emailSent = mail($email, $subject, $emailMessage, $emailHeaders);
-
-        if ($emailSent) {
-            $_SESSION['farmer_popup'] = [
-                "type"    => "success",
-                "message" => "Registration successful! Your account is pending activation. We have sent an activation link and your User ID to " . $email . ". Please check your inbox or spam folder. Click OK to return to the homepage.",
-            ];
-        } else {
-            // The database account remains pending; do not claim that an email was sent.
-            $_SESSION['farmer_popup'] = [
-                "type"    => "error",
-                "message" => "Your registration was saved, but the activation email could not be sent. Please check the email configuration and contact support. Your account is still pending activation.",
-            ];
-        }
+        unset($_SESSION['email_codes']['registration']);
+        dispatchAgroMail($link,$mailKey);
+        $_SESSION['farmer_popup']=['type'=>'success','message'=>'Registration successful. You can now sign in.'];
 
         header("Location: farmer_register.php");
         exit;
@@ -376,6 +341,7 @@
     <title>Farmer Registration | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./style/register.css">
+    <link rel="stylesheet" href="./style/email-code.css">
     <link rel="stylesheet" href="./style/password-visibility.css">
     <script src="./js/password-visibility.js" defer></script>
 <link rel="icon" href="../favicon.ico" type="image/x-icon">
@@ -448,7 +414,7 @@
 
             <div class="form-row">
 
-                <div class="form-group">
+                <div class="form-group verified-email-field">
                     <label for="email">Email Address</label>
 
                     <input type="email"
@@ -457,6 +423,7 @@
                            class="form-control"
                            value="<?php echo cleanOutput($_POST['email'] ?? ''); ?>">
                            <small id="emailError" class="field-error"></small>
+                    <?php require __DIR__.'/includes/registration-code-form.php'; ?>
                 </div>
 
                 <div class="form-group">

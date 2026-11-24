@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once __DIR__ . '/includes/email-code.php';
     require_once __DIR__ . "/includes/registration.php";
 
     // Prevent the browser from showing an outdated registration form.
@@ -55,7 +56,6 @@
     );
     }
 
-
     // Redirect using the Post/Redirect/Get pattern.
     function redirectBuyer()
     {
@@ -87,6 +87,9 @@
 
     $errors = [];
 
+    if (! codeCsrf() || ! hasEmailProof('registration', $email)) {
+        $errors['email'] = 'Verify this email address before registering.';
+    }
     // SERVER-SIDE VALIDATION
     if ($first_name === "") {
         $errors['first_name'] = "First name is required.";
@@ -112,10 +115,10 @@
 
     if (
         strlen($password) < 8 ||
-        !preg_match('/[A-Z]/', $password) ||
-        !preg_match('/[a-z]/', $password) ||
-        !preg_match('/[0-9]/', $password) ||
-        !preg_match('/[^A-Za-z0-9]/', $password)
+        ! preg_match('/[A-Z]/', $password) ||
+        ! preg_match('/[a-z]/', $password) ||
+        ! preg_match('/[0-9]/', $password) ||
+        ! preg_match('/[^A-Za-z0-9]/', $password)
     ) {
         $errors['password'] = "Password must contain at least 8 characters, including uppercase, lowercase, number and special character.";
     }
@@ -230,10 +233,10 @@
             PASSWORD_DEFAULT
         );
 
-        $token = bin2hex(random_bytes(32));
+        $token = null;
 
         $role           = "buyer";
-        $account_status = "pending";
+        $account_status = "active";
 
         $business_name = $business_name === ""
             ? null
@@ -253,6 +256,7 @@
         try {
             mysqli_begin_transaction($link);
             $transactionStarted = true;
+            consumeEmailProof($link, 'registration', $email);
 
             // Insert into users table.
             $userSql = "INSERT INTO users
@@ -264,9 +268,9 @@
                     mobile,
                     password_hash,
                     account_status,
-                    token
+                    token, email_verified_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
             $userStmt = mysqli_prepare($link, $userSql);
 
@@ -324,6 +328,9 @@
             mysqli_stmt_close($profileStmt);
 
             // Save both records together.
+            $mailKey = "welcome-$buyer_id";
+            queueAgroMail($link, $mailKey, $email, 'Welcome to AgroMarket Connect',
+                "Hello $full_name,\n\nYour buyer account is active.\nUser ID: $buyer_id\nUsername: $username\nVerified email: $email\nYou can now sign in.");
             mysqli_commit($link);
             $transactionStarted = false;
 
@@ -336,69 +343,10 @@
             throw $e;
         }
 
-        // GENERATE ACTIVATION LINK
-        $scheme = (
-            (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-            (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
-        ) ? "https" : "http";
-
-        $basePath = rtrim(
-            str_replace(
-                '\\',
-                '/',
-                dirname($_SERVER['SCRIPT_NAME'])
-            ),
-            '/'
-        );
-
-        $activationLink = $scheme . "://" .
-        $_SERVER['HTTP_HOST'] .
-        $basePath .
-        "/activate.php?uid=" .
-        urlencode((string) $buyer_id) .
-        "&token=" .
-        urlencode($token);
-
-        // SEND ACTIVATION EMAIL
-        $subject = "Activate your AgroMarket Connect buyer account";
-
-        $emailMessage =
-            "Hello " . $full_name . ",\r\n\r\n" .
-            "Thank you for registering with AgroMarket Connect.\r\n\r\n" .
-            "Your User ID: " . $buyer_id . "\r\n\r\n" .
-            "Activate your account using this link:\r\n" .
-            $activationLink . "\r\n\r\n" .
-            "Regards,\r\nAgroMarket Connect";
-
-        $headers = "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-        $sender = trim((string) ini_get("sendmail_from"));
-
-        if (
-            $sender !== "" &&
-            filter_var($sender, FILTER_VALIDATE_EMAIL)
-        ) {
-            $headers .= "From: AgroMarket Connect <" .
-                $sender . ">\r\n";
-        }
-
-        $emailSent = mail(
-            $email,
-            $subject,
-            $emailMessage,
-            $headers
-        );
-
-        if ($emailSent) {
-            $_SESSION['buyer_popup_type']    = "success";
-            $_SESSION['buyer_popup_message'] =
-                "Registration successful! Please check your email for the activation link.";
-        } else {
-            $_SESSION['buyer_popup_type']    = "error";
-            $_SESSION['buyer_popup_message'] =
-                "Registration was saved, but the activation email could not be sent. Your account remains pending.";
-        }
+        unset($_SESSION['email_codes']['registration']);
+        dispatchAgroMail($link, $mailKey);
+        $_SESSION['buyer_popup_type']    = 'success';
+        $_SESSION['buyer_popup_message'] = 'Registration successful. You can now sign in.';
 
     } catch (Throwable $e) {
 
@@ -436,6 +384,7 @@
     <title>Buyer Registration | AgroMarket Connect</title>
 
     <link rel="stylesheet" href="./style/register.css">
+    <link rel="stylesheet" href="./style/email-code.css">
     <link rel="stylesheet" href="./style/password-visibility.css">
     <script src="./js/password-visibility.js" defer></script>
 <link rel="icon" href="../favicon.ico" type="image/x-icon">
@@ -521,7 +470,7 @@
             </div>
 
             <!-- Email -->
-            <div class="form-group">
+            <div class="form-group verified-email-field">
                 <label for="email">Email Address</label>
 
                 <input
@@ -535,6 +484,7 @@
                 <small class="field-error" id="emailError">
                     <?php echo buyerError('email'); ?>
                 </small>
+                    <?php require __DIR__ . '/includes/registration-code-form.php'; ?>
             </div>
 
             <!-- Mobile -->

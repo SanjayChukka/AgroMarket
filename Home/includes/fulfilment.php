@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . "/../includes/email-service.php";
 $_SESSION['fulfilment_token'] ??= bin2hex(random_bytes(32));
 
 function nextFulfilmentAction(array $order, string $role): ?array
 {
+    if (!isset($order['fulfilment_method'])) return null;
     if ($role === 'farmer' && $order['order_status'] === 'accepted') {
         return $order['fulfilment_method'] === 'pickup'
             ? ['ready_for_pickup', 'Mark ready for pickup', 'The farmer marked the order ready for pickup.']
@@ -48,7 +50,9 @@ function processFulfilment(mysqli $link, string $role): void
         $stmt = $link->prepare("INSERT INTO notifications(user_id,title,message,notification_type,related_order_id) VALUES(?,?,?,'order_update',?)");
         $recipient = $role === 'farmer' ? $order['buyer_id'] : $order['farmer_id'];
         $stmt->execute([$recipient, 'Order ' . str_replace('_',' ',$next), $order['order_number'] . ' — ' . $remarks, $id]);
+        $emailKeys = $next === 'completed' ? queueOrderEmails($link,$id,'completed') : [];
         $link->commit();
+        foreach ($emailKeys as $key) dispatchAgroMail($link,$key);
         $message = 'Order status updated.';
     } catch (DomainException $error) {
         $link->rollback();

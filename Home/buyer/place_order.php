@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../includes/email-service.php";
 require_once __DIR__ . "/../config/auth_check.php";
 require_login("buyer", "../auth/login.php");
 
@@ -301,7 +302,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         // Commit all changes
+        $emailKeys = queueOrderEmails($link,$orderId,'placed');
         $link->commit();
+        foreach ($emailKeys as $key) dispatchAgroMail($link,$key);
         $_SESSION['placed_order_confirmation'] = $orderNumber;
 
         // Redirect to tracking page
@@ -314,6 +317,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Throwable $exception) {
 
         $link->rollback();
+
+        // $error = "Database error: " . $exception->getMessage();
 
         $error = $exception instanceof mysqli_sql_exception
             ? "Unable to place the order right now. Please try again."

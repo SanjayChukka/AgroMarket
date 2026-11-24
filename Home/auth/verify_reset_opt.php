@@ -1,3 +1,7 @@
+<?php
+$stage='verify';
+require __DIR__.'/includes/recovery.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,22 +17,12 @@
     <div class="auth-container">
         <?php require __DIR__ . '/../includes/brand-home.php'; ?>
         <h2>Verify OTP</h2>
-        <p>Enter the OTP sent to your registered email or mobile number.</p>
 
-        <form action="reset_password.php" method="POST">
-
-            <div class="form-group">
-                <label for="otp">Enter OTP</label>
-                <input type="text" id="otp" name="otp"
-                       placeholder="Enter 6-digit OTP" maxlength="6">
-            </div>
-
-            <button type="submit">Verify OTP</button>
-
-            <p class="form-note">
-                Didn't receive OTP? <a href="forget_password.php">Resend OTP</a>
-            </p>
-
+        <form method="post">
+            <input type="hidden" name="code_csrf" value="<?= htmlspecialchars($_SESSION['code_csrf']) ?>">
+            <?php if ($message): ?><p role="alert"><?= htmlspecialchars($message) ?></p><?php endif; ?><p>If an active account matches that address, check your email for a six-digit code.</p>
+            <label for="otp">Email code</label><input id="otp" name="otp" autocomplete="one-time-code" inputmode="numeric" maxlength="6" required>
+            <button type="submit">Verify code</button><a href="forget_password.php">Request another code</a>
         </form>
 
     </div>

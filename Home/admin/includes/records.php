@@ -23,6 +23,11 @@ $states = [
     'closed'
 ];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id > 0 && in_array($section, ['orders','listings'], true)) {
+    require_once __DIR__ . '/manage-market.php';
+    manageMarketRecord($link, $section, $id, $adminId);
+}
+
 /* Update Complaint Status */
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
@@ -136,6 +141,24 @@ if (isset($_GET['id'])) {
         echo '</dl>';
         echo '</section>';
 
+        $actions = [];
+        if ($section === 'orders' && $record['status'] === 'pending') {
+            if ($record['method'] === 'delivery') $actions['address'] = 'Save street address';
+            $actions['cancel'] = 'Cancel pending order';
+        }
+        if ($section === 'listings' && $record['status'] === 'available') $actions['pause'] = 'Pause listing';
+        if ($section === 'listings' && $record['status'] === 'paused' && $record['quantity'] > 0) $actions['resume'] = 'Resume listing';
+        foreach ($actions as $action => $caption): ?>
+            <form method="post" class="panel filters">
+            <?php csrfInput(); ?>
+            <input type="hidden" name="action" value="<?= h($action) ?>">
+            <?php if ($action === 'address'): ?>
+            <input type="hidden" name="previous_address" value="<?= h($record['address']) ?>">
+            <label>Delivery street address <input name="address" value="<?= h($record['address']) ?>" maxlength="255" required></label>
+            <?php endif; ?>
+            <label>Reason shared with the affected user(s) <input name="reason" maxlength="400" required></label>
+            <button><?= h($caption) ?></button></form>
+        <?php endforeach;
         /* Complaint Management Form */
         if ($section === 'complaints') {
             ?>

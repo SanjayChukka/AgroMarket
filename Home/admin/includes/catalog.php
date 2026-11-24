@@ -139,6 +139,7 @@
                     o.unit_price price,
                     o.subtotal amount,
                     o.delivery_address address,
+                    o.fulfilment_method method,
                     o.buyer_note note,
                     o.order_status status,
                     o.placed_at recorded

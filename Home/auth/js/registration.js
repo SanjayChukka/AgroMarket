@@ -2,7 +2,7 @@
 const form = document.querySelector(".registration-form");
 
 const fields = [
-  ...form.querySelectorAll("input[id], select[id], textarea[id]"),
+  ...form.querySelectorAll("input[id][name], select[id][name], textarea[id][name]"),
 ];
 
 const farmer = form.dataset.role === "farmer";

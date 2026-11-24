@@ -1,4 +1,3 @@
-
 <?php
 
     session_start();
@@ -123,6 +122,10 @@
                 }
 
                 /* Redirect Using HTTP 303 */
+                if (($_GET['from'] ?? '') === 'reviews' && !$listingId
+                    && in_array($user['role'], ['farmer', 'buyer'], true)) {
+                    $dashboard = '../index.php#community-reviews';
+                }
                 header("Location: " . $dashboard, true, 303);
                 exit;
             }
@@ -215,6 +218,9 @@
             <?php endif; ?>
 
             <!-- Login Form -->
+            <?php if (!empty($_SESSION['reset_done'])): unset($_SESSION['reset_done']); ?>
+                <p role="status">Your password was changed. Sign in with your new password.</p>
+            <?php endif; ?>
             <form action="" method="POST" class="login-form">
 
                 <!-- Email or Username -->
