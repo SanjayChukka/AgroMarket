@@ -20,6 +20,11 @@
     }
     $ledger = "(SELECT order_id,'Farmer' AS payer,amount,collected_at,receipt_reference FROM order_commissions
     UNION ALL SELECT order_id,'Buyer',amount,collected_at,receipt_reference FROM buyer_commissions)";
+    $collected = rows("SELECT
+        COALESCE(SUM(CASE WHEN payer='Farmer' THEN amount ELSE 0 END), 0) AS farmer,
+        COALESCE(SUM(CASE WHEN payer='Buyer' THEN amount ELSE 0 END), 0) AS buyer,
+        COALESCE(SUM(amount), 0) AS total
+        FROM $ledger c WHERE collected_at IS NOT NULL AND amount > 0")[0];
     $fees = rows("SELECT o.order_id,o.order_number,o.order_status,u.user_id,u.full_name,c.payer,c.amount,c.collected_at,c.receipt_reference
     FROM $ledger c JOIN orders o ON o.order_id=c.order_id
     JOIN users u ON u.user_id=IF(c.payer='Buyer',o.buyer_id,o.farmer_id)
@@ -33,6 +38,17 @@
     }
     require __DIR__ . '/includes/header.php';
 ?>
+<section aria-labelledby="collection-heading">
+    <h2 id="collection-heading">Commission collected</h2>
+    <div class="kpis">
+        <?php foreach (['total' => 'Total collected', 'farmer' => 'From farmers', 'buyer' => 'From buyers'] as $key => $caption): ?>
+            <div class="metric">
+                <span><?= h($caption) ?></span>
+                <strong>₹<?= number_format((float) $collected[$key], 2) ?></strong>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
 <p>Upcoming fees become due when the buyer confirms receipt. Record paid fees using the offline receipt reference.</p>
 <?php if (! $fees): ?><p>No eligible commission records yet.</p><?php else: ?>
 <h2>Balances by user</h2><div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Upcoming</th><th>Due</th><th>Paid</th></tr></thead><tbody>
