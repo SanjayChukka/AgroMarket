@@ -1,0 +1,26 @@
+<?php
+
+// Provision a new administrator locally without publishing a shared password.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+if ($argc !== 3 || !filter_var($argv[2], FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9_]{3,40}$/D', $argv[1])) {
+    fwrite(STDERR, "Usage: php create_admin.php USERNAME EMAIL\n");
+    exit(1);
+}
+require __DIR__ . '/../config/db.php';
+$password = bin2hex(random_bytes(16)) . 'Aa!';
+$link->begin_transaction();
+try {
+    $link->execute_query("INSERT INTO users (role,full_name,username,email,password_hash,account_status)
+        VALUES ('admin','Administrator',?,?,?,'active')", [$argv[1], $argv[2], password_hash($password, PASSWORD_DEFAULT)]);
+    $link->execute_query("INSERT INTO admin_profiles (admin_id) VALUES (?)", [$link->insert_id]);
+    $link->commit();
+} catch (Throwable $e) {
+    $link->rollback();
+    fwrite(STDERR, "Could not create the account. Check for an existing username or email.\n");
+    exit(1);
+}
+// The new administrator changes this generated password after first sign-in.
+echo "Initial password: ", $password, PHP_EOL;

@@ -1,0 +1,6 @@
+# Uploaded photos belong to the installation that received them.
+Home/uploads/crop_images/*
+Home/uploads/profile_images/*
+# Keep local secrets out of future commits.
+.env
+.env.local
