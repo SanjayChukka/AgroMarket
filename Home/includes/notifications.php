@@ -4,7 +4,7 @@ function markNotificationsRead(mysqli $link, int $userId, array $actions): void
 {
     if (isset($actions['mark_read'])) {
         $notificationId = (int) ($actions['notification_id'] ?? 0);
-        $stmt = $link->prepare("UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?");
+        $stmt           = $link->prepare("UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?");
         $stmt->bind_param("ii", $notificationId, $userId);
         $stmt->execute();
         $stmt->close();
@@ -54,7 +54,7 @@ function acknowledgeNotificationVisit(mysqli $link, int $userId, array $notifica
     // A notification arriving after the list was loaded still deserves a badge.
     foreach (array_chunk(array_column($notifications, 'notification_id'), 200) as $ids) {
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $stmt = $link->prepare("UPDATE notifications SET bell_seen = 1 WHERE user_id = ? AND bell_seen = 0 AND notification_id IN ($placeholders)");
+        $stmt         = $link->prepare("UPDATE notifications SET bell_seen = 1 WHERE user_id = ? AND bell_seen = 0 AND notification_id IN ($placeholders)");
         $stmt->execute([$userId, ...$ids]);
         $stmt->close();
     }

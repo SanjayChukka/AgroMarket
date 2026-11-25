@@ -317,7 +317,7 @@ body {
   font-size: 11px;
 }
 
-.notification-content > p {
+.notification-content>p {
   margin-bottom: 10px;
   line-height: 1.5;
   color: #555;
@@ -644,6 +644,7 @@ body {
 /* ================================= */
 
 @media (max-width: 1024px) {
+
   .action-container,
   .summary-container {
     grid-template-columns: repeat(2, 1fr);
@@ -694,6 +695,7 @@ body {
 }
 
 @media (max-width: 480px) {
+
   .action-container,
   .summary-container,
   .listing-summary,
@@ -728,43 +730,52 @@ body {
     gap: 10px;
   }
 }
+
 .recent-listing-item,
 .recent-order-item {
   padding: 1rem;
   border-bottom: 1px solid var(--line);
 }
+
 .recent-listings,
 .recent-orders {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 12px;
 }
+
 .recent-orders {
   padding: 1rem;
 }
+
 .order-details-section h3,
 .order-history-item {
   margin-bottom: 0.8rem;
 }
+
 .existing-images {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
 }
+
 .existing-image img {
   width: 8rem;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: 8px;
 }
+
 .popup-close {
   color: var(--forest);
   padding: 0.15rem 0.5rem;
 }
+
 button[data-close-confirmation]:not(.popup-close) {
   background: var(--wash);
   color: var(--forest);
 }
+
 @media (max-width: 480px) {
   .header-right .profile-popup {
     position: absolute;
@@ -772,11 +783,13 @@ button[data-close-confirmation]:not(.popup-close) {
     right: -1rem;
   }
 }
+
 button[data-order-action="reject"] {
   color: #882f29;
   background: #fbefec;
   border: 1px solid #dfb9b2;
 }
+
 @media (hover: hover) {
   button[data-order-action="reject"]:hover {
     color: white;
@@ -792,10 +805,12 @@ button[data-order-action="reject"] {
   gap: 0.65rem 0.9rem;
   min-width: 10rem;
 }
-.listing-actions > form {
+
+.listing-actions>form {
   margin: 0;
   padding: 0;
 }
+
 .listing-actions :is(a, button) {
   display: inline-flex;
   align-items: center;
@@ -804,10 +819,10 @@ button[data-order-action="reject"] {
 }
 
 .review {
-    color: white;
-    display: inline-block;
-    padding: 12px 20px;
-    border: 1px solid #333;
-    text-decoration: none;
-    background: var(--workspace);
+  color: white;
+  display: inline-block;
+  padding: 12px 20px;
+  border: 1px solid #333;
+  text-decoration: none;
+  background: var(--workspace);
 }

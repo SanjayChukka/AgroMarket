@@ -275,75 +275,229 @@ body .notification-bell {
         background: var(--wash);
     }
 }
+
 /* Keep equivalent headings and controls at the same size in both roles. */
-body main h1, body main .notification-heading h1 { font-size: clamp(2rem, 3.6vw, 3rem); }
-body main h2, body main .notification-actions h2, body main .notification-empty h2 {
+body main h1,
+body main .notification-heading h1 {
+    font-size: clamp(2rem, 3.6vw, 3rem);
+}
+
+body main h2,
+body main .notification-actions h2,
+body main .notification-empty h2 {
     font-size: clamp(1.35rem, 2.2vw, 1.75rem);
 }
-body main h3, body main .notification-content h3 { font-size: 1.125rem; }
-body main .notification-content p, body main .notification-heading p { font-size: 1rem; }
-body main .notification-content small { font-size: .8125rem; }
-body :is(.farmer-header,.buyer-header) {
+
+body main h3,
+body main .notification-content h3 {
+    font-size: 1.125rem;
+}
+
+body main .notification-content p,
+body main .notification-heading p {
+    font-size: 1rem;
+}
+
+body main .notification-content small {
+    font-size: .8125rem;
+}
+
+body :is(.farmer-header, .buyer-header) {
     display: grid;
-    grid-template-columns: auto minmax(0,1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     padding: .85rem 4%;
     gap: .75rem 1rem;
     position: relative;
     z-index: 100;
 }
-body :is(.farmer-header,.buyer-header) h2 { font-size: 1.5rem; margin: 0; }
-body :is(.farmer-nav,.buyer-nav) { justify-content: center; font-size: .9375rem; line-height: 1.4; }
-body .header-right { gap: .65rem; font-size: .9375rem; }
-body .header-right .profile-avatar { width: 42px; height: 42px; font-size: 1.125rem; font-weight: 700; }
+
+body :is(.farmer-header, .buyer-header) h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+body :is(.farmer-nav, .buyer-nav) {
+    justify-content: center;
+    font-size: .9375rem;
+    line-height: 1.4;
+}
+
+body .header-right {
+    gap: .65rem;
+    font-size: .9375rem;
+}
+
+body .header-right .profile-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
 body .header-right .notification-bell {
-    position: relative; display: grid; place-items: center; width: 42px; height: 42px;
-    padding: 0; color: var(--forest); font-size: 1.375rem;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    color: var(--forest);
+    font-size: 1.375rem;
 }
+
 body .header-right .notification-badge {
-    position: absolute; top: 0; right: 0; height: 18px; min-width: 18px;
-    display: grid; place-items: center; padding: 0 4px; border-radius: 20px;
-    background: #a8332d; color: white; font: 700 .6875rem/1 "Segoe UI", sans-serif;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 18px;
+    min-width: 18px;
+    display: grid;
+    place-items: center;
+    padding: 0 4px;
+    border-radius: 20px;
+    background: #a8332d;
+    color: white;
+    font: 700 .6875rem/1 "Segoe UI", sans-serif;
 }
+
 @media (max-width: 1100px) {
-    body :is(.farmer-header,.buyer-header) { grid-template-columns: minmax(0,1fr) auto; }
-    body :is(.farmer-nav,.buyer-nav) { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; }
-    body .header-right { grid-column: 2; grid-row: 1; }
+    body :is(.farmer-header, .buyer-header) {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    body :is(.farmer-nav, .buyer-nav) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: flex-start;
+    }
+
+    body .header-right {
+        grid-column: 2;
+        grid-row: 1;
+    }
 }
+
 @media (max-width: 440px) {
-    body :is(.farmer-header,.buyer-header) { grid-template-columns: 1fr; }
-    body .header-right { grid-column: 1; grid-row: 2; justify-self: start; margin: 0; }
-    body :is(.farmer-nav,.buyer-nav) { grid-row: 3; }
-    body .header-right .profile-popup { width: min(230px,70vw); right: auto; left: -48px; }
+    body :is(.farmer-header, .buyer-header) {
+        grid-template-columns: 1fr;
+    }
+
+    body .header-right {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: start;
+        margin: 0;
+    }
+
+    body :is(.farmer-nav, .buyer-nav) {
+        grid-row: 3;
+    }
+
+    body .header-right .profile-popup {
+        width: min(230px, 70vw);
+        right: auto;
+        left: -48px;
+    }
 }
 
 /* Farmer and buyer workspaces */
-body :is(.farmer-header,.buyer-header) { background: var(--paper); border-bottom: 3px solid var(--forest); }
-.header-left h2 { letter-spacing: -.055em; }
-body :is(.farmer-nav,.buyer-nav) a { border-radius: 3px; }
-body :is(.farmer-nav,.buyer-nav) a.active { background: var(--sky); box-shadow: inset 0 -2px #506689; }
-body .welcome-section { border: 0; border-left: 6px solid #72854e; border-radius: 2px;
-    background: var(--sage); color: var(--ink); }
-body .buyer-dashboard .welcome-section { border-color: #577198; background: var(--sky); }
-body .welcome-section h1 { color: var(--forest); }
-body .welcome-section a { color: white; background: var(--forest); border-radius: 4px; }
-body :is(.action-card,.buyer-crop-card,.crop-card,.farmer-card) { border-radius: 5px; background: var(--paper); }
-body :is(.summary-card,.listing-summary > div,.order-summary > div,.buyer-summary > div) {
-    background: var(--sky); border: 0; border-bottom: 3px solid #6c84a4; border-radius: 3px; }
-body :is(.summary-card,.listing-summary > div,.order-summary > div,.buyer-summary > div):nth-child(4n + 2) {
-    background: #f8e6b6; border-color: #a97c24; }
-body :is(.summary-card,.listing-summary > div,.order-summary > div,.buyer-summary > div):nth-child(4n + 3) {
-    background: var(--sage); border-color: #617e51; }
-body :is(.summary-card,.listing-summary > div,.order-summary > div,.buyer-summary > div):nth-child(4n) {
-    background: var(--peach); border-color: #b56a44; }
-body .table-wrapper th { background: var(--forest); color: var(--paper); }
-body .table-wrapper tbody tr:nth-child(even) { background: #f5f1e7; }
-body :is(.buyer-content-section,.order-details-section,.buyer-profile-section,.add-crop-container section,.profile-container section) {
-    border-radius: 5px; border-top: 2px solid #b4a78f; }
-body .notification-card.unread { background: var(--sky); border-left-color: #52688e; }
+body :is(.farmer-header, .buyer-header) {
+    background: var(--paper);
+    border-bottom: 3px solid var(--forest);
+}
+
+.header-left h2 {
+    letter-spacing: -.055em;
+}
+
+body :is(.farmer-nav, .buyer-nav) a {
+    border-radius: 3px;
+}
+
+body :is(.farmer-nav, .buyer-nav) a.active {
+    background: var(--sky);
+    box-shadow: inset 0 -2px #506689;
+}
+
+body .welcome-section {
+    border: 0;
+    border-left: 6px solid #72854e;
+    border-radius: 2px;
+    background: var(--sage);
+    color: var(--ink);
+}
+
+body .buyer-dashboard .welcome-section {
+    border-color: #577198;
+    background: var(--sky);
+}
+
+body .welcome-section h1 {
+    color: var(--forest);
+}
+
+body .welcome-section a {
+    color: white;
+    background: var(--forest);
+    border-radius: 4px;
+}
+
+body :is(.action-card, .buyer-crop-card, .crop-card, .farmer-card) {
+    border-radius: 5px;
+    background: var(--paper);
+}
+
+body :is(.summary-card, .listing-summary > div, .order-summary > div, .buyer-summary > div) {
+    background: var(--sky);
+    border: 0;
+    border-bottom: 3px solid #6c84a4;
+    border-radius: 3px;
+}
+
+body :is(.summary-card, .listing-summary > div, .order-summary > div, .buyer-summary > div):nth-child(4n + 2) {
+    background: #f8e6b6;
+    border-color: #a97c24;
+}
+
+body :is(.summary-card, .listing-summary > div, .order-summary > div, .buyer-summary > div):nth-child(4n + 3) {
+    background: var(--sage);
+    border-color: #617e51;
+}
+
+body :is(.summary-card, .listing-summary > div, .order-summary > div, .buyer-summary > div):nth-child(4n) {
+    background: var(--peach);
+    border-color: #b56a44;
+}
+
+body .table-wrapper th {
+    background: var(--forest);
+    color: var(--paper);
+}
+
+body .table-wrapper tbody tr:nth-child(even) {
+    background: #f5f1e7;
+}
+
+body :is(.buyer-content-section, .order-details-section, .buyer-profile-section, .add-crop-container section, .profile-container section) {
+    border-radius: 5px;
+    border-top: 2px solid #b4a78f;
+}
+
+body .notification-card.unread {
+    background: var(--sky);
+    border-left-color: #52688e;
+}
+
 @media (hover:hover) {
-    body .table-wrapper tbody tr:hover { background: #f6e7c6; }
-    body .welcome-section a:hover { color: white; background: #39476a; }
+    body .table-wrapper tbody tr:hover {
+        background: #f6e7c6;
+    }
+
+    body .welcome-section a:hover {
+        color: white;
+        background: #39476a;
+    }
 }
 
 /* Each workspace carries its own navigation ink and dashboard cover. */
@@ -353,60 +507,153 @@ body:has(.farmer-header) {
     --workspace-accent: #efcb72;
     --workspace-cover: url("../images/editorial/grower.webp");
 }
+
 body:has(.buyer-header) {
     --workspace: #4a2b46;
     --workspace-tint: #e4cfe0;
     --workspace-accent: #f0be84;
     --workspace-cover: url("../images/editorial/market.webp");
 }
-body :is(.buyer-header,.farmer-header) {
+
+body :is(.buyer-header, .farmer-header) {
     background: var(--workspace);
     border: 0;
     box-shadow: 0 3px 0 var(--workspace-accent);
 }
-body :is(.buyer-header,.farmer-header) .header-left h2,
-body :is(.buyer-nav,.farmer-nav) a, body .header-right .logout-link { color: #fff9ed; }
-body :is(.buyer-nav,.farmer-nav) a.active,
-body :is(.buyer-nav,.farmer-nav) a:hover { background: var(--workspace-tint); color: var(--workspace); box-shadow: none; }
-body .header-right .profile-avatar { background: var(--workspace-accent); color: var(--workspace); border: 0; }
-body .header-right .notification-bell { color: white; }
-body .header-right .notification-bell:hover { background: rgb(255 255 255 / 15%); }
-body :is(.dashboard-container,.buyer-dashboard) .welcome-section {
-    display: grid; grid-template-columns: minmax(0,1fr) minmax(8rem,30%); align-content: center;
-    position: relative; isolation: isolate; overflow: hidden;
-    min-height: 13rem; padding: clamp(1.5rem,3.5vw,3.2rem);
-    border: 1px solid #d6cebc; border-radius: 4px 2.5rem 4px 4px;
-    background: var(--workspace-tint); color: var(--ink);
+
+body :is(.buyer-header, .farmer-header) .header-left h2,
+body :is(.buyer-nav, .farmer-nav) a,
+body .header-right .logout-link {
+    color: #fff9ed;
 }
-body :is(.dashboard-container,.buyer-dashboard) .welcome-section::after {
-    content: ""; position: absolute; inset: 0 0 0 71%; z-index: -1;
+
+body :is(.buyer-nav, .farmer-nav) a.active,
+body :is(.buyer-nav, .farmer-nav) a:hover {
+    background: var(--workspace-tint);
+    color: var(--workspace);
+    box-shadow: none;
+}
+
+body .header-right .profile-avatar {
+    background: var(--workspace-accent);
+    color: var(--workspace);
+    border: 0;
+}
+
+body .header-right .notification-bell {
+    color: white;
+}
+
+body .header-right .notification-bell:hover {
+    background: rgb(255 255 255 / 15%);
+}
+
+body :is(.dashboard-container, .buyer-dashboard) .welcome-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, 30%);
+    align-content: center;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 13rem;
+    padding: clamp(1.5rem, 3.5vw, 3.2rem);
+    border: 1px solid #d6cebc;
+    border-radius: 4px 2.5rem 4px 4px;
+    background: var(--workspace-tint);
+    color: var(--ink);
+}
+
+body :is(.dashboard-container, .buyer-dashboard) .welcome-section::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 71%;
+    z-index: -1;
     background: var(--workspace) var(--workspace-cover) center 53% / cover;
     border-left: .45rem solid var(--workspace-accent);
 }
-body .welcome-section > * { grid-column: 1; justify-self: start; }
-body :is(.dashboard-container,.buyer-dashboard) .welcome-section h1 { color: var(--workspace); font-weight: 500; }
-body .welcome-section p { margin-bottom: .8rem; }
-body .welcome-section a { background: var(--workspace); }
-body :is(.action-container,.action-grid) .action-card {
-    padding: 1.2rem 1.35rem; border: 1px solid #d8d0be; border-left: 4px solid var(--workspace);
-    border-radius: 0 .75rem .75rem 0; box-shadow: none;
+
+body .welcome-section>* {
+    grid-column: 1;
+    justify-self: start;
 }
-body .action-card h3 { color: var(--workspace); }
-body .action-card a { color: var(--workspace); text-underline-offset: .25em; }
-body :is(.buyer-content-section,.order-details-section,.buyer-profile-section,.profile-container section,.add-crop-container section) {
-    border: 1px solid #ded5c6; border-top: 3px solid var(--workspace);
-    background: #fffdf7; padding: clamp(1.15rem,2.6vw,2rem);
+
+body :is(.dashboard-container, .buyer-dashboard) .welcome-section h1 {
+    color: var(--workspace);
+    font-weight: 500;
 }
-body .table-wrapper th { background: var(--workspace); letter-spacing: .02em; }
-body .table-wrapper :is(th,td) { padding: .8rem 1rem; }
-body .table-wrapper td { font-variant-numeric: tabular-nums; }
-body .buyer-crop-card { border-radius: 1.1rem .25rem .25rem .25rem; overflow: hidden; }
-body .buyer-crop-card h3 { color: var(--workspace); font-family: Georgia,serif; font-size: 1.4rem; }
-body .notification-card.unread { background: var(--workspace-tint); border-left-color: var(--workspace); }
+
+body .welcome-section p {
+    margin-bottom: .8rem;
+}
+
+body .welcome-section a {
+    background: var(--workspace);
+}
+
+body :is(.action-container, .action-grid) .action-card {
+    padding: 1.2rem 1.35rem;
+    border: 1px solid #d8d0be;
+    border-left: 4px solid var(--workspace);
+    border-radius: 0 .75rem .75rem 0;
+    box-shadow: none;
+}
+
+body .action-card h3 {
+    color: var(--workspace);
+}
+
+body .action-card a {
+    color: var(--workspace);
+    text-underline-offset: .25em;
+}
+
+body :is(.buyer-content-section, .order-details-section, .buyer-profile-section, .profile-container section, .add-crop-container section) {
+    border: 1px solid #ded5c6;
+    border-top: 3px solid var(--workspace);
+    background: #fffdf7;
+    padding: clamp(1.15rem, 2.6vw, 2rem);
+}
+
+body .table-wrapper th {
+    background: var(--workspace);
+    letter-spacing: .02em;
+}
+
+body .table-wrapper :is(th, td) {
+    padding: .8rem 1rem;
+}
+
+body .table-wrapper td {
+    font-variant-numeric: tabular-nums;
+}
+
+body .buyer-crop-card {
+    border-radius: 1.1rem .25rem .25rem .25rem;
+    overflow: hidden;
+}
+
+body .buyer-crop-card h3 {
+    color: var(--workspace);
+    font-family: Georgia, serif;
+    font-size: 1.4rem;
+}
+
+body .notification-card.unread {
+    background: var(--workspace-tint);
+    border-left-color: var(--workspace);
+}
+
 @media (max-width: 570px) {
-    body :is(.dashboard-container,.buyer-dashboard) .welcome-section { grid-template-columns: 1fr; padding-top: 8.25rem; }
-    body :is(.dashboard-container,.buyer-dashboard) .welcome-section::after {
-        inset: 0 0 auto; height: 7rem; border-left: 0; border-bottom: 3px solid var(--workspace-accent);
+    body :is(.dashboard-container, .buyer-dashboard) .welcome-section {
+        grid-template-columns: 1fr;
+        padding-top: 8.25rem;
+    }
+
+    body :is(.dashboard-container, .buyer-dashboard) .welcome-section::after {
+        inset: 0 0 auto;
+        height: 7rem;
+        border-left: 0;
+        border-bottom: 3px solid var(--workspace-accent);
     }
 }
 
@@ -421,11 +668,13 @@ body .notification-card.unread { background: var(--workspace-tint); border-left-
     gap: .75rem;
     margin: .8rem 0 0;
 }
+
 .dashboard-container :is(.recent-listings, .recent-orders) {
     padding: 0;
     border: 0;
     background: transparent;
 }
+
 .dashboard-container :is(.recent-listing-item, .recent-order-item),
 .buyer-dashboard .crop-card,
 .buyer-page-container .buyer-crop-card {
@@ -438,12 +687,14 @@ body .notification-card.unread { background: var(--workspace-tint); border-left-
     background: var(--paper);
     overflow-wrap: anywhere;
 }
-.dashboard-container :is(.recent-listings, .recent-orders) > :is(a, p),
-.buyer-dashboard .crop-grid > p {
+
+.dashboard-container :is(.recent-listings, .recent-orders)> :is(a, p),
+.buyer-dashboard .crop-grid>p {
     grid-column: 1 / -1;
     justify-self: start;
     margin: 0;
 }
+
 .dashboard-container :is(.recent-listing-item, .recent-order-item) h3,
 .buyer-dashboard .crop-card h3,
 .buyer-page-container .buyer-crop-card h3 {
@@ -451,27 +702,40 @@ body .notification-card.unread { background: var(--workspace-tint); border-left-
     font-size: 1.15rem;
     line-height: 1.25;
 }
+
 .dashboard-container :is(.recent-listing-item, .recent-order-item) p,
 .buyer-dashboard .crop-card p,
 .buyer-page-container .buyer-crop-card p {
     margin: 0;
     line-height: 1.45;
 }
+
 .buyer-page-container .buyer-crop-card :is(.crop-image, .crop-image-placeholder) {
     width: 100%;
     height: clamp(5.5rem, 10vw, 8rem);
     margin: 0 0 .35rem;
     object-fit: cover;
 }
-.buyer-dashboard .crop-card > a,
-.buyer-page-container .buyer-crop-card > a { padding-block: .35rem; }
-@media (max-width: 860px) {
-    .dashboard-container :is(.recent-listings, .recent-orders),
-    .buyer-dashboard .crop-grid,
-    .buyer-page-container .buyer-crop-grid { --columns: 2; }
+
+.buyer-dashboard .crop-card>a,
+.buyer-page-container .buyer-crop-card>a {
+    padding-block: .35rem;
 }
-@media (max-width: 560px) {
+
+@media (max-width: 860px) {
+
     .dashboard-container :is(.recent-listings, .recent-orders),
     .buyer-dashboard .crop-grid,
-    .buyer-page-container .buyer-crop-grid { --columns: 1; }
+    .buyer-page-container .buyer-crop-grid {
+        --columns: 2;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .dashboard-container :is(.recent-listings, .recent-orders),
+    .buyer-dashboard .crop-grid,
+    .buyer-page-container .buyer-crop-grid {
+        --columns: 1;
+    }
 }

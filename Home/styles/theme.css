@@ -61,6 +61,7 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+
     a,
     button {
         transition: background-color .16s, color .16s, border-color .16s;
@@ -115,17 +116,34 @@ img.crop-image,
     height: 100%;
     object-fit: cover;
 }
+
 /* Shared materials and controls */
-html body { background: var(--cream); color: var(--ink); }
-body :is(input:not([type=checkbox],[type=radio],[type=hidden]), select, textarea) {
-    border-color: #9c998b; border-radius: 5px;
+html body {
+    background: var(--cream);
+    color: var(--ink);
 }
-body :is(.content-card,.market-card,.partner-card,.help-card,.role-card,.order-details-section,.notification-card) {
+
+body :is(input:not([type=checkbox], [type=radio], [type=hidden]), select, textarea) {
+    border-color: #9c998b;
     border-radius: 5px;
 }
-body > footer { background: var(--forest); }
-body footer a { color: #ffe6ac; }
-:focus-visible { outline: 3px solid #3164aa; outline-offset: 3px; }
+
+body :is(.content-card, .market-card, .partner-card, .help-card, .role-card, .order-details-section, .notification-card) {
+    border-radius: 5px;
+}
+
+body>footer {
+    background: var(--forest);
+}
+
+body footer a {
+    color: #ffe6ac;
+}
+
+:focus-visible {
+    outline: 3px solid #3164aa;
+    outline-offset: 3px;
+}
 
 /* Keep native calendar fields compact in form rows, filter bars and reports. */
 html body input[type="date"] {
@@ -137,49 +155,211 @@ html body input[type="date"] {
     justify-self: start;
 }
 
-#signout-dialog,.signout-fallback {
-    box-sizing:border-box; width:min(26rem,calc(100% - 2rem)); padding:1.6rem;
-    border:1px solid #b9ac95; border-top:4px solid #65415a; border-radius:.7rem;
-    color:#30292e; background:#fff8ea;
+#signout-dialog,
+.signout-fallback {
+    box-sizing: border-box;
+    width: min(26rem, calc(100% - 2rem));
+    padding: 1.6rem;
+    border: 1px solid #b9ac95;
+    border-top: 4px solid #65415a;
+    border-radius: .7rem;
+    color: #30292e;
+    background: #fff8ea;
 }
-#signout-dialog {position:fixed; inset:0; margin:auto; height:fit-content}
-#signout-dialog::backdrop {background:rgb(35 31 38 / 60%)}
-#signout-dialog h2 {margin:0 0 .7rem;color:#422a3b;font:500 1.8rem/1.2 Georgia,serif}
-#signout-dialog p {margin:0;color:#443c40;line-height:1.5;overflow-wrap:anywhere}
-#signout-dialog .signout-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.6rem;margin-top:1.3rem}
-#signout-dialog button {width:auto;margin:0;padding:.65rem .9rem;border:1px solid #816b78;border-radius:.4rem;background:#fffaf0;color:#442a3b;cursor:pointer;font:600 .95rem system-ui}
-#signout-dialog button[type=submit] {background:#503448;color:white}
-.signout-fallback {margin:12vh auto}
+
+#signout-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content
+}
+
+#signout-dialog::backdrop {
+    background: rgb(35 31 38 / 60%)
+}
+
+#signout-dialog h2 {
+    margin: 0 0 .7rem;
+    color: #422a3b;
+    font: 500 1.8rem/1.2 Georgia, serif
+}
+
+#signout-dialog p {
+    margin: 0;
+    color: #443c40;
+    line-height: 1.5;
+    overflow-wrap: anywhere
+}
+
+#signout-dialog .signout-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .6rem;
+    margin-top: 1.3rem
+}
+
+#signout-dialog button {
+    width: auto;
+    margin: 0;
+    padding: .65rem .9rem;
+    border: 1px solid #816b78;
+    border-radius: .4rem;
+    background: #fffaf0;
+    color: #442a3b;
+    cursor: pointer;
+    font: 600 .95rem system-ui
+}
+
+#signout-dialog button[type=submit] {
+    background: #503448;
+    color: white
+}
+
+.signout-fallback {
+    margin: 12vh auto
+}
 
 /* Keep fields proportional to the information being entered. */
-body :is(main, .registration-form, .login-form, .auth-container) form :is(input[type=text],input[type=email],input[type=tel],input[type=password],input[type=file],select),
-body :is(.registration-form,.login-form) :is(input.form-control,select,.password-control),
-body main form .password-control {max-width:min(100%,30rem);box-sizing:border-box}
-body :is(main,.auth-container) form input[type=number] {max-width:min(100%,13rem)}
-body main form textarea,body .registration-form textarea {max-width:min(100%,40rem);box-sizing:border-box}
-body main form input[name=pincode],body .registration-form input[name=pincode] {max-width:min(100%,13rem)}
-body main .transaction-success {
-    padding:1.15rem 1.4rem; margin:1rem 0 1.4rem; border:1px solid #8cab8e;
-    border-left:.35rem solid #356044; border-radius:.55rem; background:#deedd9; color:#22482e;
-    font-size:clamp(1.05rem,1.4vw,1.18rem);line-height:1.5;overflow-wrap:anywhere;
+body :is(main, .registration-form, .login-form, .auth-container) form :is(input[type=text], input[type=email], input[type=tel], input[type=password], input[type=file], select),
+body :is(.registration-form, .login-form) :is(input.form-control, select, .password-control),
+body main form .password-control {
+    max-width: min(100%, 30rem);
+    box-sizing: border-box
 }
-body main .transaction-success strong {display:block;font-size:clamp(1.25rem,2vw,1.55rem);line-height:1.2;margin-bottom:.25rem}
-body .auth-container form .password-control {max-width:min(100%,30rem)}
-body main form input:not([type]),body main form input[type=search] {max-width:min(100%,30rem)}
 
-body a.agro-home {display:inline-flex;align-items:center;gap:.6rem;color:inherit;font:600 1.15rem/1.2 Georgia,serif;text-decoration:none}
-body a.agro-home:hover {text-decoration:underline;text-underline-offset:.18em}
-.agro-home img {display:block;flex:none;border-radius:.45rem}
-body .logo-section .agro-home .home-brand-name {font:600 clamp(1.4rem,1.75vw,1.85rem)/1.15 Georgia,serif;color:var(--forest);padding:0;border:0}
-body .shell aside a.agro-home {color:#fff8e9}
-body .crop-card-actions {display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem}
-body main a.place-order-button {display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;padding:.4rem 1rem;background:#31543c;color:#fff;border:1px solid #26432f;border-radius:.45rem;text-decoration:none;font-weight:650}
-body main a.place-order-button:hover {background:#223f2b}
-.tracking-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,16rem),1fr));gap:1rem;margin:1rem 0}
-body main a.tracking-card {display:grid;gap:.35rem;padding:1rem;border:1px solid var(--line);border-left:4px solid var(--workspace);border-radius:.5rem;background:var(--paper);color:var(--ink);text-decoration:none}
-.tracking-card strong {font-size:1.18rem}
-.tracking-card b {color:var(--workspace)}
-body main a.tracking-card:hover {border-color:var(--workspace)}
+body :is(main, .auth-container) form input[type=number] {
+    max-width: min(100%, 13rem)
+}
+
+body main form textarea,
+body .registration-form textarea {
+    max-width: min(100%, 40rem);
+    box-sizing: border-box
+}
+
+body main form input[name=pincode],
+body .registration-form input[name=pincode] {
+    max-width: min(100%, 13rem)
+}
+
+body main .transaction-success {
+    padding: 1.15rem 1.4rem;
+    margin: 1rem 0 1.4rem;
+    border: 1px solid #8cab8e;
+    border-left: .35rem solid #356044;
+    border-radius: .55rem;
+    background: #deedd9;
+    color: #22482e;
+    font-size: clamp(1.05rem, 1.4vw, 1.18rem);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+body main .transaction-success strong {
+    display: block;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    line-height: 1.2;
+    margin-bottom: .25rem
+}
+
+body .auth-container form .password-control {
+    max-width: min(100%, 30rem)
+}
+
+body main form input:not([type]),
+body main form input[type=search] {
+    max-width: min(100%, 30rem)
+}
+
+body a.agro-home {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    color: inherit;
+    font: 600 1.15rem/1.2 Georgia, serif;
+    text-decoration: none
+}
+
+body a.agro-home:hover {
+    text-decoration: underline;
+    text-underline-offset: .18em
+}
+
+.agro-home img {
+    display: block;
+    flex: none;
+    border-radius: .45rem
+}
+
+body .logo-section .agro-home .home-brand-name {
+    font: 600 clamp(1.4rem, 1.75vw, 1.85rem)/1.15 Georgia, serif;
+    color: var(--forest);
+    padding: 0;
+    border: 0
+}
+
+body .shell aside a.agro-home {
+    color: #fff8e9
+}
+
+body .crop-card-actions {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: .5rem
+}
+
+body main a.place-order-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: .4rem 1rem;
+    background: #31543c;
+    color: #fff;
+    border: 1px solid #26432f;
+    border-radius: .45rem;
+    text-decoration: none;
+    font-weight: 650
+}
+
+body main a.place-order-button:hover {
+    background: #223f2b
+}
+
+.tracking-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+    margin: 1rem 0
+}
+
+body main a.tracking-card {
+    display: grid;
+    gap: .35rem;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--workspace);
+    border-radius: .5rem;
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none
+}
+
+.tracking-card strong {
+    font-size: 1.18rem
+}
+
+.tracking-card b {
+    color: var(--workspace)
+}
+
+body main a.tracking-card:hover {
+    border-color: var(--workspace)
+}
 
 /* Header wordmarks on the light pages and the dark role-specific headers. */
 body a.agro-home,
@@ -188,12 +368,22 @@ body .navbar .logo a.agro-home {
     font: 700 clamp(1.4rem, 1.12rem + .65vw, 1.75rem)/1.15 Georgia, Cambria, serif;
     gap: .65rem;
 }
+
 body :is(.farmer-header, .buyer-header) .header-left a.agro-home,
-body .shell aside a.agro-home { color: #fff9ed; }
-body a.agro-home img { width: 2.65rem; height: 2.65rem; }
-body :is(.farmer-header, .buyer-header, .shell aside) a.agro-home img {
-    outline: 2px solid #e9c989; outline-offset: -1px;
+body .shell aside a.agro-home {
+    color: #fff9ed;
 }
-body :is(.farmer-header,.buyer-header) :is(.farmer-nav,.buyer-nav) a {
+
+body a.agro-home img {
+    width: 2.65rem;
+    height: 2.65rem;
+}
+
+body :is(.farmer-header, .buyer-header, .shell aside) a.agro-home img {
+    outline: 2px solid #e9c989;
+    outline-offset: -1px;
+}
+
+body :is(.farmer-header, .buyer-header) :is(.farmer-nav, .buyer-nav) a {
     font-size: 1rem;
 }

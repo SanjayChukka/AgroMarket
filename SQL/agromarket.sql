@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2026 at 04:33 PM
+-- Generation Time: Nov 25, 2026 at 06:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -116,9 +116,9 @@ VALUES (
         11,
         5.00,
         1000.00,
-        NULL,
-        NULL,
-        NULL
+        '2026-11-24 17:24:01',
+        'R',
+        3
     );
 
 -- --------------------------------------------------------
@@ -180,7 +180,51 @@ VALUES (
         '2026-11-22 19:11:45',
         '2026-11-22 19:11:45',
         NULL
+    ),
+    (
+        5,
+        'Sagar trades',
+        'wholesaler',
+        NULL,
+        '209 - 231, Chirala',
+        '209 - 231, Chirala',
+        'Ekonda',
+        'Chirala',
+        'Telangana',
+        '508025',
+        NULL,
+        '2026-11-24 09:56:43',
+        '2026-11-24 09:56:43',
+        NULL
     );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `checkout_requests`
+--
+
+CREATE TABLE `checkout_requests` (
+    `buyer_id` bigint(20) UNSIGNED NOT NULL,
+    `request_key` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    `listing_id` bigint(20) UNSIGNED NOT NULL,
+    `order_id` bigint(20) UNSIGNED DEFAULT NULL
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `commission_bank_credits`
+--
+
+CREATE TABLE `commission_bank_credits` (
+    `bank_reference` varchar(100) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    `order_id` bigint(20) UNSIGNED NOT NULL,
+    `payer` enum('farmer', 'buyer') NOT NULL,
+    `credited_amount` decimal(14, 2) NOT NULL,
+    `recorded_by` bigint(20) UNSIGNED NOT NULL,
+    `recorded_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -388,7 +432,7 @@ VALUES (
         'Mango',
         'Rasalu',
         'Juicy Mangos',
-        1000.000,
+        800.000,
         'kg',
         100.00,
         50.000,
@@ -398,7 +442,7 @@ VALUES (
         '2027-01-01',
         'available',
         '2026-11-22 21:28:25',
-        '2026-11-22 21:28:25'
+        '2026-11-24 17:20:13'
     ),
     (
         3,
@@ -419,6 +463,30 @@ VALUES (
         '2026-11-23 20:31:00',
         '2026-11-23 20:49:43'
     );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crop_payment_receipts`
+--
+
+CREATE TABLE `crop_payment_receipts` (
+    `order_id` bigint(20) UNSIGNED NOT NULL,
+    `farmer_id` bigint(20) UNSIGNED NOT NULL,
+    `confirmed_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+--
+-- Dumping data for table `crop_payment_receipts`
+--
+
+INSERT INTO
+    `crop_payment_receipts` (
+        `order_id`,
+        `farmer_id`,
+        `confirmed_at`
+    )
+VALUES (11, 1, '2026-11-24 17:57:41');
 
 -- --------------------------------------------------------
 
@@ -515,6 +583,27 @@ VALUES (
         '2026-11-22 19:27:36',
         '2026-11-22 19:27:36',
         NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    ),
+    (
+        4,
+        'Cotton',
+        NULL,
+        '20-23',
+        'Ongole',
+        'Prakasham',
+        'Andhra Pradesh',
+        '507845',
+        NULL,
+        'pending',
+        NULL,
+        NULL,
+        '2026-11-24 09:52:46',
+        '2026-11-24 09:52:46',
+        10.00,
         NULL,
         NULL,
         NULL,
@@ -689,6 +778,39 @@ VALUES (
         1,
         '2026-11-23 20:54:28',
         1
+    ),
+    (
+        15,
+        2,
+        'Order Accepted',
+        'Your order AMC-20261123-4044265E for Mango has been accepted by the farmer.',
+        'order_update',
+        11,
+        1,
+        '2026-11-24 17:20:13',
+        1
+    ),
+    (
+        16,
+        2,
+        'Order ready for pickup',
+        'AMC-20261123-4044265E — The farmer marked the order ready for pickup. Pickup location: 13 -43',
+        'order_update',
+        11,
+        1,
+        '2026-11-24 17:21:25',
+        1
+    ),
+    (
+        17,
+        1,
+        'Order completed',
+        'AMC-20261123-4044265E — The buyer confirmed receipt of the crop.',
+        'order_update',
+        11,
+        1,
+        '2026-11-24 17:22:53',
+        1
     );
 
 -- --------------------------------------------------------
@@ -841,12 +963,12 @@ VALUES (
         '',
         '',
         'Something',
-        NULL,
-        'pending',
-        NULL,
-        NULL,
+        'Farmer accepted the order after agreeing to the displayed terms.',
+        'completed',
+        '2026-11-24 17:20:13',
+        '1.0',
         '2026-11-23 20:53:17',
-        '2026-11-23 20:53:17',
+        '2026-11-24 17:22:53',
         'pickup'
     );
 
@@ -1003,6 +1125,33 @@ VALUES (
         'rejected',
         'Farmer rejected the order.',
         '2026-11-23 20:54:28'
+    ),
+    (
+        15,
+        11,
+        1,
+        'pending',
+        'accepted',
+        'Farmer accepted the order.',
+        '2026-11-24 17:20:13'
+    ),
+    (
+        16,
+        11,
+        1,
+        'accepted',
+        'ready_for_pickup',
+        'The farmer marked the order ready for pickup. Pickup location: 13 -43',
+        '2026-11-24 17:21:25'
+    ),
+    (
+        17,
+        11,
+        2,
+        'ready_for_pickup',
+        'completed',
+        'The buyer confirmed receipt of the crop.',
+        '2026-11-24 17:22:53'
     );
 
 -- --------------------------------------------------------
@@ -1111,6 +1260,22 @@ VALUES (
         '2026-11-23 20:47:43'
     ),
     (
+        'order-11-completed-buyer',
+        'sanjaychukka7@gmail.com',
+        'AgroMarket order completed - AMC-20261123-4044265E',
+        'Hello Buyer 1,\n\nOrder: AMC-20261123-4044265E\nPlaced: 2026-11-23 20:53:17\nStatus: completed\nBuyer: Buyer 1\nFarmer: Farmer 1\nCrop: Mango\nQuantity: 200.000 kg\nUnit price: INR 100.00\nCrop subtotal: INR 20000.00\nFulfilment: pickup\nBuyer fee: INR 1000.00\nTotal including fee: INR 21,000.00\n\nView this order in your AgroMarket dashboard.',
+        '2026-11-24 17:27:53',
+        '2026-11-24 17:22:58'
+    ),
+    (
+        'order-11-completed-farmer',
+        'sanjaychukka1312@gmail.com',
+        'AgroMarket order completed - AMC-20261123-4044265E',
+        'Hello Farmer 1,\n\nOrder: AMC-20261123-4044265E\nPlaced: 2026-11-23 20:53:17\nStatus: completed\nBuyer: Buyer 1\nFarmer: Farmer 1\nCrop: Mango\nQuantity: 200.000 kg\nUnit price: INR 100.00\nCrop subtotal: INR 20000.00\nFulfilment: pickup\nFarmer fee: INR 400.00\nProceeds after fee: INR 19,600.00\n\nView this order in your AgroMarket dashboard.',
+        '2026-11-24 17:27:58',
+        '2026-11-24 17:23:03'
+    ),
+    (
         'order-11-placed-buyer',
         'sanjaychukka7@gmail.com',
         'AgroMarket order placed - AMC-20261123-4044265E',
@@ -1141,6 +1306,22 @@ VALUES (
         'Hello Farmer 1,\n\nOrder: AMC-20261123-17FF6413\nPlaced: 2026-11-23 20:46:59\nStatus: pending\nBuyer: Buyer 1\nFarmer: Farmer 1\nCrop: Onion\nQuantity: 100.000 kg\nUnit price: INR 50.00\nCrop subtotal: INR 5000.00\nFulfilment: delivery\nDelivery address: 13-73, Indra Gandhi nagar, Opp IDPL colony, near Dmart, Quthubullapur, Medchal-malkajigiri, Hyderbad, Telagana 500037\nFarmer fee: INR 100.00\nProceeds after fee: INR 4,900.00\n\nView this order in your AgroMarket dashboard.',
         '2026-11-23 20:52:06',
         '2026-11-23 20:47:11'
+    ),
+    (
+        'welcome-4',
+        'mohansai4703@gmail.com',
+        'Welcome to AgroMarket Connect',
+        'Hello Farmer 2,\n\nYour farmer account is active.\nUser ID: 4\nUsername: farmer_2\nVerified email: mohansai4703@gmail.com\nYou can now sign in.',
+        '2026-11-24 09:57:46',
+        '2026-11-24 09:52:51'
+    ),
+    (
+        'welcome-5',
+        'darlingsagar717@gmail.com',
+        'Welcome to AgroMarket Connect',
+        'Hello Buyer 2,\n\nYour buyer account is active.\nUser ID: 5\nUsername: buyer_2\nVerified email: darlingsagar717@gmail.com\nYou can now sign in.',
+        '2026-11-24 10:01:43',
+        '2026-11-24 09:56:48'
     );
 
 -- --------------------------------------------------------
@@ -1209,7 +1390,7 @@ VALUES (
         '2026-11-22 15:20:21',
         NULL,
         'farmer_1',
-        '2026-11-23 20:28:55'
+        '2026-11-25 10:20:15'
     ),
     (
         2,
@@ -1226,7 +1407,7 @@ VALUES (
         '2026-11-22 19:11:45',
         NULL,
         'buyer_1',
-        '2026-11-23 20:59:11'
+        '2026-11-25 10:46:42'
     ),
     (
         3,
@@ -1243,7 +1424,41 @@ VALUES (
         '2026-11-22 19:27:36',
         NULL,
         'admin_1',
-        '2026-11-23 17:39:21'
+        '2026-11-25 10:06:22'
+    ),
+    (
+        4,
+        'farmer',
+        'Farmer 2',
+        'mohansai4703@gmail.com',
+        '7032412465',
+        '$2y$10$Rbk5FxEWeypR1LjZSJwP7etH5IHDkVoq09qxmhFMeWlUVWUT/j3My',
+        'active',
+        '2026-11-24 09:52:46',
+        NULL,
+        NULL,
+        '2026-11-24 09:52:46',
+        '2026-11-24 09:52:46',
+        NULL,
+        'farmer_2',
+        '2026-11-24 09:53:13'
+    ),
+    (
+        5,
+        'buyer',
+        'Buyer 2',
+        'darlingsagar717@gmail.com',
+        '7032418457',
+        '$2y$10$pM6VVzVBf.UIXuAUe.GwV.pb20mriu72ADc1wlzRAxVdh9K74XSzW',
+        'active',
+        '2026-11-24 09:56:43',
+        NULL,
+        NULL,
+        '2026-11-24 09:56:43',
+        '2026-11-24 09:56:43',
+        NULL,
+        'buyer_2',
+        '2026-11-24 09:57:09'
     );
 
 -- --------------------------------------------------------
@@ -1296,6 +1511,42 @@ VALUES (
         '2026-11-23 20:58:04',
         1,
         '2026-11-23 20:57:38'
+    ),
+    (
+        2,
+        NULL,
+        'mohansai4703@gmail.com',
+        'email',
+        'registration',
+        '',
+        '2026-11-24 09:52:46',
+        '2026-11-24 09:51:36',
+        1,
+        '2026-11-24 09:51:08'
+    ),
+    (
+        3,
+        NULL,
+        'darlingsagar717@gmail.com',
+        'email',
+        'registration',
+        '',
+        '2026-11-24 09:56:43',
+        '2026-11-24 09:55:28',
+        1,
+        '2026-11-24 09:54:59'
+    ),
+    (
+        4,
+        NULL,
+        'test@gmail.com',
+        'email',
+        'registration',
+        'f78d0d1282797521b505a4a6d9a0d3985ea83d200fefd8b825189b035f85fe68',
+        '2026-11-24 15:59:51',
+        NULL,
+        2,
+        '2026-11-24 15:49:51'
     );
 
 --
@@ -1325,6 +1576,21 @@ ADD KEY `collected_by` (`collected_by`);
 -- Indexes for table `buyer_profiles`
 --
 ALTER TABLE `buyer_profiles` ADD PRIMARY KEY (`buyer_id`);
+
+--
+-- Indexes for table `checkout_requests`
+--
+ALTER TABLE `checkout_requests`
+ADD PRIMARY KEY (`buyer_id`, `request_key`),
+ADD UNIQUE KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `commission_bank_credits`
+--
+ALTER TABLE `commission_bank_credits`
+ADD PRIMARY KEY (`bank_reference`),
+ADD UNIQUE KEY `order_fee` (`order_id`, `payer`),
+ADD KEY `recorded_by` (`recorded_by`);
 
 --
 -- Indexes for table `complaints`
@@ -1360,6 +1626,13 @@ ADD PRIMARY KEY (`listing_id`),
 ADD KEY `idx_listing_farmer` (`farmer_id`),
 ADD KEY `idx_listing_category` (`category_id`),
 ADD KEY `idx_listing_status` (`listing_status`);
+
+--
+-- Indexes for table `crop_payment_receipts`
+--
+ALTER TABLE `crop_payment_receipts`
+ADD PRIMARY KEY (`order_id`),
+ADD KEY `farmer_id` (`farmer_id`);
 
 --
 -- Indexes for table `farmer_profiles`
@@ -1500,7 +1773,7 @@ AUTO_INCREMENT = 4;
 --
 ALTER TABLE `notifications`
 MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-AUTO_INCREMENT = 15;
+AUTO_INCREMENT = 18;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -1514,7 +1787,7 @@ AUTO_INCREMENT = 12;
 --
 ALTER TABLE `order_status_history`
 MODIFY `history_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-AUTO_INCREMENT = 15;
+AUTO_INCREMENT = 18;
 
 --
 -- AUTO_INCREMENT for table `support_requests`
@@ -1527,14 +1800,14 @@ MODIFY `request_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `users`
 MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-AUTO_INCREMENT = 4;
+AUTO_INCREMENT = 6;
 
 --
 -- AUTO_INCREMENT for table `verification_codes`
 --
 ALTER TABLE `verification_codes`
 MODIFY `verification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-AUTO_INCREMENT = 2;
+AUTO_INCREMENT = 5;
 
 --
 -- Constraints for dumped tables
@@ -1552,6 +1825,19 @@ ADD CONSTRAINT `fk_audit_admin` FOREIGN KEY (`admin_id`) REFERENCES `admin_profi
 ALTER TABLE `buyer_commissions`
 ADD CONSTRAINT `buyer_commissions_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
 ADD CONSTRAINT `buyer_commissions_ibfk_2` FOREIGN KEY (`collected_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `checkout_requests`
+--
+ALTER TABLE `checkout_requests`
+ADD CONSTRAINT `checkout_requests_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
+
+--
+-- Constraints for table `commission_bank_credits`
+--
+ALTER TABLE `commission_bank_credits`
+ADD CONSTRAINT `commission_bank_credits_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+ADD CONSTRAINT `commission_bank_credits_ibfk_2` FOREIGN KEY (`recorded_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `complaints`
@@ -1573,6 +1859,13 @@ ADD CONSTRAINT `fk_contact_admin` FOREIGN KEY (`assigned_admin`) REFERENCES `adm
 ALTER TABLE `crop_listings`
 ADD CONSTRAINT `fk_listing_category` FOREIGN KEY (`category_id`) REFERENCES `crop_categories` (`category_id`),
 ADD CONSTRAINT `fk_listing_farmer` FOREIGN KEY (`farmer_id`) REFERENCES `farmer_profiles` (`farmer_id`);
+
+--
+-- Constraints for table `crop_payment_receipts`
+--
+ALTER TABLE `crop_payment_receipts`
+ADD CONSTRAINT `crop_payment_receipts_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+ADD CONSTRAINT `crop_payment_receipts_ibfk_2` FOREIGN KEY (`farmer_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `listing_images`

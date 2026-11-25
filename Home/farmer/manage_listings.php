@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -36,7 +36,6 @@ require_once __DIR__ . "/../config/auth_check.php";
     $farmer       = mysqli_fetch_assoc($farmerResult) ?: [];
 
     mysqli_stmt_close($stmt);
-
 
     // ------------------------------------------
     // 3. Process listing actions
@@ -301,9 +300,9 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     <!-- Header -->
     <?php
-    $activePage = "manage_listings.php";
-    $headerFarmer = $farmer;
-    require __DIR__ . "/includes/header.php";
+        $activePage   = "manage_listings.php";
+        $headerFarmer = $farmer;
+        require __DIR__ . "/includes/header.php";
     ?>
 
     <!-- Main Content -->

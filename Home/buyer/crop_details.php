@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("buyer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -128,7 +128,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 <?php
     $activePage = "browse_crops.php";
     require __DIR__ . "/includes/header.php";
-    ?>
+?>
 
 <main class="buyer-page-container">
 
@@ -168,7 +168,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <p>
                 Price:
-                ₹<?php echo number_format((float)$crop['price_per_unit'], 2) ?>
+                ₹<?php echo number_format((float) $crop['price_per_unit'], 2) ?>
                 / <?php echo e($crop['quantity_unit']) ?>
             </p>
 
@@ -181,8 +181,8 @@ require_once __DIR__ . "/../config/auth_check.php";
             <p>
                 Minimum Order Quantity:
                 <?php echo $crop['minimum_order_quantity'] !== null
-    ? e($crop['minimum_order_quantity']) . " " . e($crop['quantity_unit'])
-    : "Not specified" ?>
+                        ? e($crop['minimum_order_quantity']) . " " . e($crop['quantity_unit'])
+                    : "Not specified" ?>
             </p>
 
             <p>
@@ -193,8 +193,8 @@ require_once __DIR__ . "/../config/auth_check.php";
             <p>
                 Harvest Date:
                 <?php echo ! empty($crop['harvest_date'])
-    ? date('d-m-Y', strtotime($crop['harvest_date']))
-    : "Not specified" ?>
+                        ? date('d-m-Y', strtotime($crop['harvest_date']))
+                    : "Not specified" ?>
             </p>
 
             <p>Location: <?php echo e($location) ?></p>
@@ -206,7 +206,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <?php if ($isAvailable): ?>
 
-                <a class="place-order-button" href="place_order.php?listing_id=<?php echo (int)$crop['listing_id'] ?>">
+                <a class="place-order-button" href="place_order.php?listing_id=<?php echo (int) $crop['listing_id'] ?>">
                     Place Order
                 </a>
 
@@ -226,8 +226,8 @@ require_once __DIR__ . "/../config/auth_check.php";
 
         <p>
             <?php echo ! empty($crop['description'])
-    ? nl2br(e($crop['description']))
-    : "No description provided by the farmer." ?>
+                    ? nl2br(e($crop['description']))
+                : "No description provided by the farmer." ?>
         </p>
 
     </section>
@@ -258,11 +258,11 @@ require_once __DIR__ . "/../config/auth_check.php";
         <p>
             Phone:
             <?php echo ! empty($crop['farmer_mobile'])
-    ? e($crop['farmer_mobile'])
-    : "Not provided" ?>
+                    ? e($crop['farmer_mobile'])
+                : "Not provided" ?>
         </p>
 
-        <a href="browse_crops.php?farmer_id=<?php echo (int)$crop['farmer_id'] ?>">
+        <a href="browse_crops.php?farmer_id=<?php echo (int) $crop['farmer_id'] ?>">
             View Other Crops From This Farmer
         </a>
 

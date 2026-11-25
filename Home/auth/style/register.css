@@ -130,6 +130,7 @@ body {
 
 /* Responsive */
 @media (max-width: 600px) {
+
     .role-container,
     .form-row {
         grid-template-columns: 1fr;

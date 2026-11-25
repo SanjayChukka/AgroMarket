@@ -233,6 +233,7 @@ footer {
 }
 
 @media (max-width: 500px) {
+
     .buyer-summary,
     .action-grid,
     .crop-grid {
@@ -530,6 +531,7 @@ footer {
 }
 
 @media (max-width: 900px) {
+
     .buyer-crop-grid,
     .farmer-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -545,6 +547,7 @@ footer {
 }
 
 @media (max-width: 600px) {
+
     .buyer-crop-grid,
     .farmer-grid,
     .buyer-summary,
@@ -799,6 +802,7 @@ footer {
 /* Responsive */
 
 @media (max-width: 768px) {
+
     .buyer-notifications-container,
     .farmer-notifications-container {
         width: 94%;
@@ -851,6 +855,7 @@ footer {
 }
 
 @media (max-width: 600px) {
+
     .buyer-summary,
     .action-grid,
     .crop-grid,

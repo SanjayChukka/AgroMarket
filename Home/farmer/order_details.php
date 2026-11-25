@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -80,13 +80,13 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     /* Status formatting */
     $statusLabels = [
-    'pending'   => 'Pending',
-    'accepted'  => 'Accepted',
-    'rejected'  => 'Rejected',
-    'cancelled' => 'Cancelled',
-    'completed' => 'Completed',
+    'pending'          => 'Pending',
+    'accepted'         => 'Accepted',
+    'rejected'         => 'Rejected',
+    'cancelled'        => 'Cancelled',
+    'completed'        => 'Completed',
     'ready_for_pickup' => 'Ready for pickup',
-    'dispatched' => 'Dispatched',
+    'dispatched'       => 'Dispatched',
     ];
 
     $status = $statusLabels[$order['order_status']] ?? ucfirst($order['order_status']);
@@ -109,9 +109,9 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <?php
-    $activePage = "orders.php";
-    $headerFarmer = $farmer;
-    require __DIR__ . "/includes/header.php";
+        $activePage   = "orders.php";
+        $headerFarmer = $farmer;
+        require __DIR__ . "/includes/header.php";
     ?>
 
 
@@ -193,8 +193,8 @@ require_once __DIR__ . "/../config/auth_check.php";
                     <strong>Subtotal</strong>
                     <p>₹<?php echo number_format((float) $order['subtotal'], 2) ?></p>
                     <?php if ($order['commission_fee'] > 0): ?>
-                        <p>Platform fee on completion: ₹<?= e($order['commission_fee']) ?></p>
-                        <p>Farmer proceeds after fee: ₹<?= number_format($order['subtotal'] - $order['commission_fee'], 2) ?></p>
+                        <p>Platform fee on completion: ₹<?php echo e($order['commission_fee']) ?></p>
+                        <p>Farmer proceeds after fee: ₹<?php echo number_format($order['subtotal'] - $order['commission_fee'], 2) ?></p>
                     <?php endif; ?>
                 </div>
 

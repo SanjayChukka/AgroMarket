@@ -12,8 +12,8 @@
 
     <!-- Header -->
     <?php
-    $showMarketPrices = false;
-    $registrationRole = null;
+        $showMarketPrices = false;
+        $registrationRole = null;
     require __DIR__ . "/includes/header.php"; ?>
 
     <main>

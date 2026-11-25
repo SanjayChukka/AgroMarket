@@ -66,6 +66,7 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+
     a,
     button {
         transition: background-color .16s, color .16s, border-color .16s;
@@ -491,6 +492,7 @@ body {
 
 /* Responsive */
 @media (max-width: 900px) {
+
     .crops-container,
     .process-container {
         grid-template-columns: repeat(2, 1fr);
@@ -502,6 +504,7 @@ body {
 }
 
 @media (max-width: 600px) {
+
     .crops-container,
     .process-container {
         grid-template-columns: 1fr;
@@ -623,6 +626,7 @@ body {
 }
 
 @media (hover: hover) {
+
     .hero-buttons a:first-child:hover,
     .join-buttons a:first-child:hover {
         background: #ffe5af;
@@ -636,6 +640,7 @@ body {
 }
 
 @media (max-width: 580px) {
+
     .crops-container,
     .listings-container {
         grid-template-columns: 1fr;

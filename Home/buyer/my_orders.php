@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("buyer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -148,7 +148,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 <?php
     $activePage = "my_orders.php";
     require __DIR__ . "/includes/header.php";
-    ?>
+?>
 
 <main class="buyer-page-container">
 
@@ -213,8 +213,8 @@ require_once __DIR__ . "/../config/auth_check.php";
                     Cancelled
                 </option>
 
-                <option value="dispatched" <?= $status === 'dispatched' ? 'selected' : '' ?>>Dispatched</option>
-                <option value="ready_for_pickup" <?= $status === 'ready_for_pickup' ? 'selected' : '' ?>>Ready for pickup</option>
+                <option value="dispatched" <?php echo $status === 'dispatched' ? 'selected' : '' ?>>Dispatched</option>
+                <option value="ready_for_pickup" <?php echo $status === 'ready_for_pickup' ? 'selected' : '' ?>>Ready for pickup</option>
                 <option value="completed" <?php echo $status === 'completed' ? 'selected' : '' ?>>
                     Completed
                 </option>
@@ -272,10 +272,10 @@ require_once __DIR__ . "/../config/auth_check.php";
                                 <td>
                                     ₹<?php echo number_format((float) $order['buyer_total'], 2) ?>
                                 <?php if ($order['order_status'] === 'completed'): ?>
-                                        <br><small>Crop payment: <?= $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
+                                        <br><small>Crop payment: <?php echo $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
                                         <?php if ($order['fee_due'] > 0): ?>
-                                            <br><small>Commission: ₹<?= e($order['fee_due']) ?> · <?= $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
-                                                · AMC-B-<?= (int) $order['order_id'] ?></small>
+                                            <br><small>Commission: ₹<?php echo e($order['fee_due']) ?> · <?php echo $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
+                                                · AMC-B-<?php echo (int) $order['order_id'] ?></small>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                     </td>

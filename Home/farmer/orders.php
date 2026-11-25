@@ -597,18 +597,18 @@
                                     <td>
                                         ₹<?php echo number_format((float) $order['subtotal'], 2); ?>
                                         <?php if ($order['commission_fee'] > 0): ?>
-                                            <br><small>Fee on completion: ₹<?= e($order['commission_fee']) ?></small>
+                                            <br><small>Fee on completion: ₹<?php echo e($order['commission_fee']) ?></small>
                                         <?php endif; ?>
                                     <?php if ($order['order_status'] === 'completed'): ?>
-                                        <br><small>Crop payment: <?= $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
+                                        <br><small>Crop payment: <?php echo $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
                                         <?php if ($order['fee_due'] > 0): ?>
-                                            <br><small>Commission: ₹<?= e($order['fee_due']) ?> · <?= $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
-                                                · AMC-F-<?= (int) $order['order_id'] ?></small>
+                                            <br><small>Commission: ₹<?php echo e($order['fee_due']) ?> · <?php echo $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
+                                                · AMC-F-<?php echo (int) $order['order_id'] ?></small>
                                         <?php endif; ?>
-                                        <?php if (!$order['crop_paid_at']): ?>
+                                        <?php if (! $order['crop_paid_at']): ?>
                                             <form method="post" action="confirm_payment.php">
-                                                <input type="hidden" name="order_id" value="<?= (int) $order['order_id'] ?>">
-                                                <input type="hidden" name="token" value="<?= e($_SESSION['crop_payment_token']) ?>">
+                                                <input type="hidden" name="order_id" value="<?php echo (int) $order['order_id'] ?>">
+                                                <input type="hidden" name="token" value="<?php echo e($_SESSION['crop_payment_token']) ?>">
                                                 <button type="submit">Confirm full crop payment received</button>
                                             </form>
                                         <?php endif; ?>
@@ -627,13 +627,13 @@
 
                                         <?php
                                             $statusLabels = [
-                                                "pending"   => "Pending",
-                                                "accepted"  => "Accepted",
-                                                "rejected"  => "Rejected",
-                                                "cancelled" => "Cancelled",
-                                                "completed" => "Completed",
+                                                "pending"          => "Pending",
+                                                "accepted"         => "Accepted",
+                                                "rejected"         => "Rejected",
+                                                "cancelled"        => "Cancelled",
+                                                "completed"        => "Completed",
                                                 "ready_for_pickup" => "Ready for pickup",
-                                                "dispatched" => "Dispatched",
+                                                "dispatched"       => "Dispatched",
                                             ];
 
                                             echo e(
@@ -670,10 +670,10 @@
                                         <?php else: ?>
 
                                             <?php if ($order['order_status'] === 'accepted'): ?>
-                                                <a href="order_details.php?id=<?= (int) $order['order_id'] ?>">Update fulfilment</a>
+                                                <a href="order_details.php?id=<?php echo (int) $order['order_id'] ?>">Update fulfilment</a>
                                             <?php endif; ?>
                                             <span class="action-message">
-                                                Order <?php echo e(str_replace('_',' ',$order['order_status'])); ?>
+                                                Order <?php echo e(str_replace('_', ' ', $order['order_status'])); ?>
                                             </span>
 
                                         <?php endif; ?>

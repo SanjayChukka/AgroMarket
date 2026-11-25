@@ -1,55 +1,166 @@
+
 <?php
-require_once __DIR__ . '/email-code.php';
-require_once __DIR__ . '/../../config/db.php';
-$message = '';
-$reset   = $_SESSION['email_codes']['password_reset'] ?? [];
-if ($stage === 'reset' && (! hasEmailProof('password_reset', $reset['email'] ?? '') || empty($reset['user']))) {
-    header('Location: forget_password.php');exit;
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    require_once __DIR__ . '/email-code.php';
+    require_once __DIR__ . '/../../config/db.php';
+
+    $message = '';
+
+    $reset = $_SESSION['email_codes']['password_reset'] ?? [];
+
+    // Ensure the user has verified their email before resetting the password.
+    if (
+    $stage === 'reset' &&
+    (
+        ! hasEmailProof('password_reset', $reset['email'] ?? '') ||
+        empty($reset['user'])
+    )
+    ) {
+    header('Location: forget_password.php');
+    exit;
+    }
+
+    // Handle password recovery form submissions.
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     try {
+
+        // Validate CSRF token.
         if (! codeCsrf()) {
-            throw new DomainException('Reload the form and try again.');
+            throw new DomainException(
+                'Reload the form and try again.'
+            );
         }
 
+        // Stage 1: Request password reset OTP.
         if ($stage === 'request') {
-            requestEmailCode($link, codeInput('email'), 'password_reset');
-            header('Location: verify_reset_opt.php', true, 303);exit;
+
+            requestEmailCode(
+                $link,
+                codeInput('email'),
+                'password_reset'
+            );
+
+            header('Location: verify_reset_opt.php', true, 303);
+            exit;
         }
+
+        // Stage 2: Verify the OTP.
         if ($stage === 'verify') {
-            if (! checkEmailCode($link, 'password_reset', $reset['email'] ?? '', codeInput('otp')) || empty($reset['user'])) {
-                throw new DomainException('The code is incorrect or expired. You can request another.');
+
+            if (
+                ! checkEmailCode(
+                    $link,
+                    'password_reset',
+                    $reset['email'] ?? '',
+                    codeInput('otp')
+                ) ||
+                empty($reset['user'])
+            ) {
+                throw new DomainException(
+                    'The code is incorrect or expired. You can request another.'
+                );
             }
 
             session_regenerate_id(true);
-            header('Location: reset_password.php', true, 303);exit;
+
+            header('Location: reset_password.php', true, 303);
+            exit;
         }
+
+        // Stage 3: Validate the new password.
         $password = codeInput('password');
-        if (strlen($password) < 8 || strlen($password) > 72 || str_contains($password, chr(0)) ||
-            ! preg_match('/[A-Z]/', $password) || ! preg_match('/[a-z]/', $password) ||
-            ! preg_match('/[0-9]/', $password) || ! preg_match('/[^a-zA-Z0-9]/', $password)) {
-            throw new DomainException('Use 8–72 bytes with uppercase, lowercase, a number and a special character.');
+
+        if (
+            strlen($password) < 8 ||
+            strlen($password) > 72 ||
+            str_contains($password, chr(0)) ||
+            ! preg_match('/[A-Z]/', $password) ||
+            ! preg_match('/[a-z]/', $password) ||
+            ! preg_match('/[0-9]/', $password) ||
+            ! preg_match('/[^a-zA-Z0-9]/', $password)
+        ) {
+            throw new DomainException(
+                'Use 8–72 bytes with uppercase, lowercase, a number and a special character.'
+            );
         }
 
+        // Validate password confirmation.
         if ($password !== codeInput('confirm_password')) {
-            throw new DomainException('Passwords do not match.');
+
+            throw new DomainException(
+                'Passwords do not match.'
+            );
         }
 
+        // Hash the new password.
         $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        // Begin database transaction.
         $link->begin_transaction();
+
         try {
-            consumeEmailProof($link, 'password_reset', $reset['email']);
-            $link->execute_query("UPDATE users SET password_hash=? WHERE user_id=? AND email=? AND BINARY password_hash=? AND account_status='active'",
-                [$hash, $reset['user'], $reset['email'], $reset['old_hash']]);
+
+            // Consume the verified email proof to prevent reuse.
+            consumeEmailProof(
+                $link,
+                'password_reset',
+                $reset['email']
+            );
+
+            // Update the user's password.
+            $link->execute_query(
+                "UPDATE users
+                 SET password_hash = ?
+                 WHERE user_id = ?
+                    AND email = ?
+                    AND BINARY password_hash = ?
+                    AND account_status = 'active'",
+                [
+                    $hash,
+                    $reset['user'],
+                    $reset['email'],
+                    $reset['old_hash'],
+                ]
+            );
+
+            // Ensure that the password was successfully updated.
             if ($link->affected_rows !== 1) {
-                throw new DomainException('Request a new code to reset your password.');
+
+                throw new DomainException(
+                    'Request a new code to reset your password.'
+                );
             }
 
             $link->commit();
-        } catch (Throwable $e) {$link->rollback();throw $e;}
+
+        } catch (Throwable $e) {
+
+            $link->rollback();
+
+            throw $e;
+        }
+
+        // Remove password recovery data from the session.
         unset($_SESSION['email_codes']['password_reset']);
+
+        // Set password reset success flag.
         $_SESSION['reset_done'] = true;
-        header('Location: login.php', true, 303);exit;
-    } catch (DomainException $e) {$message = $e->getMessage();} catch (Throwable $e) {error_log('Password recovery error ' . $e->getCode());
-        $message = 'Recovery is temporarily unavailable. Please try again.';}
+
+        // Redirect the user to the login page.
+        header('Location: login.php', true, 303);
+        exit;
+
+    } catch (DomainException $e) {
+
+        // Display validation or business logic errors.
+        $message = $e->getMessage();
+
+    } catch (Throwable $e) {
+
+        // Log unexpected errors without exposing internal details.
+        error_log('Password recovery error ' . $e->getCode());
+
+        $message = 'Recovery is temporarily unavailable. Please try again.';
+    }
 }

@@ -1,22 +1,22 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
 
     require_login("buyer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
 
-require_once __DIR__ . "/../includes/notifications.php";
+    require_once __DIR__ . "/../includes/notifications.php";
 
-$userId = (int) $_SESSION['user_id'];
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $userId = (int) $_SESSION['user_id'];
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
     markNotificationsRead($link, $userId, $_POST);
     header("Location: notifications.php");
     exit;
-}
+    }
 
-$unreadCount = unreadNotificationCount($link, $userId);
-$notifications = notificationsForUser($link, $userId);
-acknowledgeNotificationVisit($link, $userId, $notifications);
+    $unreadCount   = unreadNotificationCount($link, $userId);
+    $notifications = notificationsForUser($link, $userId);
+    acknowledgeNotificationVisit($link, $userId, $notifications);
 
     function buyerNotificationIcon($type)
     {
@@ -76,8 +76,8 @@ acknowledgeNotificationVisit($link, $userId, $notifications);
 
     <!-- Header -->
     <?php
-    $activePage = "notifications.php";
-    require __DIR__ . "/includes/header.php";
+        $activePage = "notifications.php";
+        require __DIR__ . "/includes/header.php";
     ?>
 
     <!-- Main Content -->

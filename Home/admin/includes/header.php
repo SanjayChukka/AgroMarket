@@ -3,15 +3,15 @@
 
     /* Admin Navigation Links */
     $nav = [
-    'dashboard'  => 'Overview',
-    'farmers'    => 'Farmers',
-    'buyers'     => 'Buyers',
-    'listings'   => 'Crop listings',
-    'orders'     => 'Orders',
-    'complaints' => 'Complaints',
-    'reports'    => 'Reports',
+    'dashboard'   => 'Overview',
+    'farmers'     => 'Farmers',
+    'buyers'      => 'Buyers',
+    'listings'    => 'Crop listings',
+    'orders'      => 'Orders',
+    'complaints'  => 'Complaints',
+    'reports'     => 'Reports',
     'commissions' => 'Platform commissions',
-    'profile'    => 'My profile',
+    'profile'     => 'My profile',
     ];
 
 ?>

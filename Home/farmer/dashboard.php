@@ -1,159 +1,236 @@
+
 <?php
+
 require_once __DIR__ . "/../config/auth_check.php";
-    require_login("farmer", "../auth/login.php");
 
-    require_once __DIR__ . "/../config/db.php";
+require_login("farmer", "../auth/login.php");
 
-    $farmerId = (int) $_SESSION['user_id'];
+require_once __DIR__ . "/../config/db.php";
 
-    // Safely display database values in HTML
-    require_once __DIR__ . "/../includes/html.php";
+$farmerId = (int) $_SESSION['user_id'];
 
-    // Use the fee stored at checkout, including for orders placed at an earlier rate.
-    $earnings = $link->execute_query(
-        "SELECT COALESCE(SUM(o.subtotal), 0) AS gross,
-                COALESCE(SUM(c.amount), 0) AS fees,
-                COALESCE(SUM(o.subtotal - COALESCE(c.amount, 0)), 0) AS total
-         FROM orders o LEFT JOIN order_commissions c ON c.order_id = o.order_id
-         WHERE o.farmer_id = ? AND o.order_status = 'completed'",
-        [$farmerId]
-    )->fetch_assoc();
 
-    // ----------------------------------
-    // 1. Farmer Details
-    // ----------------------------------
-    $farmerSql = "SELECT full_name, email, mobile
-              FROM users
-              WHERE user_id = ?
-              AND role = 'farmer'
-              LIMIT 1";
+// Safely display database values in HTML.
+require_once __DIR__ . "/../includes/html.php";
 
-    $stmt = mysqli_prepare($link, $farmerSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
 
-    $farmerResult = mysqli_stmt_get_result($stmt);
-    $farmer       = mysqli_fetch_assoc($farmerResult);
+// Fetch earnings from completed orders using the commission stored at checkout.
+$earnings = $link->execute_query(
+    "SELECT
+        COALESCE(SUM(o.subtotal), 0) AS gross,
+        COALESCE(SUM(c.amount), 0) AS fees,
+        COALESCE(
+            SUM(o.subtotal - COALESCE(c.amount, 0)), 0
+        ) AS total
 
-    mysqli_stmt_close($stmt);
+    FROM orders o
 
-    $farmerName   = $farmer['full_name'] ?? ($_SESSION['full_name'] ?? "Farmer");
+    LEFT JOIN order_commissions c
+        ON c.order_id = o.order_id
 
-    // ----------------------------------
-    // 2. Listing Statistics
-    // ----------------------------------
-    $listingStats = [
+    WHERE o.farmer_id = ?
+        AND o.order_status = 'completed'",
+    [$farmerId]
+)->fetch_assoc();
+
+
+// ----------------------------------
+// 1. Farmer Details
+// ----------------------------------
+
+$farmerSql = "
+    SELECT
+        full_name,
+        email,
+        mobile
+    FROM users
+    WHERE user_id = ?
+        AND role = 'farmer'
+    LIMIT 1
+";
+
+$stmt = mysqli_prepare($link, $farmerSql);
+
+mysqli_stmt_bind_param($stmt, "i", $farmerId);
+
+mysqli_stmt_execute($stmt);
+
+$farmerResult = mysqli_stmt_get_result($stmt);
+
+$farmer = mysqli_fetch_assoc($farmerResult);
+
+mysqli_stmt_close($stmt);
+
+$farmerName = $farmer['full_name']
+    ?? ($_SESSION['full_name'] ?? "Farmer");
+
+
+// ----------------------------------
+// 2. Listing Statistics
+// ----------------------------------
+
+$listingStats = [
     "total_listings"    => 0,
     "active_listings"   => 0,
-    "inactive_listings" => 0,
-    ];
+    "inactive_listings" => 0
+];
 
-    $statsSql = "SELECT
-                COUNT(*) AS total_listings,
-                COALESCE(SUM(listing_status = 'available'), 0) AS active_listings,
-                COALESCE(SUM(listing_status IN ('paused', 'sold_out')), 0) AS inactive_listings
-             FROM crop_listings
-             WHERE farmer_id = ?
-             AND listing_status <> 'removed'";
+$statsSql = "
+    SELECT
+        COUNT(*) AS total_listings,
 
-    $stmt = mysqli_prepare($link, $statsSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
+        COALESCE(
+            SUM(listing_status = 'available'), 0
+        ) AS active_listings,
 
-    $statsResult  = mysqli_stmt_get_result($stmt);
-    $listingStats = mysqli_fetch_assoc($statsResult);
+        COALESCE(
+            SUM(listing_status IN ('paused', 'sold_out')), 0
+        ) AS inactive_listings
 
-    mysqli_stmt_close($stmt);
+    FROM crop_listings
 
-    // ----------------------------------
-    // 3. Received Orders Count
-    // ----------------------------------
-    $receivedOrders = 0;
+    WHERE farmer_id = ?
+        AND listing_status <> 'removed'
+";
 
-    $orderCountSql = "SELECT COUNT(*) AS received_orders
-                  FROM orders
-                  WHERE farmer_id = ?";
+$stmt = mysqli_prepare($link, $statsSql);
 
-    $stmt = mysqli_prepare($link, $orderCountSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_param($stmt, "i", $farmerId);
 
-    $orderCountResult = mysqli_stmt_get_result($stmt);
-    $orderCountData   = mysqli_fetch_assoc($orderCountResult);
+mysqli_stmt_execute($stmt);
 
-    $receivedOrders = (int) ($orderCountData['received_orders'] ?? 0);
+$statsResult = mysqli_stmt_get_result($stmt);
 
-    mysqli_stmt_close($stmt);
+$listingStats = mysqli_fetch_assoc($statsResult);
 
-    // ----------------------------------
-    // 4. Recent Crop Listings
-    // ----------------------------------
-    $recentListings = [];
+mysqli_stmt_close($stmt);
 
-    $listingsSql = "SELECT
-                    listing_id,
-                    crop_name,
-                    quantity_available,
-                    quantity_unit,
-                    price_per_unit,
-                    listing_status,
-                    created_at
-                FROM crop_listings
-                WHERE farmer_id = ?
-                AND listing_status <> 'removed'
-                ORDER BY created_at DESC, listing_id DESC
-                LIMIT 5";
 
-    $stmt = mysqli_prepare($link, $listingsSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
+// ----------------------------------
+// 3. Received Orders Count
+// ----------------------------------
 
-    $listingsResult = mysqli_stmt_get_result($stmt);
+$receivedOrders = 0;
 
-    while ($row = mysqli_fetch_assoc($listingsResult)) {
+$orderCountSql = "
+    SELECT COUNT(*) AS received_orders
+    FROM orders
+    WHERE farmer_id = ?
+";
+
+$stmt = mysqli_prepare($link, $orderCountSql);
+
+mysqli_stmt_bind_param($stmt, "i", $farmerId);
+
+mysqli_stmt_execute($stmt);
+
+$orderCountResult = mysqli_stmt_get_result($stmt);
+
+$orderCountData = mysqli_fetch_assoc($orderCountResult);
+
+$receivedOrders = (int) ($orderCountData['received_orders'] ?? 0);
+
+mysqli_stmt_close($stmt);
+
+
+// ----------------------------------
+// 4. Recent Crop Listings
+// ----------------------------------
+
+$recentListings = [];
+
+$listingsSql = "
+    SELECT
+        listing_id,
+        crop_name,
+        quantity_available,
+        quantity_unit,
+        price_per_unit,
+        listing_status,
+        created_at
+
+    FROM crop_listings
+
+    WHERE farmer_id = ?
+        AND listing_status <> 'removed'
+
+    ORDER BY
+        created_at DESC,
+        listing_id DESC
+
+    LIMIT 5
+";
+
+$stmt = mysqli_prepare($link, $listingsSql);
+
+mysqli_stmt_bind_param($stmt, "i", $farmerId);
+
+mysqli_stmt_execute($stmt);
+
+$listingsResult = mysqli_stmt_get_result($stmt);
+
+while ($row = mysqli_fetch_assoc($listingsResult)) {
+
     $recentListings[] = $row;
-    }
+}
 
-    mysqli_stmt_close($stmt);
+mysqli_stmt_close($stmt);
 
-    // ----------------------------------
-    // 5. Recent Received Orders
-    // ----------------------------------
-    $recentOrders = [];
 
-    $ordersSql = "SELECT
-                    o.order_id,
-                    o.order_number,
-                    o.quantity,
-                    o.quantity_unit,
-                    o.subtotal,
-                    o.order_status,
-                    o.placed_at,
-                    cl.crop_name
-              FROM orders AS o
-              INNER JOIN crop_listings AS cl
-                ON o.listing_id = cl.listing_id
-              WHERE o.farmer_id = ?
-              ORDER BY o.placed_at DESC, o.order_id DESC
-              LIMIT 5";
+// ----------------------------------
+// 5. Recent Received Orders
+// ----------------------------------
 
-    $stmt = mysqli_prepare($link, $ordersSql);
-    mysqli_stmt_bind_param($stmt, "i", $farmerId);
-    mysqli_stmt_execute($stmt);
+$recentOrders = [];
 
-    $ordersResult = mysqli_stmt_get_result($stmt);
+$ordersSql = "
+    SELECT
+        o.order_id,
+        o.order_number,
+        o.quantity,
+        o.quantity_unit,
+        o.subtotal,
+        o.order_status,
+        o.placed_at,
+        cl.crop_name
 
-    while ($row = mysqli_fetch_assoc($ordersResult)) {
+    FROM orders AS o
+
+    INNER JOIN crop_listings AS cl
+        ON o.listing_id = cl.listing_id
+
+    WHERE o.farmer_id = ?
+
+    ORDER BY
+        o.placed_at DESC,
+        o.order_id DESC
+
+    LIMIT 5
+";
+
+$stmt = mysqli_prepare($link, $ordersSql);
+
+mysqli_stmt_bind_param($stmt, "i", $farmerId);
+
+mysqli_stmt_execute($stmt);
+
+$ordersResult = mysqli_stmt_get_result($stmt);
+
+while ($row = mysqli_fetch_assoc($ordersResult)) {
+
     $recentOrders[] = $row;
-    }
+}
 
-    mysqli_stmt_close($stmt);
+mysqli_stmt_close($stmt);
 
-    // ----------------------------------
-    // 6. Unread Notification Count
-    // ----------------------------------
-    require_once __DIR__ . "/../includes/notifications.php";
-    $unreadCount = unreadNotificationCount($link, $farmerId);
+
+// ----------------------------------
+// 6. Unread Notification Count
+// ----------------------------------
+
+require_once __DIR__ . "/../includes/notifications.php";
+
+$unreadCount = unreadNotificationCount($link, $farmerId);
 
 ?>
 
@@ -161,22 +238,33 @@ require_once __DIR__ . "/../config/auth_check.php";
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Farmer Dashboard | AgroMarket Connect</title>
 
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="./farmer.css">
-<link rel="icon" href="../favicon.ico" type="image/x-icon">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+
 </head>
 
 <body>
 
-    <!-- Header -->
+    <!-- Farmer Header -->
     <?php
+
     $activePage = "dashboard.php";
+
     $headerFarmer = $farmer;
+
     require __DIR__ . "/includes/header.php";
+
     ?>
+
 
     <!-- Main Dashboard -->
     <main class="dashboard-container">
@@ -184,7 +272,9 @@ require_once __DIR__ . "/../config/auth_check.php";
         <!-- Welcome Section -->
         <section class="welcome-section">
 
-            <h1>Welcome, <?php echo e($farmerName); ?>!</h1>
+            <h1>
+                Welcome, <?php echo e($farmerName); ?>!
+            </h1>
 
             <p>
                 Manage your crops, listings and orders from your dashboard.
@@ -192,14 +282,62 @@ require_once __DIR__ . "/../config/auth_check.php";
 
         </section>
 
+
+        <!-- Earnings from Completed Orders -->
         <section aria-label="Earnings from completed orders">
+
             <h2>Earnings from completed orders</h2>
+
             <div class="listing-summary">
-                <div><h3>Crop sales</h3><p>₹<?= number_format((float) $earnings['gross'], 2) ?></p></div>
-                <div><h3>Farmer commission</h3><p>₹<?= number_format((float) $earnings['fees'], 2) ?></p></div>
-                <div><h3>Net earnings after fees</h3><p>₹<?= number_format((float) $earnings['total'], 2) ?></p></div>
+
+                <!-- Total Crop Sales -->
+                <div>
+
+                    <h3>Crop sales</h3>
+
+                    <p>
+                        ₹<?= number_format(
+                            (float) $earnings['gross'],
+                            2
+                        ); ?>
+                    </p>
+
+                </div>
+
+
+                <!-- Farmer Platform Commission -->
+                <div>
+
+                    <h3>Farmer commission</h3>
+
+                    <p>
+                        ₹<?= number_format(
+                            (float) $earnings['fees'],
+                            2
+                        ); ?>
+                    </p>
+
+                </div>
+
+
+                <!-- Net Farmer Earnings -->
+                <div>
+
+                    <h3>Net earnings after fees</h3>
+
+                    <p>
+                        ₹<?= number_format(
+                            (float) $earnings['total'],
+                            2
+                        ); ?>
+                    </p>
+
+                </div>
+
             </div>
+
         </section>
+
 
         <!-- Quick Actions -->
         <section class="dashboard-section">
@@ -208,33 +346,73 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <div class="action-container">
 
+                <!-- Add Crop -->
                 <div class="action-card">
+
                     <h3>List Your Crops</h3>
-                    <p>Add your available agricultural products to the marketplace.</p>
-                    <a href="add_crop.php">Add Crop</a>
+
+                    <p>
+                        Add your available agricultural products to the marketplace.
+                    </p>
+
+                    <a href="add_crop.php">
+                        Add Crop
+                    </a>
+
                 </div>
 
+
+                <!-- Manage Listings -->
                 <div class="action-card">
+
                     <h3>Manage Listings</h3>
-                    <p>View, edit and manage your existing crop listings.</p>
-                    <a href="manage_listings.php">View Listings</a>
+
+                    <p>
+                        View, edit and manage your existing crop listings.
+                    </p>
+
+                    <a href="manage_listings.php">
+                        View Listings
+                    </a>
+
                 </div>
 
+
+                <!-- Manage Orders -->
                 <div class="action-card">
+
                     <h3>Manage Orders</h3>
-                    <p>View and manage orders received from buyers.</p>
-                    <a href="orders.php">View Orders</a>
+
+                    <p>
+                        View and manage orders received from buyers.
+                    </p>
+
+                    <a href="orders.php">
+                        View Orders
+                    </a>
+
                 </div>
 
+
+                <!-- Farmer Profile -->
                 <div class="action-card">
+
                     <h3>My Profile</h3>
-                    <p>View and update your personal and farming information.</p>
-                    <a href="profile.php">View Profile</a>
+
+                    <p>
+                        View and update your personal and farming information.
+                    </p>
+
+                    <a href="profile.php">
+                        View Profile
+                    </a>
+
                 </div>
 
             </div>
 
         </section>
+
 
         <!-- Listing Summary -->
         <section class="dashboard-section">
@@ -243,68 +421,129 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <div class="summary-container">
 
+                <!-- Total Listings -->
                 <div class="summary-card">
+
                     <h3>Total Listings</h3>
-                    <p><?php echo (int) $listingStats['total_listings']; ?></p>
+
+                    <p>
+                        <?php echo (int) $listingStats['total_listings']; ?>
+                    </p>
+
                 </div>
 
+
+                <!-- Active Listings -->
                 <div class="summary-card">
+
                     <h3>Active Listings</h3>
-                    <p><?php echo (int) $listingStats['active_listings']; ?></p>
+
+                    <p>
+                        <?php echo (int) $listingStats['active_listings']; ?>
+                    </p>
+
                 </div>
 
+
+                <!-- Inactive Listings -->
                 <div class="summary-card">
+
                     <h3>Inactive Listings</h3>
-                    <p><?php echo (int) $listingStats['inactive_listings']; ?></p>
+
+                    <p>
+                        <?php echo (int) $listingStats['inactive_listings']; ?>
+                    </p>
+
                 </div>
 
+
+                <!-- Received Orders -->
                 <div class="summary-card">
+
                     <h3>Received Orders</h3>
-                    <p><?php echo $receivedOrders; ?></p>
+
+                    <p>
+                        <?php echo $receivedOrders; ?>
+                    </p>
+
                 </div>
 
             </div>
 
         </section>
 
-        <!-- Recent Listings -->
+
+        <!-- Recent Crop Listings -->
         <section class="dashboard-section">
 
             <h2>Recent Crop Listings</h2>
 
             <div class="recent-listings">
 
-                <?php if (! empty($recentListings)): ?>
+                <?php if (!empty($recentListings)): ?>
 
                     <?php foreach ($recentListings as $listing): ?>
 
                         <div class="recent-listing-item">
 
-                            <h3><?php echo e($listing['crop_name']); ?></h3>
+                            <!-- Crop Name -->
+                            <h3>
+                                <?php echo e($listing['crop_name']); ?>
+                            </h3>
 
+
+                            <!-- Available Quantity -->
                             <p>
                                 Quantity:
-                                <?php echo e($listing['quantity_available']); ?>
-                                <?php echo e($listing['quantity_unit']); ?>
+
+                                <?php echo e(
+                                    $listing['quantity_available']
+                                ); ?>
+
+                                <?php echo e(
+                                    $listing['quantity_unit']
+                                ); ?>
                             </p>
 
+
+                            <!-- Crop Price -->
                             <p>
                                 Price:
-                                ₹<?php echo number_format((float) $listing['price_per_unit'], 2); ?>
+
+                                ₹<?php echo number_format(
+                                    (float) $listing['price_per_unit'],
+                                    2
+                                ); ?>
+
                                 per unit
                             </p>
 
+
+                            <!-- Listing Status -->
                             <p>
                                 Status:
-                                <?php echo e(ucwords(str_replace('_', ' ', $listing['listing_status']))); ?>
+
+                                <?php echo e(ucwords(str_replace(
+                                    '_',
+                                    ' ',
+                                    $listing['listing_status']
+                                ))); ?>
                             </p>
 
+
+                            <!-- Listing Date -->
                             <p>
                                 Listed on:
+
                                 <?php
-                                    echo ! empty($listing['created_at'])
-                                        ? e(date("d M Y", strtotime($listing['created_at'])))
-                                        : "Date not available";
+
+                                echo !empty($listing['created_at'])
+                                    ? e(date(
+                                        "d M Y",
+                                        strtotime($listing['created_at'])
+                                    ))
+                                    : "Date not available";
+
                                 ?>
                             </p>
 
@@ -312,18 +551,27 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                     <?php endforeach; ?>
 
-                    <a href="manage_listings.php">View All Listings</a>
+
+                    <!-- View All Listings -->
+                    <a href="manage_listings.php">
+                        View All Listings
+                    </a>
 
                 <?php else: ?>
 
+                    <!-- Display Message When No Listings Exist -->
                     <p>No crop listings available yet.</p>
-                    <a href="add_crop.php">Start Listing Your Crops</a>
+
+                    <a href="add_crop.php">
+                        Start Listing Your Crops
+                    </a>
 
                 <?php endif; ?>
 
             </div>
 
         </section>
+
 
         <!-- Recent Orders -->
         <section class="dashboard-section">
@@ -332,41 +580,72 @@ require_once __DIR__ . "/../config/auth_check.php";
 
             <div class="recent-orders">
 
-                <?php if (! empty($recentOrders)): ?>
+                <?php if (!empty($recentOrders)): ?>
 
                     <?php foreach ($recentOrders as $order): ?>
 
                         <div class="recent-order-item">
 
-                            <h3><?php echo e($order['crop_name']); ?></h3>
+                            <!-- Crop Name -->
+                            <h3>
+                                <?php echo e($order['crop_name']); ?>
+                            </h3>
 
+
+                            <!-- Order Number -->
                             <p>
                                 Order Number:
+
                                 <?php echo e($order['order_number']); ?>
                             </p>
 
+
+                            <!-- Ordered Quantity -->
                             <p>
                                 Quantity:
+
                                 <?php echo e($order['quantity']); ?>
+
                                 <?php echo e($order['quantity_unit']); ?>
                             </p>
 
+
+                            <!-- Order Amount -->
                             <p>
                                 Amount:
-                                ₹<?php echo number_format((float) $order['subtotal'], 2); ?>
+
+                                ₹<?php echo number_format(
+                                    (float) $order['subtotal'],
+                                    2
+                                ); ?>
                             </p>
 
+
+                            <!-- Order Status -->
                             <p>
                                 Status:
-                                <?php echo e(ucfirst(str_replace('_', ' ', $order['order_status']))); ?>
+
+                                <?php echo e(ucfirst(str_replace(
+                                    '_',
+                                    ' ',
+                                    $order['order_status']
+                                ))); ?>
                             </p>
 
+
+                            <!-- Order Date -->
                             <p>
                                 Order Date:
+
                                 <?php
-                                    echo ! empty($order['placed_at'])
-                                        ? e(date("d M Y", strtotime($order['placed_at'])))
-                                        : "Date not available";
+
+                                echo !empty($order['placed_at'])
+                                    ? e(date(
+                                        "d M Y",
+                                        strtotime($order['placed_at'])
+                                    ))
+                                    : "Date not available";
+
                                 ?>
                             </p>
 
@@ -374,10 +653,15 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                     <?php endforeach; ?>
 
-                    <a href="orders.php">View All Orders</a>
+
+                    <!-- View All Orders -->
+                    <a href="orders.php">
+                        View All Orders
+                    </a>
 
                 <?php else: ?>
 
+                    <!-- Display Message When No Orders Exist -->
                     <p>No orders received yet.</p>
 
                 <?php endif; ?>
@@ -385,17 +669,28 @@ require_once __DIR__ . "/../config/auth_check.php";
             </div>
 
         </section>
-         <a href="../index.php#community-reviews" class="review">Write or update your review</a>
+
+
+        <!-- Community Review Link -->
+        <a href="../index.php#community-reviews" class="review">
+            Write or update your review
+        </a>
 
     </main>
 
+
     <!-- Footer -->
     <footer class="farmer-footer">
-        <p>&copy; 2026 AgroMarket Connect. All Rights Reserved.</p>
+
+        <p>
+            &copy; 2026 AgroMarket Connect. All Rights Reserved.
+        </p>
+
     </footer>
+
 
     <!-- Profile and Notification Scripts -->
 
-
 </body>
+
 </html>

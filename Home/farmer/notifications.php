@@ -1,29 +1,30 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
 
-require_login("farmer", "../auth/login.php");
+    require_login("farmer", "../auth/login.php");
 
-require_once __DIR__ . "/../config/db.php";
+    require_once __DIR__ . "/../config/db.php";
 
-require_once __DIR__ . "/../includes/notifications.php";
+    require_once __DIR__ . "/../includes/notifications.php";
 
-$userId = (int) $_SESSION['user_id'];
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $userId = (int) $_SESSION['user_id'];
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
     markNotificationsRead($link, $userId, $_POST);
     header("Location: notifications.php");
     exit;
-}
+    }
 
-$unreadCount = unreadNotificationCount($link, $userId);
-$notifications = notificationsForUser($link, $userId);
-acknowledgeNotificationVisit($link, $userId, $notifications);
-$stmt = $link->prepare("SELECT full_name, email, mobile FROM users WHERE user_id = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$farmer = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+    $unreadCount   = unreadNotificationCount($link, $userId);
+    $notifications = notificationsForUser($link, $userId);
+    acknowledgeNotificationVisit($link, $userId, $notifications);
+    $stmt = $link->prepare("SELECT full_name, email, mobile FROM users WHERE user_id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $farmer = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-function farmerNotificationIcon($type) {
+    function farmerNotificationIcon($type)
+    {
 
     $type = strtolower($type);
 
@@ -40,10 +41,11 @@ function farmerNotificationIcon($type) {
     }
 
     return "●";
-}
+    }
 
-// Notification styling
-function farmerNotificationClass($type) {
+    // Notification styling
+    function farmerNotificationClass($type)
+    {
 
     $type = strtolower($type);
 
@@ -60,7 +62,7 @@ function farmerNotificationClass($type) {
     }
 
     return "notification-general";
-}
+    }
 ?>
 
 <!DOCTYPE html>
@@ -80,9 +82,9 @@ function farmerNotificationClass($type) {
 
     <!-- Header -->
     <?php
-    $activePage = "notifications.php";
-    $headerFarmer = $farmer;
-    require __DIR__ . "/includes/header.php";
+        $activePage   = "notifications.php";
+        $headerFarmer = $farmer;
+        require __DIR__ . "/includes/header.php";
     ?>
 
     <!-- Main Content -->
@@ -137,7 +139,7 @@ function farmerNotificationClass($type) {
                 <?php foreach ($notifications as $notification): ?>
 
                     <article class="notification-card
-                        <?php echo ((int) $notification['is_read'] === 0)
+                        <?php echo((int) $notification['is_read'] === 0)
                             ? 'unread' : ''; ?>">
 
                         <div class="notification-icon
@@ -146,7 +148,7 @@ function farmerNotificationClass($type) {
                             ); ?>">
 
                             <?php echo farmerNotificationIcon(
-                                $notification['notification_type']
+                                    $notification['notification_type']
                             ); ?>
 
                         </div>
@@ -155,24 +157,24 @@ function farmerNotificationClass($type) {
 
                             <h3>
                                 <?php echo htmlspecialchars(
-                                    $notification['title']
+                                        $notification['title']
                                 ); ?>
                             </h3>
 
                             <p>
                                 <?php echo htmlspecialchars(
-                                    $notification['message']
+                                        $notification['message']
                                 ); ?>
                             </p>
 
                             <small>
                                 <?php echo date(
-                                    "d M Y, h:i A",
-                                    strtotime($notification['created_at'])
+                                        "d M Y, h:i A",
+                                        strtotime($notification['created_at'])
                                 ); ?>
                             </small>
 
-                            <?php if (!empty($notification['related_order_id'])): ?>
+                            <?php if (! empty($notification['related_order_id'])): ?>
 
                                 <a href="orders.php"
                                    class="notification-order-link">

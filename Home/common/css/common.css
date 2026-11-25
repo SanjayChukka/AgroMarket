@@ -145,6 +145,7 @@ a {
 }
 
 @media (max-width: 480px) {
+
     .objectives-container,
     .footer-content {
         grid-template-columns: 1fr;
@@ -219,6 +220,7 @@ a {
 }
 
 @media (max-width: 480px) {
+
     .process-container,
     .role-process-container {
         grid-template-columns: 1fr;
@@ -298,6 +300,7 @@ a {
 
 /* Responsive */
 @media (max-width: 768px) {
+
     .help-container,
     .issue-container {
         grid-template-columns: 1fr;
@@ -817,6 +820,7 @@ a {
 }
 
 @media (max-width: 540px) {
+
     .objectives-container,
     .benefits-container {
         grid-template-columns: 1fr;
@@ -900,9 +904,28 @@ a {
 .market-card {
     border-radius: 1rem .25rem .25rem .25rem;
 }
-.market-card { position: relative; }
-.market-card .crop-offer-link { color: inherit; text-decoration: none; }
-.crop-offer-link::after { content: ""; position: absolute; inset: 0; }
+
+.market-card {
+    position: relative;
+}
+
+.market-card .crop-offer-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.crop-offer-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
 .market-card:hover .crop-offer-link,
-.market-card:focus-within .crop-offer-link { text-decoration: underline; }
-.market-card:focus-within { outline: 3px solid #285b3d; outline-offset: 3px; }
+.market-card:focus-within .crop-offer-link {
+    text-decoration: underline;
+}
+
+.market-card:focus-within {
+    outline: 3px solid #285b3d;
+    outline-offset: 3px;
+}

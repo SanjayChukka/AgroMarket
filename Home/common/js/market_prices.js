@@ -6,39 +6,33 @@ const cards = document.querySelectorAll(".market-card");
 const noProducts = document.getElementById("noProducts");
 
 function filterProducts() {
+  const searchValue = searchInput.value.toLowerCase().trim();
+  const categoryValue = categoryFilter.value;
+  const locationValue = locationFilter.value;
 
-    const searchValue = searchInput.value.toLowerCase().trim();
-    const categoryValue = categoryFilter.value;
-    const locationValue = locationFilter.value;
+  let visibleCount = 0;
 
-    let visibleCount = 0;
+  cards.forEach((card) => {
+    const cropName = card.querySelector("h3").textContent.toLowerCase();
 
-    cards.forEach(card => {
+    const matchesSearch = cropName.includes(searchValue);
 
-        const cropName = card.querySelector("h3").textContent.toLowerCase();
+    const matchesCategory =
+      categoryValue === "all" || card.dataset.category === categoryValue;
 
-        const matchesSearch = cropName.includes(searchValue);
+    const matchesLocation =
+      locationValue === "all" || card.dataset.location === locationValue;
 
-        const matchesCategory =
-            categoryValue === "all" ||
-            card.dataset.category === categoryValue;
+    const shouldDisplay = matchesSearch && matchesCategory && matchesLocation;
 
-        const matchesLocation =
-            locationValue === "all" ||
-            card.dataset.location === locationValue;
+    card.hidden = !shouldDisplay;
 
-        const shouldDisplay =
-            matchesSearch && matchesCategory && matchesLocation;
+    if (shouldDisplay) {
+      visibleCount++;
+    }
+  });
 
-        card.hidden = !shouldDisplay;
-
-        if (shouldDisplay) {
-            visibleCount++;
-        }
-
-    });
-
-    noProducts.hidden = visibleCount !== 0;
+  noProducts.hidden = visibleCount !== 0;
 }
 
 searchInput.addEventListener("input", filterProducts);

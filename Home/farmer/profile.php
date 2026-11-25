@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/auth_check.php";
+    require_once __DIR__ . "/../config/auth_check.php";
     require_login("farmer", "../auth/login.php");
 
     require_once __DIR__ . "/../config/db.php";
@@ -444,9 +444,9 @@ require_once __DIR__ . "/../config/auth_check.php";
 <body>
 
     <?php
-    $activePage = "profile.php";
-    $headerFarmer = $form;
-    require __DIR__ . "/includes/header.php";
+        $activePage   = "profile.php";
+        $headerFarmer = $form;
+        require __DIR__ . "/includes/header.php";
     ?>
 
     <main class="profile-container">

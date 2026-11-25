@@ -13,8 +13,8 @@
 
     <!-- Header -->
     <?php
-    $showMarketPrices = true;
-    $registrationRole = null;
+        $showMarketPrices = true;
+        $registrationRole = null;
     require __DIR__ . "/includes/header.php"; ?>
 
     <main>
@@ -47,13 +47,44 @@
                     <option value="pulses">Pulses</option>
                 </select>
 
+
                 <select id="locationFilter">
                     <option value="all">All Locations</option>
+                    <option value="adilabad">Adilabad</option>
+                    <option value="bhadradri kothagudem">Bhadradri Kothagudem</option>
+                    <option value="hanumakonda">Hanumakonda</option>
                     <option value="hyderabad">Hyderabad</option>
-                    <option value="warangal">Warangal</option>
+                    <option value="jagtial">Jagtial</option>
+                    <option value="jangaon">Jangaon</option>
+                    <option value="jayashankar bhupalpally">Jayashankar Bhupalpally</option>
+                    <option value="jogulamba gadwal">Jogulamba Gadwal</option>
+                    <option value="kamareddy">Kamareddy</option>
                     <option value="karimnagar">Karimnagar</option>
+                    <option value="khammam">Khammam</option>
+                    <option value="komaram bheem asifabad">Komaram Bheem Asifabad</option>
+                    <option value="mahabubabad">Mahabubabad</option>
+                    <option value="mahabubnagar">Mahabubnagar</option>
+                    <option value="mancherial">Mancherial</option>
+                    <option value="medak">Medak</option>
+                    <option value="medchal malkajgiri">Medchal Malkajgiri</option>
+                    <option value="mulugu">Mulugu</option>
+                    <option value="nagarkurnool">Nagarkurnool</option>
+                    <option value="nalgonda">Nalgonda</option>
+                    <option value="narayanpet">Narayanpet</option>
+                    <option value="nirmal">Nirmal</option>
                     <option value="nizamabad">Nizamabad</option>
+                    <option value="peddapalli">Peddapalli</option>
+                    <option value="rajanna sircilla">Rajanna Sircilla</option>
+                    <option value="rangareddy">Rangareddy</option>
+                    <option value="sangareddy">Sangareddy</option>
+                    <option value="siddipet">Siddipet</option>
+                    <option value="suryapet">Suryapet</option>
+                    <option value="vikarabad">Vikarabad</option>
+                    <option value="wanaparthy">Wanaparthy</option>
+                    <option value="warangal">Warangal</option>
+                    <option value="yadadri bhuvanagiri">Yadadri Bhuvanagiri</option>
                 </select>
+
 
             </div>
 
