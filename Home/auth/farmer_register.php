@@ -412,32 +412,31 @@
                        <small id="usernameError" class="field-error"></small>
             </div>
 
-            <div class="form-row">
+            <!-- Email and verification use the same full row as buyer registration. -->
+            <div class="form-group verified-email-field">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-control"
+                    value="<?php echo cleanOutput($_POST['email'] ?? ''); ?>"
+                >
+                <small id="emailError" class="field-error"></small>
+                <?php require __DIR__ . '/includes/registration-code-form.php'; ?>
+            </div>
 
-                <div class="form-group verified-email-field">
-                    <label for="email">Email Address</label>
-
-                    <input type="email"
-                           id="email"
-                           name="email"
-                           class="form-control"
-                           value="<?php echo cleanOutput($_POST['email'] ?? ''); ?>">
-                           <small id="emailError" class="field-error"></small>
-                    <?php require __DIR__.'/includes/registration-code-form.php'; ?>
-                </div>
-
-                <div class="form-group">
-                    <label for="mobile">Mobile Number</label>
-
-                    <input type="tel"
-                           id="mobile"
-                           name="mobile"
-                           class="form-control"
-                           maxlength="10"
-                           value="<?php echo cleanOutput($_POST['mobile'] ?? ''); ?>">
-                           <small id="mobileError" class="field-error"></small>
-                </div>
-
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input
+                    type="tel"
+                    id="mobile"
+                    name="mobile"
+                    class="form-control"
+                    maxlength="10"
+                    value="<?php echo cleanOutput($_POST['mobile'] ?? ''); ?>"
+                >
+                <small id="mobileError" class="field-error"></small>
             </div>
 
             <div class="form-row">

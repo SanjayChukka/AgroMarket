@@ -146,8 +146,7 @@ body .role-card a {
         margin: 1.75rem auto 3rem;
     }
 
-    .login-options,
-    .radio-options {
+    .login-options {
         flex-wrap: wrap;
     }
 }

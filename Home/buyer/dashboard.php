@@ -8,6 +8,16 @@
     // Escape output before displaying it in HTML.
     require_once __DIR__ . "/../includes/html.php";
 
+    // Use the fee stored at checkout, including for orders placed at an earlier rate.
+    $earnings = $link->execute_query(
+        "SELECT COALESCE(SUM(o.subtotal), 0) AS gross,
+                COALESCE(SUM(c.amount), 0) AS fees,
+                COALESCE(SUM(o.subtotal + COALESCE(c.amount, 0)), 0) AS total
+         FROM orders o LEFT JOIN buyer_commissions c ON c.order_id = o.order_id
+         WHERE o.buyer_id = ? AND o.order_status = 'completed'",
+        [$buyerId]
+    )->fetch_assoc();
+
     // Fetch buyer details.
     $userQuery = "SELECT full_name, email, mobile
               FROM users
@@ -129,6 +139,15 @@
 
             <a href="browse_crops.php">Browse Available Crops</a>
             
+        </section>
+
+        <section aria-label="Cost of completed purchases">
+            <h2>Cost of completed purchases</h2>
+            <div class="buyer-summary">
+                <div><h3>Crop purchases</h3><p>₹<?= number_format((float) $earnings['gross'], 2) ?></p></div>
+                <div><h3>Buyer commission</h3><p>₹<?= number_format((float) $earnings['fees'], 2) ?></p></div>
+                <div><h3>Total including fees</h3><p>₹<?= number_format((float) $earnings['total'], 2) ?></p></div>
+            </div>
         </section>
 
 

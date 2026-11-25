@@ -1,3 +1,5 @@
+@import url("styles/base.css");
+
 :root {
     --sage: #dce9d2;
     --sky: #e0e9f1;
@@ -13,77 +15,6 @@
     --line: #d9d2c3;
     --wash: #f0e9d9;
     --shadow: 0 2px 0 rgb(44 39 30 / 7%);
-}
-
-html {
-    color-scheme: light;
-}
-
-html body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    line-height: 1.55;
-    color: var(--ink);
-    background: var(--cream);
-    overflow-wrap: break-word;
-}
-
-h1,
-h2 {
-    color: var(--forest);
-    font-family: Georgia, Cambria, serif;
-    font-weight: 500;
-    line-height: 1.17;
-    letter-spacing: -.025em;
-}
-
-h1 {
-    font-size: clamp(2rem, 4vw, 3.3rem);
-}
-
-h2 {
-    font-size: clamp(1.4rem, 2.6vw, 2rem);
-}
-
-h3 {
-    line-height: 1.3;
-    color: var(--forest);
-}
-
-a {
-    color: var(--leaf);
-    text-underline-offset: .2em;
-}
-
-img {
-    max-width: 100%;
-}
-
-input,
-button,
-select,
-textarea {
-    font: inherit;
-}
-
-input:not([type=checkbox], [type=radio], [type=hidden]),
-select,
-textarea {
-    min-width: 0;
-    max-width: 100%;
-    border: 1px solid #82998c;
-    border-radius: 8px;
-    color: var(--ink);
-    background-color: white;
-    padding: .6em .8em;
-}
-
-input[type=checkbox],
-input[type=radio] {
-    accent-color: var(--leaf);
-}
-
-textarea {
-    resize: vertical;
 }
 
 button,
@@ -135,14 +66,13 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-
     a,
     button {
         transition: background-color .16s, color .16s, border-color .16s;
     }
 }
 
-:is(.feature-card, .process-card, .crop-card, .listing-card, .role-card, .content-card,
+:is(.feature-card, .process-card, .crop-card, .role-card, .content-card,
     .objective-card, .benefit-card, .partner-card, .market-card, .help-card, .role-process-card,
     .faq-item, .issue-item, .benefit-item, .guideline-item, .grievance-step, .help-step,
     .privacy-item, .policy-item, .terms-item, .contact-form-container, .contact-detail,
@@ -157,7 +87,7 @@ button:disabled {
 }
 
 @media (hover: hover) {
-    body :is(.action-card, .buyer-crop-card, .crop-card, .listing-card, .role-card, .help-card):has(a):hover {
+    body :is(.action-card, .buyer-crop-card, .crop-card, .role-card, .help-card):has(a):hover {
         border-color: #84a18e;
         box-shadow: 0 6px 18px rgb(21 62 54 / 11%);
     }
@@ -176,7 +106,7 @@ body footer a {
     color: #ebce92;
 }
 
-body :is(.crop-image-placeholder, .crop-image, .listing-image, .farmer-image-placeholder) {
+body :is(.crop-image-placeholder, .crop-image, .farmer-image-placeholder) {
     background: var(--wash);
     color: var(--soft);
     border-radius: 9px;
@@ -184,14 +114,12 @@ body :is(.crop-image-placeholder, .crop-image, .listing-image, .farmer-image-pla
 }
 
 .crop-image img,
-.listing-image img,
 img.crop-image,
 .market-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 
 /* Basic Reset */
 * {
@@ -268,7 +196,6 @@ body {
 
 /* Statistics */
 .statistics {
-    width: 100%;
     max-width: 850px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -296,11 +223,7 @@ body {
 /* Features Heading */
 .section-heading {
     max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
-    gap: 12px;
 }
 
 /* Feature Cards */
@@ -319,15 +242,6 @@ body {
     gap: 15px;
     padding: 25px;
 }
-
-.feature-icon {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 
 /* After the WHY CHOOSE US */
 
@@ -404,39 +318,11 @@ body {
 }
 
 /* Latest Listings */
-.latest-listings {
-    width: 100%;
-    padding: 50px 5%;
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-}
 
 .listings-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
-}
-
-.listing-card {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-}
-
-.listing-image {
-    width: 40%;
-    min-height: 180px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.listing-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
 /* Join Section */
@@ -538,10 +424,8 @@ body {
     padding-top: 20px;
 }
 
-
 /* Responsive Layout */
 @media (max-width: 768px) {
-
     .header {
         flex-direction: column;
         gap: 20px;
@@ -562,7 +446,6 @@ body {
 }
 
 @media (max-width: 480px) {
-
     .hero h1 {
         font-size: 28px;
     }
@@ -608,7 +491,6 @@ body {
 
 /* Responsive */
 @media (max-width: 900px) {
-
     .crops-container,
     .process-container {
         grid-template-columns: repeat(2, 1fr);
@@ -620,18 +502,9 @@ body {
 }
 
 @media (max-width: 600px) {
-
     .crops-container,
     .process-container {
         grid-template-columns: 1fr;
-    }
-
-    .listing-card {
-        flex-direction: column;
-    }
-
-    .listing-image {
-        width: 100%;
     }
 
     .join-buttons {
@@ -643,7 +516,6 @@ body {
 .features,
 .featured-crops,
 .how-it-works,
-.latest-listings,
 .footer {
     padding-inline: max(5%, calc((100% - 1200px) / 2));
 }
@@ -661,7 +533,6 @@ body {
 }
 
 .logo-section .logo {
-    background: var(--forest);
     color: #fff8e7;
     border-radius: 12px 4px;
     padding: .6rem;
@@ -727,18 +598,15 @@ body {
     align-self: center;
 }
 
-.featured-crops,
-.latest-listings {
+.featured-crops {
     background: #edf1e9;
 }
 
-.crop-card a,
-.listing-details a {
+.crop-card a {
     margin-top: auto;
     font-weight: 650;
 }
 
-.feature-icon,
 .process-icon {
     background: var(--wash);
     color: var(--leaf);
@@ -755,7 +623,6 @@ body {
 }
 
 @media (hover: hover) {
-
     .hero-buttons a:first-child:hover,
     .join-buttons a:first-child:hover {
         background: #ffe5af;
@@ -769,7 +636,6 @@ body {
 }
 
 @media (max-width: 580px) {
-
     .crops-container,
     .listings-container {
         grid-template-columns: 1fr;
@@ -883,7 +749,7 @@ body {
     gap: 0;
     padding: 0;
     align-items: stretch;
-    background: var(--cream);
+    background: #eccb8e;
     color: var(--ink);
 }
 
@@ -1026,7 +892,7 @@ body {
 }
 
 .feature-card {
-    background: var(--sage);
+    background: #c3cabc;
     border-top: 3px solid #627844;
 }
 
@@ -1140,7 +1006,7 @@ body footer a {
 
 /* A printed market-cover composition. */
 .hero {
-    background: #eaddbd;
+    background: #eccb8e;
     border-top: 1px solid #cabfa8;
 }
 

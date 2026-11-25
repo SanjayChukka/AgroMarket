@@ -6,6 +6,8 @@
 
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
+    require_once __DIR__ . '/../includes/order-money.php';
+    $_SESSION['crop_payment_token'] ??= bin2hex(random_bytes(32));
     $farmerId = (int) $_SESSION['user_id'];
 
     require_once __DIR__ . "/../includes/html.php";
@@ -429,7 +431,8 @@
                   o.order_number,
                   o.quantity,
                   o.quantity_unit,
-                  o.subtotal, cf.amount AS commission_fee,
+                  cf.collected_at AS fee_paid_at, r.confirmed_at AS crop_paid_at, cf.amount AS fee_due,
+        o.subtotal, cf.amount AS commission_fee,
                   o.order_status,
                   o.placed_at,
 
@@ -438,6 +441,7 @@
                   cl.crop_name
 
               FROM orders AS o LEFT JOIN order_commissions cf ON cf.order_id = o.order_id
+        LEFT JOIN crop_payment_receipts r ON r.order_id=o.order_id
 
               INNER JOIN crop_listings AS cl
                   ON o.listing_id = cl.listing_id
@@ -478,6 +482,7 @@
     <link rel="stylesheet" href="farmer.css">
 
 <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../styles/order-money.css">
 </head>
 
 <body>
@@ -514,6 +519,7 @@
 
         <!-- Order Summary -->
 
+        <?php showOrderMoney($link, 'farmer', $farmerId); ?>
         <section class="order-summary">
 
             <div>
@@ -593,6 +599,20 @@
                                         <?php if ($order['commission_fee'] > 0): ?>
                                             <br><small>Fee on completion: ₹<?= e($order['commission_fee']) ?></small>
                                         <?php endif; ?>
+                                    <?php if ($order['order_status'] === 'completed'): ?>
+                                        <br><small>Crop payment: <?= $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
+                                        <?php if ($order['fee_due'] > 0): ?>
+                                            <br><small>Commission: ₹<?= e($order['fee_due']) ?> · <?= $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
+                                                · AMC-F-<?= (int) $order['order_id'] ?></small>
+                                        <?php endif; ?>
+                                        <?php if (!$order['crop_paid_at']): ?>
+                                            <form method="post" action="confirm_payment.php">
+                                                <input type="hidden" name="order_id" value="<?= (int) $order['order_id'] ?>">
+                                                <input type="hidden" name="token" value="<?= e($_SESSION['crop_payment_token']) ?>">
+                                                <button type="submit">Confirm full crop payment received</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                     </td>
 
                                     <td>

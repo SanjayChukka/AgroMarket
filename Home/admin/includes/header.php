@@ -28,6 +28,9 @@
     </title>
 
     <link rel="stylesheet" href="admin.css">
+    <?php if ($section === 'commissions'): ?>
+        <link rel="stylesheet" href="../styles/order-money.css">
+    <?php endif; ?>
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 

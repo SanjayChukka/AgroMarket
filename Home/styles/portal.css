@@ -38,7 +38,6 @@ body .popup-avatar {
 
 body .welcome-section {
     padding: clamp(1.4rem, 3vw, 2.8rem);
-    border: 0;
     border-radius: 16px;
     background: var(--forest);
     color: #e7f0e4;
@@ -160,7 +159,7 @@ body .table-wrapper,
     min-width: 0;
 }
 
-:is(.listing-filters, .order-filters, .buyer-filter-section, .crop-search-section, .farmer-search-section) form {
+:is(.listing-filters, .buyer-filter-section, .crop-search-section, .farmer-search-section) form {
     display: flex;
     align-items: center;
     flex-wrap: wrap;

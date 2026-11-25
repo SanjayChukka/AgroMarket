@@ -6,6 +6,7 @@ require_once __DIR__ . "/../config/auth_check.php";
 
     require_once __DIR__ . "/../includes/html.php";
 
+    require_once __DIR__ . '/../includes/order-money.php';
     $buyerId = (int) $_SESSION['user_id'];
 
     // Fetch buyer details
@@ -76,6 +77,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         o.quantity,
         o.quantity_unit,
         o.unit_price,
+        bc.collected_at AS fee_paid_at, r.confirmed_at AS crop_paid_at, bc.amount AS fee_due,
         o.subtotal + COALESCE(bc.amount,0) AS buyer_total,
         o.order_status,
         o.placed_at,
@@ -85,6 +87,7 @@ require_once __DIR__ . "/../config/auth_check.php";
         u.full_name AS farmer_name
 
     FROM orders o LEFT JOIN buyer_commissions bc ON bc.order_id=o.order_id
+        LEFT JOIN crop_payment_receipts r ON r.order_id=o.order_id
 
     INNER JOIN crop_listings cl
         ON cl.listing_id = o.listing_id
@@ -137,6 +140,7 @@ require_once __DIR__ . "/../config/auth_check.php";
     <title>My Orders | AgroMarket Connect</title>
     <link rel="stylesheet" href="buyer.css">
 <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../styles/order-money.css">
 </head>
 
 <body>
@@ -151,7 +155,8 @@ require_once __DIR__ . "/../config/auth_check.php";
     <h1>My Orders</h1>
     <p>View all your placed orders and their current status.</p>
 
-    <section class="buyer-summary">
+    <?php showOrderMoney($link, 'buyer', $buyerId); ?>
+        <section class="buyer-summary">
 
         <div>
             <h3>Total Orders</h3>
@@ -266,7 +271,14 @@ require_once __DIR__ . "/../config/auth_check.php";
 
                                 <td>
                                     ₹<?php echo number_format((float) $order['buyer_total'], 2) ?>
-                                </td>
+                                <?php if ($order['order_status'] === 'completed'): ?>
+                                        <br><small>Crop payment: <?= $order['crop_paid_at'] ? 'Confirmed by farmer' : 'Awaiting farmer confirmation' ?></small>
+                                        <?php if ($order['fee_due'] > 0): ?>
+                                            <br><small>Commission: ₹<?= e($order['fee_due']) ?> · <?= $order['fee_paid_at'] ? 'Collected' : 'Due' ?>
+                                                · AMC-B-<?= (int) $order['order_id'] ?></small>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                    </td>
 
                                 <td>
                                     <?php echo date('d-m-Y', strtotime($order['placed_at'])) ?>

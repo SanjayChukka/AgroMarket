@@ -9,6 +9,16 @@ require_once __DIR__ . "/../config/auth_check.php";
     // Safely display database values in HTML
     require_once __DIR__ . "/../includes/html.php";
 
+    // Use the fee stored at checkout, including for orders placed at an earlier rate.
+    $earnings = $link->execute_query(
+        "SELECT COALESCE(SUM(o.subtotal), 0) AS gross,
+                COALESCE(SUM(c.amount), 0) AS fees,
+                COALESCE(SUM(o.subtotal - COALESCE(c.amount, 0)), 0) AS total
+         FROM orders o LEFT JOIN order_commissions c ON c.order_id = o.order_id
+         WHERE o.farmer_id = ? AND o.order_status = 'completed'",
+        [$farmerId]
+    )->fetch_assoc();
+
     // ----------------------------------
     // 1. Farmer Details
     // ----------------------------------
@@ -180,6 +190,15 @@ require_once __DIR__ . "/../config/auth_check.php";
                 Manage your crops, listings and orders from your dashboard.
             </p>
 
+        </section>
+
+        <section aria-label="Earnings from completed orders">
+            <h2>Earnings from completed orders</h2>
+            <div class="listing-summary">
+                <div><h3>Crop sales</h3><p>₹<?= number_format((float) $earnings['gross'], 2) ?></p></div>
+                <div><h3>Farmer commission</h3><p>₹<?= number_format((float) $earnings['fees'], 2) ?></p></div>
+                <div><h3>Net earnings after fees</h3><p>₹<?= number_format((float) $earnings['total'], 2) ?></p></div>
+            </div>
         </section>
 
         <!-- Quick Actions -->
